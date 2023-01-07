@@ -4,10 +4,13 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-import { OpenLinkAnonProfile } from '../openlink';
-import { AsyncCommandResult, KnownDataStatusCode } from '../request';
-import { OpenProfilePostUploadStruct, OpenProfileUploadStruct } from './struct';
-import { createWebClient, TextWebRequest, WebClient } from './web-client';
+import { OpenLinkAnonProfile } from '@src/openlink';
+import { AsyncCommandResult, KnownDataStatusCode } from '@src/request';
+import {
+  OpenProfilePostUploadStruct,
+  OpenProfileUploadStruct,
+} from '@api/struct';
+import { createWebClient, TextWebRequest, WebClient } from '@api/web-client';
 
 /**
  * OpenLink profile, link post upload api

@@ -4,9 +4,9 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-import { WebApiConfig, DefaultConfiguration } from '../config';
-import { OAuthCredential, OAuthInfo } from '../oauth';
-import { AsyncCommandResult, KnownDataStatusCode } from '../request';
+import { WebApiConfig, DefaultConfiguration } from '@src/config';
+import { OAuthCredential, OAuthInfo } from '@src/oauth';
+import { AsyncCommandResult, KnownDataStatusCode } from '@src/request';
 import {
   fillAHeader,
   fillBaseHeader,

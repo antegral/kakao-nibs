@@ -5,7 +5,7 @@
  */
 
 import { Long } from 'bson';
-import { LoginData } from '..';
+import { LoginData } from '@src/api';
 
 /**
  * Raw login data

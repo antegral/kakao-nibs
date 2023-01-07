@@ -5,18 +5,17 @@
  */
 
 import { Long } from 'bson';
-import { WebApiConfig } from '../config';
-import { OAuthCredential } from '../oauth';
-import { DefaultRes } from '../request';
-import { JsonUtil } from '../util';
-// import { isNode, isDeno, isBrowser } from "../util/platform";
-import { AxiosWebClient } from './axios-web-client';
+import { WebApiConfig } from '@src/config';
+import { OAuthCredential } from '@src/oauth';
+import { DefaultRes } from '@src/request';
+import { JsonUtil } from '@src/util';
+import { AxiosWebClient } from '@api/axios-web-client';
 import {
   fillAHeader,
   fillBaseHeader,
   fillCredential,
   getUserAgent,
-} from './header-util';
+} from '@api/header-util';
 
 export type RequestHeader = Record<string, string>;
 export type RequestMethod =

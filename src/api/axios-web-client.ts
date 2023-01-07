@@ -13,8 +13,8 @@ import {
   RequestForm,
   WebClient,
   FileRequestData,
-} from './web-client';
-import { convertToFormData } from './web-api-util';
+} from '@api/web-client';
+import { convertToFormData } from '@api/web-api-util';
 import FormData from 'form-data';
 
 /**

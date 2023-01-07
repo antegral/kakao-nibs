@@ -9,15 +9,15 @@ import {
   createSessionWebClient,
   DataWebRequest,
   SessionWebClient,
-} from './web-client';
-import { DefaultConfiguration, WebApiConfig } from '../config';
-import { OAuthCredential } from '../oauth';
+} from '@api/web-client';
+import { DefaultConfiguration, WebApiConfig } from '@src/config';
+import { OAuthCredential } from '@src/oauth';
 import {
   AsyncCommandResult,
   DefaultRes,
   KnownDataStatusCode,
-} from '../request';
-import { JsonUtil } from '../util';
+} from '@src/request';
+import { JsonUtil } from '@src/util';
 import {
   FriendFindIdStruct,
   FriendFindUUIDStruct,
@@ -29,7 +29,7 @@ import {
   LoginTokenStruct,
   MoreSettingsStruct,
   ProfileReqStruct,
-} from './struct';
+} from '@api/struct';
 
 export class ServiceApiClient {
   private _client: DataWebRequest<SessionWebClient>;
@@ -51,9 +51,11 @@ export class ServiceApiClient {
   /**
    * Request more settings. Official client sends this after login
    *
-   * @param {any} since Unknown
+   * @param {string | number | boolean} since Unknown
    */
-  async requestMoreSettings(since = 0): AsyncCommandResult<MoreSettingsStruct> {
+  async requestMoreSettings(
+    since: string | number | boolean = 0,
+  ): AsyncCommandResult<MoreSettingsStruct> {
     const res = await this._client.requestData(
       'GET',
       // eslint-disable-next-line max-len

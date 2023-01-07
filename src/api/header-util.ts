@@ -4,9 +4,9 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-import { RequestHeader } from '.';
-import { WebApiConfig } from '../config';
-import { OAuthCredential } from '../oauth';
+import { RequestHeader } from '@src/api';
+import { WebApiConfig } from '@src/config';
+import { OAuthCredential } from '@src/oauth';
 
 export function fillAHeader(header: RequestHeader, config: WebApiConfig): void {
   header['A'] = `${config.agent}/${config.version}/${config.language}`;

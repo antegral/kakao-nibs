@@ -11,8 +11,8 @@ import {
   RequestHeader,
   RequestMethod,
   FileRequestData,
-} from './web-client';
-import { convertToFormData } from './web-api-util';
+} from '@api/web-client';
+import { convertToFormData } from '@api/web-api-util';
 
 /**
  * WebClient implementation wrapped with fetch api

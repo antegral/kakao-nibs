@@ -4,12 +4,12 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-import { RequestHeader, WebClient } from '.';
-import { ChatType, KnownChatType, PathAttachment } from '../chat';
-import { DefaultConfiguration, WebApiConfig } from '../config';
-import { AsyncCommandResult, KnownDataStatusCode } from '../request';
-import { fillBaseHeader, getUserAgent } from './header-util';
-import { createWebClient, TextWebRequest } from './web-client';
+import { RequestHeader, WebClient } from '@src/api';
+import { ChatType, KnownChatType, PathAttachment } from '@src/chat';
+import { DefaultConfiguration, WebApiConfig } from '@src/config';
+import { AsyncCommandResult, KnownDataStatusCode } from '@src/request';
+import { fillBaseHeader, getUserAgent } from '@api/header-util';
+import { createWebClient, TextWebRequest } from '@api/web-client';
 
 /**
  * Web attachment upload api

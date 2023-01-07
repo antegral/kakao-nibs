@@ -11,17 +11,17 @@ import {
   RequestForm,
   RequestHeader,
   DataWebRequest,
-} from './web-client';
-import { DefaultConfiguration, OAuthLoginConfig } from '../config';
-import { OAuthCredential } from '../oauth';
+} from '@api/web-client';
+import { DefaultConfiguration, OAuthLoginConfig } from '@src/config';
+import { OAuthCredential } from '@src/oauth';
 import {
   AsyncCommandResult,
   DefaultRes,
   KnownDataStatusCode,
-} from '../request';
-import { fillAHeader, fillBaseHeader, getUserAgent } from './header-util';
-import { AccessDataStruct, structToLoginData } from './struct';
-import { Win32XVCProvider, XVCProvider } from './xvc';
+} from '@src/request';
+import { fillAHeader, fillBaseHeader, getUserAgent } from '@api/header-util';
+import { AccessDataStruct, structToLoginData } from '@api/struct';
+import { Win32XVCProvider, XVCProvider } from '@api/xvc';
 
 /**
  * Login data
@@ -202,10 +202,7 @@ export class AuthApiClient {
    * @param {LoginForm} form
    * @param {boolean} [forced=false] If true, force login even other devices are login
    */
-  async login(
-    form: LoginForm,
-    forced: boolean = false,
-  ): AsyncCommandResult<LoginData> {
+  async login(form: LoginForm, forced = false): AsyncCommandResult<LoginData> {
     const res = await this._client.requestData(
       'POST',
       this.getApiPath('login.json'),
@@ -233,7 +230,7 @@ export class AuthApiClient {
    */
   async loginToken(
     form: TokenLoginForm,
-    forced: boolean = false,
+    forced = false,
   ): AsyncCommandResult<LoginData> {
     const res = await this._client.requestData(
       'POST',
