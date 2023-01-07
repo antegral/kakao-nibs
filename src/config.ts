@@ -5,7 +5,6 @@
  */
 
 export const DefaultConfiguration: OAuthLoginConfig & ClientConfig = {
-
   locoBookingHost: 'booking-loco.kakao.com',
   locoBookingPort: 443,
 
@@ -14,8 +13,8 @@ export const DefaultConfiguration: OAuthLoginConfig & ClientConfig = {
 
   agent: 'win32',
 
-  version: '3.2.3',
-  appVersion: '3.2.3.2698',
+  version: '3.4.4',
+  appVersion: '3.4.4.3285',
 
   osVersion: '10.0',
 
@@ -33,11 +32,9 @@ export const DefaultConfiguration: OAuthLoginConfig & ClientConfig = {
   deviceModel: '',
 
   loginTokenSeedList: ['PITT', 'INORAN'],
-
 };
 
 export interface BookingConfig {
-
   locoBookingHost: string;
   locoBookingPort: number;
 
@@ -45,11 +42,9 @@ export interface BookingConfig {
   mccmnc: string;
 
   deviceModel: string;
-
 }
 
 export interface CheckinConfig extends BookingConfig {
-
   locoCheckinFallbackHost?: string;
   locoCheckinFallbackPort?: number;
 
@@ -65,28 +60,22 @@ export interface CheckinConfig extends BookingConfig {
 }
 
 export interface WebApiConfig {
-
   agent: string;
 
   version: string;
   osVersion: string;
 
   language: string;
-  
-  deviceModel: string;
 
+  deviceModel: string;
 }
 
 export type SessionConfig = CheckinConfig;
 
 export interface ClientConfig extends SessionConfig, WebApiConfig {
-
   deviceType: number;
-
 }
 
 export interface OAuthLoginConfig extends WebApiConfig {
-
   loginTokenSeedList: [string, string];
-
 }
