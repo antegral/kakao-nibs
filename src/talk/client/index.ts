@@ -51,7 +51,7 @@ export class TalkClient
   private _session: ConnectionSession | null;
 
   /**
-   * Ping request interval. (Default = 60000 (1 min))
+   * Ping request interval. (Default = 30000 (30s))
    */
   public pingInterval: number;
   private _pingTask: number | null;
@@ -70,7 +70,7 @@ export class TalkClient
   ) {
     super();
 
-    this.pingInterval = 60000;
+    this.pingInterval = 30000;
     this._pingTask = null;
 
     this._session = null;
