@@ -19,8 +19,17 @@ import {
   OpenLinkProfiles,
   OpenLinkProfile,
 } from '../../openlink';
-import { ChatInfoRes, ChatOnRoomRes, GetMemRes, MemberRes } from '../../packet/chat';
-import { AsyncCommandResult, DefaultReq, KnownDataStatusCode } from '../../request';
+import {
+  ChatInfoRes,
+  ChatOnRoomRes,
+  GetMemRes,
+  MemberRes,
+} from '../../packet/chat';
+import {
+  AsyncCommandResult,
+  DefaultReq,
+  KnownDataStatusCode,
+} from '../../request';
 import {
   ChannelInfoStruct,
   OpenChannelInfoExtra,
@@ -60,20 +69,21 @@ export class TalkOpenChannelSession implements OpenChannelSession {
   get session(): TalkSession {
     return this._session;
   }
-  
+
   chatON(): AsyncCommandResult<Readonly<ChatOnRoomRes>> {
     return this._normalSession.chatON();
   }
 
-  async markRead(chat: ChatLogged): Promise<{ success: boolean, status: number }> {
-    const status = (await this._session.request(
-      'NOTIREAD',
-      {
-        'chatId': this._channel.channelId,
-        'li': this._channel.linkId,
-        'watermark': chat.logId,
-      },
-    )).status;
+  async markRead(
+    chat: ChatLogged,
+  ): Promise<{ success: boolean; status: number }> {
+    const status = (
+      await this._session.request('NOTIREAD', {
+        chatId: this._channel.channelId,
+        li: this._channel.linkId,
+        watermark: chat.logId,
+      })
+    ).status;
 
     return {
       success: status === KnownDataStatusCode.SUCCESS,
@@ -82,12 +92,9 @@ export class TalkOpenChannelSession implements OpenChannelSession {
   }
 
   async getLatestChannelInfo(): AsyncCommandResult<OpenChannelInfo> {
-    const res = await this._session.request<ChatInfoRes>(
-      'CHATINFO',
-      {
-        'chatId': this._channel.channelId,
-      },
-    );
+    const res = await this._session.request<ChatInfoRes>('CHATINFO', {
+      chatId: this._channel.channelId,
+    });
 
     if (res.status !== KnownDataStatusCode.SUCCESS) {
       return { success: false, status: res.status };
@@ -96,41 +103,43 @@ export class TalkOpenChannelSession implements OpenChannelSession {
     return {
       success: true,
       status: res.status,
-      result: structToOpenChannelInfo(res.chatInfo as ChannelInfoStruct & OpenChannelInfoExtra),
+      result: structToOpenChannelInfo(
+        res.chatInfo as ChannelInfoStruct & OpenChannelInfoExtra,
+      ),
     };
   }
 
-  async getLatestUserInfo(...channelUsers: ChannelUser[]): AsyncCommandResult<OpenChannelUserInfo[]> {
-    const res = await this._session.request<MemberRes>(
-      'MEMBER',
-      {
-        'chatId': this._channel.channelId,
-        'memberIds': channelUsers.map((user) => user.userId),
-      },
-    );
+  async getLatestUserInfo(
+    ...channelUsers: ChannelUser[]
+  ): AsyncCommandResult<OpenChannelUserInfo[]> {
+    const res = await this._session.request<MemberRes>('MEMBER', {
+      chatId: this._channel.channelId,
+      memberIds: channelUsers.map((user) => user.userId),
+    });
 
     if (res.status !== KnownDataStatusCode.SUCCESS) {
       return { success: false, status: res.status };
     }
 
-    const result = (res.members as OpenMemberStruct[]).map((member) => structToOpenChannelUserInfo(member));
+    const result = (res.members as OpenMemberStruct[]).map((member) =>
+      structToOpenChannelUserInfo(member),
+    );
 
     return { status: res.status, success: true, result };
   }
 
   async getAllLatestUserInfo(): AsyncCommandResult<OpenChannelUserInfo[]> {
-    const res = await this._session.request<GetMemRes>(
-      'GETMEM',
-      {
-        'chatId': this._channel.channelId,
-      },
-    );
+    const res = await this._session.request<GetMemRes>('GETMEM', {
+      chatId: this._channel.channelId,
+    });
 
     if (res.status !== KnownDataStatusCode.SUCCESS) {
       return { success: false, status: res.status };
     }
 
-    const result = (res.members as OpenMemberStruct[]).map((member) => structToOpenChannelUserInfo(member));
+    const result = (res.members as OpenMemberStruct[]).map((member) =>
+      structToOpenChannelUserInfo(member),
+    );
 
     return { status: res.status, success: true, result };
   }
@@ -140,7 +149,10 @@ export class TalkOpenChannelSession implements OpenChannelSession {
   }
 
   removeKicked(user: ChannelUser): AsyncCommandResult {
-    return this._linkSession.removeKicked(this._channel, { ...user, kickedChannelId: this._channel.channelId });
+    return this._linkSession.removeKicked(this._channel, {
+      ...user,
+      kickedChannelId: this._channel.channelId,
+    });
   }
 
   react(flag: boolean): AsyncCommandResult {
@@ -161,18 +173,21 @@ export class TalkOpenChannelSession implements OpenChannelSession {
     }
   }
 
-  async setUserPerm(user: ChannelUser, perm: OpenChannelUserPerm): AsyncCommandResult {
-    const res = await this._session.request(
-      'SETMEMTYPE',
-      {
-        'c': this._channel.channelId,
-        'li': this._channel.linkId,
-        'mids': [user.userId],
-        'mts': [perm],
-      },
-    );
+  async setUserPerm(
+    user: ChannelUser,
+    perm: OpenChannelUserPerm,
+  ): AsyncCommandResult {
+    const res = await this._session.request('SETMEMTYPE', {
+      c: this._channel.channelId,
+      li: this._channel.linkId,
+      mids: [user.userId],
+      mts: [perm],
+    });
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+    };
   }
 
   async createEvent(
@@ -180,78 +195,80 @@ export class TalkOpenChannelSession implements OpenChannelSession {
     type: RelayEventType,
     count: number,
   ): AsyncCommandResult {
-    const res = await this._session.request(
-      'RELAYEVENT',
-      {
-        'c': this._channel.channelId,
-        'li': this._channel.linkId,
-        'et': type,
-        'ec': count,
-        'logId': chat.logId,
-        't': chat.type,
-      },
-    );
+    const res = await this._session.request('RELAYEVENT', {
+      c: this._channel.channelId,
+      li: this._channel.linkId,
+      et: type,
+      ec: count,
+      logId: chat.logId,
+      t: chat.type,
+    });
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+    };
   }
 
   async handoverHost(user: ChannelUser): AsyncCommandResult {
-    const res = await this._session.request(
-      'SETMEMTYPE',
-      {
-        'c': this._channel.channelId,
-        'li': this._channel.linkId,
-        'mids': [user.userId, this._session.clientUser.userId],
-        'mts': [OpenChannelUserPerm.OWNER, OpenChannelUserPerm.NONE],
-      },
-    );
+    const res = await this._session.request('SETMEMTYPE', {
+      c: this._channel.channelId,
+      li: this._channel.linkId,
+      mids: [user.userId, this._session.clientUser.userId],
+      mts: [OpenChannelUserPerm.OWNER, OpenChannelUserPerm.NONE],
+    });
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+    };
   }
 
   async kickUser(user: ChannelUser): AsyncCommandResult {
-    const res = await this._session.request(
-      'KICKMEM',
-      {
-        'c': this._channel.channelId,
-        'li': this._channel.linkId,
-        'mid': user.userId,
-      },
-    );
+    const res = await this._session.request('KICKMEM', {
+      c: this._channel.channelId,
+      li: this._channel.linkId,
+      mid: user.userId,
+    });
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+    };
   }
 
   async blockUser(user: ChannelUser): AsyncCommandResult {
-    const res = await this._session.request(
-      'BLIND',
-      {
-        'c': this._channel.channelId,
-        'li': this._channel.linkId,
-        'mid': user.userId,
-        // Reporting user is not supported.
-        'r': false,
-      },
-    );
+    const res = await this._session.request('BLIND', {
+      c: this._channel.channelId,
+      li: this._channel.linkId,
+      mid: user.userId,
+      // Reporting user is not supported.
+      r: false,
+    });
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+    };
   }
 
-  async changeProfile(profile: OpenLinkProfiles): AsyncCommandResult<Readonly<OpenLinkChannelUserInfo> | null> {
-    const res = await this._session.request(
-      'UPLINKPROF',
-      {
-        'li': this._channel.linkId,
-        ...OpenLinkProfile.serializeLinkProfile(profile),
-      },
-    );
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { status: res.status, success: false };
+  async changeProfile(
+    profile: OpenLinkProfiles,
+  ): AsyncCommandResult<Readonly<OpenLinkChannelUserInfo> | null> {
+    const res = await this._session.request('UPLINKPROF', {
+      li: this._channel.linkId,
+      ...OpenLinkProfile.serializeLinkProfile(profile),
+    });
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { status: res.status, success: false };
 
     if (res['olu']) {
       return {
         status: res.status,
         success: true,
-        result: structToOpenLinkChannelUserInfo(res['olu'] as OpenLinkChannelUserStruct),
+        result: structToOpenLinkChannelUserInfo(
+          res['olu'] as OpenLinkChannelUserStruct,
+        ),
       };
     }
 
@@ -259,17 +276,17 @@ export class TalkOpenChannelSession implements OpenChannelSession {
   }
 
   async hideChat(chat: ChatLoggedType): AsyncCommandResult {
-    const res = await this._session.request(
-      'REWRITE',
-      {
-        'li': this._channel.linkId,
-        'c': this._channel.channelId,
-        'logId': chat.logId,
-        't': chat.type,
-      },
-    );
+    const res = await this._session.request('REWRITE', {
+      li: this._channel.linkId,
+      c: this._channel.channelId,
+      logId: chat.logId,
+      t: chat.type,
+    });
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+    };
   }
 }
 
@@ -285,15 +302,15 @@ export class TalkOpenChannelManageSession implements OpenChannelManageSession {
   }
 
   async leaveKicked(channel: OpenChannel): AsyncCommandResult {
-    const res = await this._session.request(
-      'KICKLEAVE',
-      {
-        'c': channel.channelId,
-        'li': channel.linkId,
-      },
-    );
+    const res = await this._session.request('KICKLEAVE', {
+      c: channel.channelId,
+      li: channel.linkId,
+    });
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+    };
   }
 
   async joinChannel(
@@ -303,34 +320,34 @@ export class TalkOpenChannelManageSession implements OpenChannelManageSession {
   ): AsyncCommandResult<OpenChannel> {
     let token: string | undefined;
     if (passcode) {
-      const tokenRes = await this._session.request(
-        'CHECKJOIN',
-        {
-          'li': link.linkId,
-          'pc': passcode,
-        },
-      );
+      const tokenRes = await this._session.request('CHECKJOIN', {
+        li: link.linkId,
+        pc: passcode,
+      });
 
-      if (tokenRes.status !== KnownDataStatusCode.SUCCESS) return { status: tokenRes.status, success: false };
+      if (tokenRes.status !== KnownDataStatusCode.SUCCESS)
+        return { status: tokenRes.status, success: false };
 
       token = tokenRes['tk'] as string;
     }
 
     const reqData: DefaultReq = {
-      'li': link.linkId,
-      'ref': 'EW:',
+      li: link.linkId,
+      ref: 'EW:',
       ...OpenLinkProfile.serializeLinkProfile(profile),
     };
 
     if (token) reqData['tk'] = token;
 
-    const res = await this._session.request<JoinLinkRes>(
-      'JOINLINK',
-      reqData,
-    );
+    const res = await this._session.request<JoinLinkRes>('JOINLINK', reqData);
 
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { status: res.status, success: false };
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { status: res.status, success: false };
 
-    return { status: res.status, success: true, result: { channelId: res.chatRoom.chatId, linkId: res.ol.li } };
+    return {
+      status: res.status,
+      success: true,
+      result: { channelId: res.chatRoom.chatId, linkId: res.ol.li },
+    };
   }
 }

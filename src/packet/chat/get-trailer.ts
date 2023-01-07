@@ -5,7 +5,6 @@
  */
 
 export interface GetTrailerRes {
-
   /**
    * Host (Unused(?))
    */
@@ -25,5 +24,4 @@ export interface GetTrailerRes {
    * VHost (ipv6)
    */
   vh6: string;
-
 }

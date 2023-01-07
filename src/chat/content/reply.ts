@@ -48,7 +48,10 @@ export class ReplyContent implements ChatContent {
     }
 
     attachment.src_logId = this.chat.logId;
-    attachment.src_mentions = this.chat.attachment && this.chat.attachment['mentions'] as MentionStruct[] || [];
+    attachment.src_mentions =
+      (this.chat.attachment &&
+        (this.chat.attachment['mentions'] as MentionStruct[])) ||
+      [];
     attachment.src_message = this.chat.text;
     attachment.src_type = this.chat.type;
     attachment.src_userId = this.chat.sender.userId;

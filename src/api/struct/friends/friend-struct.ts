@@ -7,14 +7,11 @@
 import { Long } from 'bson';
 
 export enum ApiUserType {
-
   NORMAL = 0,
-  PLUS = 1
-
+  PLUS = 1,
 }
 
 export interface FriendExt {
-
   addible: boolean;
   yellowid: boolean;
   consultable: boolean;
@@ -24,11 +21,9 @@ export interface FriendExt {
   writable: boolean;
   serviceTypeCode: number;
   isOfficial: boolean;
-
 }
 
 export interface FriendStruct {
-
   userId: Long | number;
   nickName: string;
   type: number;
@@ -49,5 +44,4 @@ export interface FriendStruct {
   screenToken: number;
   suspended: false;
   directChatId: number;
-
 }

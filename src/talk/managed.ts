@@ -8,7 +8,6 @@ import { EventContext, TypedListeners } from '../event';
 import { DefaultRes } from '../request';
 
 export interface Managed<T extends TypedListeners<T>> {
-
   /**
    * Called when broadcast packets are recevied
    *
@@ -16,6 +15,9 @@ export interface Managed<T extends TypedListeners<T>> {
    * @param {DefaultRes} data
    * @param {EventContext<T>} parentCtx
    */
-  pushReceived(method: string, data: DefaultRes, parentCtx: EventContext<T>): Promise<void>;
-
+  pushReceived(
+    method: string,
+    data: DefaultRes,
+    parentCtx: EventContext<T>,
+  ): Promise<void>;
 }

@@ -5,32 +5,24 @@
  */
 
 export interface OpenProfileUploadStruct {
-
-  'access_key': string;
-
+  access_key: string;
 }
 
 export interface OpenPostUploadInfoItemStruct {
-
-  filename: string,
-  width: number,
-  'content_type': string,
-  length: number,
-  height: number
-
+  filename: string;
+  width: number;
+  content_type: string;
+  length: number;
+  height: number;
 }
 
 export interface OpenPostUploadInfoStruct {
-
   original: OpenPostUploadInfoItemStruct;
   small: OpenPostUploadInfoItemStruct;
   large: OpenPostUploadInfoItemStruct;
   scrap: OpenPostUploadInfoItemStruct;
-
 }
 
 export interface OpenProfilePostUploadStruct extends OpenProfileUploadStruct {
-
-  info: OpenPostUploadInfoStruct
-
+  info: OpenPostUploadInfoStruct;
 }

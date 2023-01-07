@@ -34,42 +34,62 @@ export class TalkSessionFactory implements SessionFactory {
     return getBookingData(bookingStream, config);
   }
 
-  async getCheckin(userId: Long, config: CheckinConfig): AsyncCommandResult<CheckinRes> {
+  async getCheckin(
+    userId: Long,
+    config: CheckinConfig,
+  ): AsyncCommandResult<CheckinRes> {
     let checkinStream;
     const checkinCrypto = await newCryptoStore(config.locoPEMPublicKey);
     try {
       const conf = await this.getConf(config);
       if (!conf.success) return conf;
 
-      checkinStream = new LocoSecureLayer(await NetSocket.createTCPSocket({
-        host: conf.result.ticket.lsl[0],
-        port: conf.result.wifi.ports[0],
-        keepAlive: false,
-      }), checkinCrypto);
+      checkinStream = new LocoSecureLayer(
+        await NetSocket.createTCPSocket({
+          host: conf.result.ticket.lsl[0],
+          port: conf.result.wifi.ports[0],
+          keepAlive: false,
+        }),
+        checkinCrypto,
+      );
     } catch (e) {
-      if (!config.locoCheckinFallbackHost || !config.locoCheckinFallbackPort) throw e;
+      if (!config.locoCheckinFallbackHost || !config.locoCheckinFallbackPort)
+        throw e;
       // Fallback
 
-      checkinStream = new LocoSecureLayer(await NetSocket.createTCPSocket({
-        host: config.locoCheckinFallbackHost,
-        port: config.locoCheckinFallbackPort,
-        keepAlive: false,
-      }), checkinCrypto);
+      checkinStream = new LocoSecureLayer(
+        await NetSocket.createTCPSocket({
+          host: config.locoCheckinFallbackHost,
+          port: config.locoCheckinFallbackPort,
+          keepAlive: false,
+        }),
+        checkinCrypto,
+      );
     }
 
     return getCheckinData(checkinStream, config, userId);
   }
 
-  async connect(userId: Long, config: SessionConfig): AsyncCommandResult<ConnectionSession> {
+  async connect(
+    userId: Long,
+    config: SessionConfig,
+  ): AsyncCommandResult<ConnectionSession> {
     const checkinRes = await this.getCheckin(userId, config);
     if (!checkinRes.success) return checkinRes;
 
-    const locoStream = new LocoSecureLayer(await NetSocket.createTCPSocket({
-      host: checkinRes.result.host,
-      port: checkinRes.result.port,
-      keepAlive: true,
-    }), await newCryptoStore(config.locoPEMPublicKey));
+    const locoStream = new LocoSecureLayer(
+      await NetSocket.createTCPSocket({
+        host: checkinRes.result.host,
+        port: checkinRes.result.port,
+        keepAlive: true,
+      }),
+      await newCryptoStore(config.locoPEMPublicKey),
+    );
 
-    return { status: KnownDataStatusCode.SUCCESS, success: true, result: new LocoSession(locoStream) };
+    return {
+      status: KnownDataStatusCode.SUCCESS,
+      success: true,
+      result: new LocoSession(locoStream),
+    };
   }
 }

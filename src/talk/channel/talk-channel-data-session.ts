@@ -5,24 +5,39 @@
  */
 
 import { Long } from 'bson';
-import { ChannelInfo, ChannelMeta, ChannelSession, SetChannelMeta, UpdatableChannelDataStore } from '../../channel';
+import {
+  ChannelInfo,
+  ChannelMeta,
+  ChannelSession,
+  SetChannelMeta,
+  UpdatableChannelDataStore,
+} from '../../channel';
 import { ChannelMetaType } from '../../channel/meta';
-import { Chat, Chatlog, ChatLogged, ChatType, DELETED_MESSAGE_OFFSET, UpdatableChatListStore } from '../../chat';
-import { MediaKeyComponent, MediaMultiPost, MediaPost, MediaUploadForm } from '../../media';
+import {
+  Chat,
+  Chatlog,
+  ChatLogged,
+  ChatType,
+  DELETED_MESSAGE_OFFSET,
+  UpdatableChatListStore,
+} from '../../chat';
+import {
+  MediaKeyComponent,
+  MediaMultiPost,
+  MediaPost,
+  MediaUploadForm,
+} from '../../media';
 import { AsyncCommandResult, CommandResult } from '../../request';
 import { FixedReadStream } from '../../stream';
 import { ChannelUser, ChannelUserInfo } from '../../user';
 
 export class TalkChannelDataSession implements ChannelSession {
-
   constructor(
     private _clientUser: ChannelUser,
     private _channelSession: ChannelSession,
     private _store: UpdatableChannelDataStore<ChannelInfo, ChannelUserInfo>,
-    private _chatListStore: UpdatableChatListStore
-  ) {
-    
-  }
+    private _chatListStore: UpdatableChatListStore,
+  ) {}
 
   get clientUser(): Readonly<ChannelUser> {
     return this._clientUser;
@@ -32,12 +47,18 @@ export class TalkChannelDataSession implements ChannelSession {
     return this._store;
   }
 
-  async sendChat(chat: string | Chat, noSeen?: boolean): AsyncCommandResult<Chatlog> {
+  async sendChat(
+    chat: string | Chat,
+    noSeen?: boolean,
+  ): AsyncCommandResult<Chatlog> {
     const res = await this._channelSession.sendChat(chat, noSeen);
 
     if (res.success) {
       await this._chatListStore.addChat(res.result);
-      this._store.updateInfo({ lastChatLogId: res.result.logId, lastChatLog: res.result });
+      this._store.updateInfo({
+        lastChatLogId: res.result.logId,
+        lastChatLog: res.result,
+      });
     }
 
     return res;
@@ -48,9 +69,12 @@ export class TalkChannelDataSession implements ChannelSession {
 
     if (res.success) {
       await this._chatListStore.addChat(res.result);
-      this._store.updateInfo({ lastChatLogId: res.result.logId, lastChatLog: res.result });
+      this._store.updateInfo({
+        lastChatLogId: res.result.logId,
+        lastChatLog: res.result,
+      });
     }
-    
+
     return res;
   }
 
@@ -61,7 +85,7 @@ export class TalkChannelDataSession implements ChannelSession {
       const deleted = await this._chatListStore.get(chat.logId);
       if (deleted) {
         await this._chatListStore.updateChat(chat.logId, {
-          type: deleted.type | DELETED_MESSAGE_OFFSET
+          type: deleted.type | DELETED_MESSAGE_OFFSET,
         });
       }
     }
@@ -79,7 +103,10 @@ export class TalkChannelDataSession implements ChannelSession {
     return res;
   }
 
-  async setMeta(type: ChannelMetaType, meta: ChannelMeta | string): AsyncCommandResult<SetChannelMeta> {
+  async setMeta(
+    type: ChannelMetaType,
+    meta: ChannelMeta | string,
+  ): AsyncCommandResult<SetChannelMeta> {
     const res = await this._channelSession.setMeta(type, meta);
 
     if (res.success) {
@@ -87,8 +114,8 @@ export class TalkChannelDataSession implements ChannelSession {
       this._store.updateInfo({
         metaMap: {
           ...lastInfoMap,
-          [type]: res.result
-        }
+          [type]: res.result,
+        },
       });
     }
 
@@ -105,7 +132,10 @@ export class TalkChannelDataSession implements ChannelSession {
     return res;
   }
 
-  syncChatList(endLogId: Long, startLogId?: Long): AsyncIterableIterator<CommandResult<Chatlog[]>> {
+  syncChatList(
+    endLogId: Long,
+    startLogId?: Long,
+  ): AsyncIterableIterator<CommandResult<Chatlog[]>> {
     const iterator = this._channelSession.syncChatList(endLogId, startLogId);
 
     return {
@@ -122,8 +152,8 @@ export class TalkChannelDataSession implements ChannelSession {
         this._chatListStore.addChat(...res);
 
         return next;
-      }
-    }
+      },
+    };
   }
 
   async getChatListFrom(startLogId?: Long): AsyncCommandResult<Chatlog[]> {
@@ -136,15 +166,26 @@ export class TalkChannelDataSession implements ChannelSession {
     return res;
   }
 
-  downloadMedia(media: MediaKeyComponent, type: ChatType, offset?: number): AsyncCommandResult<FixedReadStream> {
+  downloadMedia(
+    media: MediaKeyComponent,
+    type: ChatType,
+    offset?: number,
+  ): AsyncCommandResult<FixedReadStream> {
     return this._channelSession.downloadMedia(media, type, offset);
   }
 
-  downloadMediaThumb(media: MediaKeyComponent, type: ChatType, offset?: number): AsyncCommandResult<FixedReadStream> {
+  downloadMediaThumb(
+    media: MediaKeyComponent,
+    type: ChatType,
+    offset?: number,
+  ): AsyncCommandResult<FixedReadStream> {
     return this._channelSession.downloadMediaThumb(media, type, offset);
   }
 
-  async uploadMedia(type: ChatType, form: MediaUploadForm): AsyncCommandResult<MediaPost> {
+  async uploadMedia(
+    type: ChatType,
+    form: MediaUploadForm,
+  ): AsyncCommandResult<MediaPost> {
     const res = await this._channelSession.uploadMedia(type, form);
 
     if (!res.success) return res;
@@ -164,12 +205,15 @@ export class TalkChannelDataSession implements ChannelSession {
           }
 
           return chatlogRes;
-        }
-      }
+        },
+      },
     };
   }
 
-  async uploadMultiMedia(type: ChatType, forms: MediaUploadForm[]): AsyncCommandResult<MediaMultiPost> {
+  async uploadMultiMedia(
+    type: ChatType,
+    forms: MediaUploadForm[],
+  ): AsyncCommandResult<MediaMultiPost> {
     const res = await this._channelSession.uploadMultiMedia(type, forms);
 
     if (!res.success) return res;
@@ -188,9 +232,8 @@ export class TalkChannelDataSession implements ChannelSession {
           }
 
           return chatlogRes;
-        }
-      }
+        },
+      },
     };
   }
-
 }

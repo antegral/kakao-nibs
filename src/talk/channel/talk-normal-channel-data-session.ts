@@ -7,10 +7,13 @@
 import {
   NormalChannelInfo,
   NormalChannelSession,
-  UpdatableChannelDataStore
+  UpdatableChannelDataStore,
 } from '../../channel';
 import { ChatOnRoomRes } from '../../packet/chat';
-import { NormalMemberStruct, structToChannelUserInfo } from '../../packet/struct';
+import {
+  NormalMemberStruct,
+  structToChannelUserInfo,
+} from '../../packet/struct';
 import { AsyncCommandResult } from '../../request';
 import { ChannelUser, NormalChannelUserInfo } from '../../user';
 import { initNormalUserList, initWatermark } from './common';
@@ -19,20 +22,23 @@ import { initNormalUserList, initWatermark } from './common';
  * Do normal channel session operations and updates store.
  */
 export class TalkNormalChannelDataSession implements NormalChannelSession {
-
   constructor(
     private _clientUser: ChannelUser,
     private _channelSession: NormalChannelSession,
-    private _store: UpdatableChannelDataStore<NormalChannelInfo, NormalChannelUserInfo>
-  ) {
-    
-  }
-  
+    private _store: UpdatableChannelDataStore<
+      NormalChannelInfo,
+      NormalChannelUserInfo
+    >,
+  ) {}
+
   get clientUser(): Readonly<ChannelUser> {
     return this._clientUser;
   }
 
-  get store(): UpdatableChannelDataStore<NormalChannelInfo, NormalChannelUserInfo> {
+  get store(): UpdatableChannelDataStore<
+    NormalChannelInfo,
+    NormalChannelUserInfo
+  > {
     return this._store;
   }
 
@@ -46,14 +52,16 @@ export class TalkNormalChannelDataSession implements NormalChannelSession {
     return res;
   }
 
-
   async chatON(): AsyncCommandResult<ChatOnRoomRes> {
     const res = await this._channelSession.chatON();
 
     if (res.success) {
       const { result } = res;
 
-      if (this._store.info.type !== result.t || this._store.info.lastChatLogId !== result.l) {
+      if (
+        this._store.info.type !== result.t ||
+        this._store.info.lastChatLogId !== result.l
+      ) {
         this._store.updateInfo({ type: result.t, lastChatLogId: result.l });
       }
 
@@ -74,19 +82,24 @@ export class TalkNormalChannelDataSession implements NormalChannelSession {
       } else if (result.mi) {
         this._store.clearUserList();
 
-        const userInitres = await initNormalUserList(this._channelSession, result.mi);
-  
+        const userInitres = await initNormalUserList(
+          this._channelSession,
+          result.mi,
+        );
+
         if (!userInitres.success) return userInitres;
-  
+
         for (const info of userInitres.result) {
           this._store.updateUserInfo(info, info);
         }
 
         const channelSession = this._channelSession;
         if (!this._store.getUserInfo(this._clientUser)) {
-          const clientRes = await channelSession.getLatestUserInfo(this._clientUser);
+          const clientRes = await channelSession.getLatestUserInfo(
+            this._clientUser,
+          );
           if (!clientRes.success) return clientRes;
-  
+
           for (const user of clientRes.result) {
             this._store.updateUserInfo(user, user);
           }
@@ -107,7 +120,9 @@ export class TalkNormalChannelDataSession implements NormalChannelSession {
     return infoRes;
   }
 
-  async getLatestUserInfo(...users: ChannelUser[]): AsyncCommandResult<NormalChannelUserInfo[]> {
+  async getLatestUserInfo(
+    ...users: ChannelUser[]
+  ): AsyncCommandResult<NormalChannelUserInfo[]> {
     const infoRes = await this._channelSession.getLatestUserInfo(...users);
 
     if (infoRes.success) {
@@ -128,5 +143,4 @@ export class TalkNormalChannelDataSession implements NormalChannelSession {
 
     return infoRes;
   }
-
 }

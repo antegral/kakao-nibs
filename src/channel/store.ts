@@ -14,7 +14,6 @@ import { ChannelDataUpdater } from './updater';
  * Store channel data
  */
 export interface ChannelDataStore<T, U> extends ChannelData<T> {
-
   /**
    * Get total user count
    */
@@ -47,15 +46,13 @@ export interface ChannelDataStore<T, U> extends ChannelData<T> {
    * @param chat
    */
   getReadCount(chat: ChatLogged): number;
-
 }
 
-export interface UpdatableChannelDataStore<T, U> extends ChannelDataStore<T, U>, ChannelDataUpdater<T, U> {
-  
-}
+export interface UpdatableChannelDataStore<T, U>
+  extends ChannelDataStore<T, U>,
+    ChannelDataUpdater<T, U> {}
 
 export interface ChannelStore<T> {
-
   /**
    * Try to get channel instance with channel id
    *
@@ -72,5 +69,4 @@ export interface ChannelStore<T> {
    * Total channel count
    */
   readonly size: number;
-
 }

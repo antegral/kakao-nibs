@@ -17,9 +17,7 @@ import { TalkChannel } from '../channel';
  * Store Chatlog and provides convenient methods.
  */
 export class TalkChatData {
-  constructor(private _chat: Chatlog) {
-
-  }
+  constructor(private _chat: Chatlog) {}
 
   /**
    * Chat text. Empty string if value is nullish.
@@ -52,7 +50,8 @@ export class TalkChatData {
    * It is not for detecting urls.
    */
   get urls(): string[] {
-    if (!this._chat.attachment || !Array.isArray(this._chat.attachment['urls'])) return [];
+    if (!this._chat.attachment || !Array.isArray(this._chat.attachment['urls']))
+      return [];
 
     return this._chat.attachment['urls'];
   }
@@ -61,7 +60,11 @@ export class TalkChatData {
    * Get mention list
    */
   get mentions(): MentionStruct[] {
-    if (!this._chat.attachment || !Array.isArray(this._chat.attachment['mentions'])) return [];
+    if (
+      !this._chat.attachment ||
+      !Array.isArray(this._chat.attachment['mentions'])
+    )
+      return [];
 
     return this._chat.attachment.mentions;
   }

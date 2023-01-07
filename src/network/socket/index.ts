@@ -8,12 +8,10 @@ import { isBrowser, isDeno, isNode } from '../../util/platform';
 import { BiStream } from '../../stream';
 
 export interface NetSocketOptions {
-
   host: string;
   port: number;
 
   keepAlive: boolean;
-
 }
 
 /**
@@ -22,7 +20,9 @@ export interface NetSocketOptions {
  *
  * @param {NetSocketOptions} option
  */
-export async function createTCPSocket(option: NetSocketOptions): Promise<BiStream> {
+export async function createTCPSocket(
+  option: NetSocketOptions,
+): Promise<BiStream> {
   if (isNode()) {
     const { NodeSocket } = await import('./node-net-socket');
     return NodeSocket.connect(option);
@@ -42,7 +42,9 @@ export async function createTCPSocket(option: NetSocketOptions): Promise<BiStrea
  *
  * @param {NetSocketOptions} option
  */
-export async function createTLSSocket(option: NetSocketOptions): Promise<BiStream> {
+export async function createTLSSocket(
+  option: NetSocketOptions,
+): Promise<BiStream> {
   if (isNode()) {
     const { NodeSocket } = await import('./node-net-socket');
     return NodeSocket.connectTls(option);

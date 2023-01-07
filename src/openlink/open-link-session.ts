@@ -15,11 +15,13 @@ import {
   OpenLinkUpdateTemplate,
   OpenLinkProfiles,
 } from '.';
-import { OpenLinkKickedUser, OpenLinkKickedUserInfo } from './open-link-user-info';
+import {
+  OpenLinkKickedUser,
+  OpenLinkKickedUserInfo,
+} from './open-link-user-info';
 import { OpenChannel } from './open-channel';
 
 export interface OpenLinkSession {
-
   /**
    * Get latest client link list
    */
@@ -30,7 +32,9 @@ export interface OpenLinkSession {
    *
    * @param components
    */
-  getOpenLink(...components: OpenLinkComponent[]): AsyncCommandResult<Readonly<OpenLink>[]>;
+  getOpenLink(
+    ...components: OpenLinkComponent[]
+  ): AsyncCommandResult<Readonly<OpenLink>[]>;
 
   /**
    * Get openlink from link url. This returns more information than getOpenLink method.
@@ -38,7 +42,10 @@ export interface OpenLinkSession {
    * @param linkURL
    * @param referer Unknown
    */
-  getJoinInfo(linkURL: string, referer?: string): AsyncCommandResult<Readonly<InformedOpenLink>>;
+  getJoinInfo(
+    linkURL: string,
+    referer?: string,
+  ): AsyncCommandResult<Readonly<InformedOpenLink>>;
 
   /**
    * Get kicklist of this openlink.
@@ -46,7 +53,9 @@ export interface OpenLinkSession {
    *
    * @param link
    */
-  getKickList(link: OpenLinkComponent): AsyncCommandResult<OpenLinkKickedUserInfo[]>;
+  getKickList(
+    link: OpenLinkComponent,
+  ): AsyncCommandResult<OpenLinkKickedUserInfo[]>;
 
   /**
    * Remove user from kick list.
@@ -54,7 +63,10 @@ export interface OpenLinkSession {
    *
    * @param link
    */
-  removeKicked(link: OpenLinkComponent, kickedUser: OpenLinkKickedUser): AsyncCommandResult;
+  removeKicked(
+    link: OpenLinkComponent,
+    kickedUser: OpenLinkKickedUser,
+  ): AsyncCommandResult;
 
   /**
    * Create open channel using template.
@@ -63,7 +75,7 @@ export interface OpenLinkSession {
    */
   createOpenChannel(
     template: OpenLinkChannelTemplate & OpenLinkCreateTemplate,
-    profile: OpenLinkProfiles
+    profile: OpenLinkProfiles,
   ): AsyncCommandResult<OpenChannel>;
 
   /**
@@ -74,7 +86,7 @@ export interface OpenLinkSession {
    */
   createOpenDirectProfile(
     template: OpenLinkChannelTemplate & OpenLinkCreateTemplate,
-    profile: OpenLinkProfiles
+    profile: OpenLinkProfiles,
   ): AsyncCommandResult<InformedOpenLink>;
 
   /**
@@ -82,7 +94,9 @@ export interface OpenLinkSession {
    *
    * @param template
    */
-  createOpenProfile(template: OpenLinkProfileTemplate & OpenLinkCreateTemplate): AsyncCommandResult<InformedOpenLink>;
+  createOpenProfile(
+    template: OpenLinkProfileTemplate & OpenLinkCreateTemplate,
+  ): AsyncCommandResult<InformedOpenLink>;
 
   /**
    * Update openlink settings
@@ -92,7 +106,8 @@ export interface OpenLinkSession {
    */
   updateOpenLink(
     link: OpenLinkComponent,
-    settings: (OpenLinkChannelTemplate | OpenLinkProfileTemplate) & OpenLinkUpdateTemplate
+    settings: (OpenLinkChannelTemplate | OpenLinkProfileTemplate) &
+      OpenLinkUpdateTemplate,
   ): AsyncCommandResult<InformedOpenLink>;
 
   /**
@@ -118,5 +133,4 @@ export interface OpenLinkSession {
    * @param link openlink to delete
    */
   deleteLink(link: OpenLinkComponent): AsyncCommandResult;
-
 }

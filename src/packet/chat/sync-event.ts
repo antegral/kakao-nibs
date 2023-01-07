@@ -9,7 +9,6 @@ import { ChatType } from '../../chat';
 import { RelayEventType } from '../../relay';
 
 export interface SyncEventRes {
-
   /**
    * Link id
    */
@@ -44,5 +43,4 @@ export interface SyncEventRes {
    * Target chat type
    */
   t: ChatType;
-
 }

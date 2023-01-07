@@ -5,7 +5,12 @@
  */
 
 import { Long } from 'bson';
-import { Channel, ChannelStore, LoginData, NormalChannelData } from '../channel';
+import {
+  Channel,
+  ChannelStore,
+  LoginData,
+  NormalChannelData,
+} from '../channel';
 import { TalkSession } from './client';
 import { EventContext, TypedEmitter } from '../event';
 import { InformedOpenLink, OpenChannelData } from '../openlink';
@@ -13,13 +18,17 @@ import { DefaultRes } from '../request';
 import { ChainedIterator, JsonUtil } from '../util';
 import { ChannelListEvents } from './event';
 import { Managed } from './managed';
-import { TalkOpenChannel, TalkOpenChannelList, TalkOpenChannelListEvents } from './openlink';
+import {
+  TalkOpenChannel,
+  TalkOpenChannelList,
+  TalkOpenChannelListEvents,
+} from './openlink';
 import {
   ChannelListUpdater,
   TalkChannel,
   TalkNormalChannel,
   TalkNormalChannelList,
-  TalkNormalChannelListEvents
+  TalkNormalChannelListEvents,
 } from './channel';
 import { ChannelUserInfo } from '../user';
 import { ClientDataLoader } from '../loader';
@@ -33,7 +42,9 @@ type TalkChannelListEvents = ChannelListEvents<TalkChannel, ChannelUserInfo>;
  * Manage normal channels and open channels
  */
 export class TalkChannelList
-  extends TypedEmitter<TalkChannelListEvents> implements Managed<TalkChannelListEvents>, ChannelStore<TalkChannel> {
+  extends TypedEmitter<TalkChannelListEvents>
+  implements Managed<TalkChannelListEvents>, ChannelStore<TalkChannel>
+{
   private _normal: TalkNormalChannelList;
   private _open: TalkOpenChannelList;
 
@@ -55,7 +66,12 @@ export class TalkChannelList
     super();
 
     this._normal = new TalkNormalChannelList(session, loader, normalList);
-    this._open = new TalkOpenChannelList(session, loader, openList, clientLinkList);
+    this._open = new TalkOpenChannelList(
+      session,
+      loader,
+      openList,
+      clientLinkList,
+    );
   }
 
   get size(): number {
@@ -87,7 +103,11 @@ export class TalkChannelList
     return new ChainedIterator<TalkChannel>(normalIter, openIter);
   }
 
-  async pushReceived(method: string, data: DefaultRes, parentCtx: EventContext<TalkChannelListEvents>): Promise<void> {
+  async pushReceived(
+    method: string,
+    data: DefaultRes,
+    parentCtx: EventContext<TalkChannelListEvents>,
+  ): Promise<void> {
     const ctx = new EventContext<TalkChannelListEvents>(this, parentCtx);
 
     if (method === 'MSG') {
@@ -108,10 +128,10 @@ export class TalkChannelList
       }
     } else if (method === 'SYNCJOIN') {
       const joinData = data as DefaultRes & SyncJoinRes;
-      
+
       if (joinData.chatLog) {
         const chat = structToChatlog(joinData.chatLog);
-        
+
         if (chat.type === KnownChatType.FEED && chat.text) {
           const content = JsonUtil.parseLoseless(chat.text);
 
@@ -121,21 +141,21 @@ export class TalkChannelList
             const openRes = await this._open.addChannel(channel);
 
             if (openRes.success) {
-              const childCtx = new EventContext<TalkOpenChannelListEvents>(this._open, ctx);
-              childCtx.emit(
-                'channel_join',
-                openRes.result,
+              const childCtx = new EventContext<TalkOpenChannelListEvents>(
+                this._open,
+                ctx,
               );
+              childCtx.emit('channel_join', openRes.result);
             }
           } else {
             const normalRes = await this._normal.addChannel(channel);
 
             if (normalRes.success) {
-              const childCtx = new EventContext<TalkNormalChannelListEvents>(this._normal, ctx);
-              childCtx.emit(
-                'channel_join',
-                normalRes.result,
+              const childCtx = new EventContext<TalkNormalChannelListEvents>(
+                this._normal,
+                ctx,
               );
+              childCtx.emit('channel_join', normalRes.result);
             }
           }
         }
@@ -172,7 +192,7 @@ export class TalkChannelList
    * @return {[LoginData<NormalChannelData>[], LoginData<OpenChannelData>[]]}
    */
   static mapChannelList(
-    channelList: LoginData<NormalChannelData | OpenChannelData>[]
+    channelList: LoginData<NormalChannelData | OpenChannelData>[],
   ): [LoginData<NormalChannelData>[], LoginData<OpenChannelData>[]] {
     const normalList: LoginData<NormalChannelData>[] = [];
     const openList: LoginData<OpenChannelData>[] = [];

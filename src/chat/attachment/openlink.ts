@@ -7,7 +7,6 @@
 import { PostAttachment } from './post';
 
 export interface OpenScheduleAttachment extends PostAttachment {
-
   /**
    * Schedule item id(?)
    */
@@ -22,5 +21,4 @@ export interface OpenScheduleAttachment extends PostAttachment {
    * Schedule start time
    */
   eventAt: number;
-
 }

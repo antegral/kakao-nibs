@@ -4,21 +4,18 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-import { Long } from "bson";
+import { Long } from 'bson';
 
 export interface OAuthCredential {
-
   readonly userId: Long;
 
   readonly deviceUUID: string;
 
   readonly accessToken: string;
   readonly refreshToken: string;
-
 }
 
 export interface OAuthInfo {
-
   /**
    * Token type
    */
@@ -36,7 +33,5 @@ export interface OAuthInfo {
  * Provides oauth credential data
  */
 export interface CredentialProvider {
-
   getCredential(): OAuthCredential;
-
 }

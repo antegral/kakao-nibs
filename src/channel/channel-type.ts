@@ -4,4 +4,11 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-export type ChannelType = 'MultiChat' | 'DirectChat' | 'PlusChat' | 'MemoChat' | 'OM' | 'OD' | string;
+export type ChannelType =
+  | 'MultiChat'
+  | 'DirectChat'
+  | 'PlusChat'
+  | 'MemoChat'
+  | 'OM'
+  | 'OD'
+  | string;

@@ -8,10 +8,8 @@ import { Long } from 'bson';
 import { ChatType } from '../../chat';
 
 export enum ChatRefererType {
-
   KAKAOI = 1,
-  BOT = 2
-
+  BOT = 2,
 }
 
 export type ChatReferer = ChatRefererType | number;
@@ -20,7 +18,6 @@ export type ChatReferer = ChatRefererType | number;
  * Chat object
  */
 export interface ChatlogStruct {
-
   /**
    * Chat log id
    */
@@ -75,5 +72,4 @@ export interface ChatlogStruct {
    * Plus chat only(?)
    */
   referer?: ChatReferer;
-
 }

@@ -5,7 +5,6 @@
  */
 
 export interface ShipRes {
-
   /**
    * Media key
    */
@@ -30,5 +29,4 @@ export interface ShipRes {
    * VHost (ipv6)
    */
   vh6: string;
-
 }

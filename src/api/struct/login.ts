@@ -40,7 +40,10 @@ export interface AccessDataStruct {
   mainDeviceAppVersion: string;
 }
 
-export function structToLoginData(struct: AccessDataStruct, deviceUUID: string): LoginData {
+export function structToLoginData(
+  struct: AccessDataStruct,
+  deviceUUID: string,
+): LoginData {
   return {
     userId: Long.fromValue(struct.userId),
 

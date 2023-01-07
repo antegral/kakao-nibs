@@ -11,17 +11,28 @@ import {
   ChannelMeta,
   NormalChannelInfo,
   SetChannelMeta,
-  UpdatableChannelDataStore
+  UpdatableChannelDataStore,
 } from '../../channel';
 import { ChannelUser, NormalChannelUserInfo } from '../../user';
-import { Chat, Chatlog, ChatLogged, ChatType, UpdatableChatListStore } from '../../chat';
+import {
+  Chat,
+  Chatlog,
+  ChatLogged,
+  ChatType,
+  UpdatableChatListStore,
+} from '../../chat';
 import { TalkNormalChannelSession } from './talk-normal-channel-session';
 import { Managed } from '../managed';
 import { EventContext, TypedEmitter } from '../../event';
 import { TalkChannelHandler } from './talk-channel-handler';
 import { Long } from 'bson';
 import { TalkSession } from '../client';
-import { MediaKeyComponent, MediaMultiPost, MediaPost, MediaUploadForm } from '../../media';
+import {
+  MediaKeyComponent,
+  MediaMultiPost,
+  MediaPost,
+  MediaUploadForm,
+} from '../../media';
 import { ChannelEvents } from '../event';
 import { TalkChannel } from '.';
 import {
@@ -44,13 +55,18 @@ import { TalkNormalChannelHandler } from './talk-normal-channel-handler';
 import { FixedReadStream } from '../../stream';
 import { sendMedia, sendMultiMedia } from './common';
 
-type TalkChannelEvents = ChannelEvents<TalkNormalChannel, NormalChannelUserInfo>;
+type TalkChannelEvents = ChannelEvents<
+  TalkNormalChannel,
+  NormalChannelUserInfo
+>;
 
-export class TalkNormalChannel extends TypedEmitter<TalkChannelEvents>
-  implements TalkChannel,
-  ChannelDataStore<NormalChannelInfo, NormalChannelUserInfo>,
-  Managed<TalkChannelEvents> {
-
+export class TalkNormalChannel
+  extends TypedEmitter<TalkChannelEvents>
+  implements
+    TalkChannel,
+    ChannelDataStore<NormalChannelInfo, NormalChannelUserInfo>,
+    Managed<TalkChannelEvents>
+{
   private _channelSession: TalkChannelDataSession;
   private _normalChannelSession: TalkNormalChannelDataSession;
 
@@ -61,7 +77,7 @@ export class TalkNormalChannel extends TypedEmitter<TalkChannelEvents>
     private _channel: Channel,
     session: TalkSession,
     store: UpdatableChannelDataStore<NormalChannelInfo, NormalChannelUserInfo>,
-    private _chatListStore: UpdatableChatListStore
+    private _chatListStore: UpdatableChatListStore,
   ) {
     super();
 
@@ -69,14 +85,14 @@ export class TalkNormalChannel extends TypedEmitter<TalkChannelEvents>
       session.clientUser,
       new TalkChannelSession(this, session),
       store,
-      _chatListStore
+      _chatListStore,
     );
 
     const normalSession = new TalkNormalChannelSession(this, session);
     this._normalChannelSession = new TalkNormalChannelDataSession(
       session.clientUser,
       normalSession,
-      store
+      store,
     );
 
     this._handler = new TalkChannelHandler(this, this, store, _chatListStore);
@@ -85,7 +101,7 @@ export class TalkNormalChannel extends TypedEmitter<TalkChannelEvents>
       normalSession,
       this,
       store,
-      _chatListStore
+      _chatListStore,
     );
   }
 
@@ -101,7 +117,10 @@ export class TalkNormalChannel extends TypedEmitter<TalkChannelEvents>
     return this._chatListStore;
   }
 
-  get store(): UpdatableChannelDataStore<NormalChannelInfo, NormalChannelUserInfo> {
+  get store(): UpdatableChannelDataStore<
+    NormalChannelInfo,
+    NormalChannelUserInfo
+  > {
     return this._normalChannelSession.store;
   }
 
@@ -115,11 +134,14 @@ export class TalkNormalChannel extends TypedEmitter<TalkChannelEvents>
 
   getName(): string {
     const nameMeta = this.info.metaMap[KnownChannelMetaType.TITLE];
-    return nameMeta && nameMeta.content || '';
+    return (nameMeta && nameMeta.content) || '';
   }
 
   getDisplayName(): string {
-    return this.getName() || this.info.displayUserList.map((user) => user.nickname).join(', ');
+    return (
+      this.getName() ||
+      this.info.displayUserList.map((user) => user.nickname).join(', ')
+    );
   }
 
   getUserInfo(user: ChannelUser): Readonly<NormalChannelUserInfo> | undefined {
@@ -154,7 +176,10 @@ export class TalkNormalChannel extends TypedEmitter<TalkChannelEvents>
     return this._channelSession.markRead(chat);
   }
 
-  setMeta(type: ChannelMetaType, meta: ChannelMeta | string): AsyncCommandResult<SetChannelMeta> {
+  setMeta(
+    type: ChannelMetaType,
+    meta: ChannelMeta | string,
+  ): AsyncCommandResult<SetChannelMeta> {
     return this._channelSession.setMeta(type, meta);
   }
 
@@ -166,28 +191,54 @@ export class TalkNormalChannel extends TypedEmitter<TalkChannelEvents>
     return this.setMeta(KnownChannelMetaType.NOTICE, notice);
   }
 
-  setProfileMeta(content: ProfileMetaContent): AsyncCommandResult<SetChannelMeta> {
-    return this.setMeta(KnownChannelMetaType.PROFILE, JsonUtil.stringifyLoseless(content));
+  setProfileMeta(
+    content: ProfileMetaContent,
+  ): AsyncCommandResult<SetChannelMeta> {
+    return this.setMeta(
+      KnownChannelMetaType.PROFILE,
+      JsonUtil.stringifyLoseless(content),
+    );
   }
 
   setTvMeta(content: TvMetaContent): AsyncCommandResult<SetChannelMeta> {
-    return this.setMeta(KnownChannelMetaType.TV, JsonUtil.stringifyLoseless(content));
+    return this.setMeta(
+      KnownChannelMetaType.TV,
+      JsonUtil.stringifyLoseless(content),
+    );
   }
 
-  setTvLiveMeta(content: TvLiveMetaContent): AsyncCommandResult<SetChannelMeta> {
-    return this.setMeta(KnownChannelMetaType.TV_LIVE, JsonUtil.stringifyLoseless(content));
+  setTvLiveMeta(
+    content: TvLiveMetaContent,
+  ): AsyncCommandResult<SetChannelMeta> {
+    return this.setMeta(
+      KnownChannelMetaType.TV_LIVE,
+      JsonUtil.stringifyLoseless(content),
+    );
   }
 
-  setLiveTalkInfoMeta(content: LiveTalkInfoMetaContent): AsyncCommandResult<SetChannelMeta> {
-    return this.setMeta(KnownChannelMetaType.LIVE_TALK_INFO, JsonUtil.stringifyLoseless(content));
+  setLiveTalkInfoMeta(
+    content: LiveTalkInfoMetaContent,
+  ): AsyncCommandResult<SetChannelMeta> {
+    return this.setMeta(
+      KnownChannelMetaType.LIVE_TALK_INFO,
+      JsonUtil.stringifyLoseless(content),
+    );
   }
 
-  setLiveTalkCountMeta(content: LiveTalkCountMetaContent): AsyncCommandResult<SetChannelMeta> {
-    return this.setMeta(KnownChannelMetaType.LIVE_TALK_COUNT, JsonUtil.stringifyLoseless(content));
+  setLiveTalkCountMeta(
+    content: LiveTalkCountMetaContent,
+  ): AsyncCommandResult<SetChannelMeta> {
+    return this.setMeta(
+      KnownChannelMetaType.LIVE_TALK_COUNT,
+      JsonUtil.stringifyLoseless(content),
+    );
   }
 
   setGroupMeta(content: GroupMetaContent): AsyncCommandResult<SetChannelMeta> {
-    return this.setMeta(KnownChannelMetaType.GROUP, JsonUtil.stringifyLoseless(content));
+    return this.setMeta(
+      KnownChannelMetaType.GROUP,
+      JsonUtil.stringifyLoseless(content),
+    );
   }
 
   setPushAlert(flag: boolean): AsyncCommandResult {
@@ -198,7 +249,10 @@ export class TalkNormalChannel extends TypedEmitter<TalkChannelEvents>
     return this._normalChannelSession.inviteUsers(users);
   }
 
-  syncChatList(endLogId: Long, startLogId?: Long): AsyncIterableIterator<CommandResult<Chatlog[]>> {
+  syncChatList(
+    endLogId: Long,
+    startLogId?: Long,
+  ): AsyncIterableIterator<CommandResult<Chatlog[]>> {
     return this._channelSession.syncChatList(endLogId, startLogId);
   }
 
@@ -214,7 +268,9 @@ export class TalkNormalChannel extends TypedEmitter<TalkChannelEvents>
     return this._normalChannelSession.getLatestChannelInfo();
   }
 
-  async getLatestUserInfo(...users: ChannelUser[]): AsyncCommandResult<NormalChannelUserInfo[]> {
+  async getLatestUserInfo(
+    ...users: ChannelUser[]
+  ): AsyncCommandResult<NormalChannelUserInfo[]> {
     return this._normalChannelSession.getLatestUserInfo(...users);
   }
 
@@ -222,27 +278,47 @@ export class TalkNormalChannel extends TypedEmitter<TalkChannelEvents>
     return this._normalChannelSession.getAllLatestUserInfo();
   }
 
-  downloadMedia(media: MediaKeyComponent, type: ChatType, offset?: number): AsyncCommandResult<FixedReadStream> {
+  downloadMedia(
+    media: MediaKeyComponent,
+    type: ChatType,
+    offset?: number,
+  ): AsyncCommandResult<FixedReadStream> {
     return this._channelSession.downloadMedia(media, type, offset);
   }
 
-  downloadMediaThumb(media: MediaKeyComponent, type: ChatType, offset?: number): AsyncCommandResult<FixedReadStream> {
+  downloadMediaThumb(
+    media: MediaKeyComponent,
+    type: ChatType,
+    offset?: number,
+  ): AsyncCommandResult<FixedReadStream> {
     return this._channelSession.downloadMediaThumb(media, type, offset);
   }
 
-  uploadMedia(type: ChatType, form: MediaUploadForm): AsyncCommandResult<MediaPost> {
+  uploadMedia(
+    type: ChatType,
+    form: MediaUploadForm,
+  ): AsyncCommandResult<MediaPost> {
     return this._channelSession.uploadMedia(type, form);
   }
 
-  uploadMultiMedia(type: ChatType, forms: MediaUploadForm[]): AsyncCommandResult<MediaMultiPost> {
+  uploadMultiMedia(
+    type: ChatType,
+    forms: MediaUploadForm[],
+  ): AsyncCommandResult<MediaMultiPost> {
     return this._channelSession.uploadMultiMedia(type, forms);
   }
 
-  sendMedia(type: ChatType, template: MediaUploadTemplate): AsyncCommandResult<Chatlog> {
+  sendMedia(
+    type: ChatType,
+    template: MediaUploadTemplate,
+  ): AsyncCommandResult<Chatlog> {
     return sendMedia(this._channelSession, type, template);
   }
 
-  sendMultiMedia(type: ChatType, templates: MediaUploadTemplate[]): AsyncCommandResult<Chatlog> {
+  sendMultiMedia(
+    type: ChatType,
+    templates: MediaUploadTemplate[],
+  ): AsyncCommandResult<Chatlog> {
     return sendMultiMedia(this._channelSession, type, templates);
   }
 
@@ -253,7 +329,11 @@ export class TalkNormalChannel extends TypedEmitter<TalkChannelEvents>
     return this.chatON();
   }
 
-  async pushReceived(method: string, data: DefaultRes, parentCtx: EventContext<TalkChannelEvents>): Promise<void> {
+  async pushReceived(
+    method: string,
+    data: DefaultRes,
+    parentCtx: EventContext<TalkChannelEvents>,
+  ): Promise<void> {
     await this._handler.pushReceived(method, data, parentCtx);
     await this._normalHandler.pushReceived(method, data, parentCtx);
   }

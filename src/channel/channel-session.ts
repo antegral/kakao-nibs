@@ -12,30 +12,32 @@ import { ChannelUser, NormalChannelUserInfo } from '../user';
 import { ChannelMeta, NormalChannelInfo, SetChannelMeta } from './channel-info';
 import { ChatOnRoomRes } from '../packet/chat';
 import { ChannelMetaType } from './meta';
-import { MediaKeyComponent, MediaMultiPost, MediaPost, MediaUploadForm } from '../media';
+import {
+  MediaKeyComponent,
+  MediaMultiPost,
+  MediaPost,
+  MediaUploadForm,
+} from '../media';
 import { FixedReadStream } from '../stream';
 
 export interface ChannelTemplate {
-
-  userList: ChannelUser[],
+  userList: ChannelUser[];
 
   name?: string;
   profileURL?: string;
-
 }
 
 /**
  * Classes which provides channel session operations should implement this.
  */
 export interface ChannelSession {
-
   /**
-  * Send chat to channel.
-  * Perform WRITE command.
-  *
-  * @param chat
-  * @param {boolean} [noSeen=true] true if chat should be send without read
-  */
+   * Send chat to channel.
+   * Perform WRITE command.
+   *
+   * @param chat
+   * @param {boolean} [noSeen=true] true if chat should be send without read
+   */
   sendChat(chat: Chat | string, noSeen?: boolean): AsyncCommandResult<Chatlog>;
 
   /**
@@ -69,7 +71,10 @@ export interface ChannelSession {
    * @param type
    * @param meta
    */
-  setMeta(type: ChannelMetaType, meta: ChannelMeta | string): AsyncCommandResult<SetChannelMeta>;
+  setMeta(
+    type: ChannelMetaType,
+    meta: ChannelMeta | string,
+  ): AsyncCommandResult<SetChannelMeta>;
 
   /**
    * Set push alert settings
@@ -87,7 +92,10 @@ export interface ChannelSession {
    *
    * @returns Chatlog iterator which iterate chat chunks, including endLogId chat.
    */
-  syncChatList(endLogId: Long, startLogId?: Long): AsyncIterableIterator<CommandResult<Chatlog[]>>;
+  syncChatList(
+    endLogId: Long,
+    startLogId?: Long,
+  ): AsyncIterableIterator<CommandResult<Chatlog[]>>;
 
   /**
    * Get every chats from next chat of startLogId to end.
@@ -103,7 +111,11 @@ export interface ChannelSession {
    * @param type
    * @param {number} [offset=0] Download start position
    */
-  downloadMedia(media: MediaKeyComponent, type: ChatType, offset?: number): AsyncCommandResult<FixedReadStream>;
+  downloadMedia(
+    media: MediaKeyComponent,
+    type: ChatType,
+    offset?: number,
+  ): AsyncCommandResult<FixedReadStream>;
 
   /**
    * Create media thumbnail download stream
@@ -112,7 +124,11 @@ export interface ChannelSession {
    * @param type
    * @param {number} [offset=0] Download start position
    */
-  downloadMediaThumb(media: MediaKeyComponent, type: ChatType, offset?: number): AsyncCommandResult<FixedReadStream>;
+  downloadMediaThumb(
+    media: MediaKeyComponent,
+    type: ChatType,
+    offset?: number,
+  ): AsyncCommandResult<FixedReadStream>;
 
   /**
    * Upload media.
@@ -120,7 +136,10 @@ export interface ChannelSession {
    * @param type Media type. Supports PHOTO, VIDEO, TEXT, FILE type.
    * @param form
    */
-  uploadMedia(type: ChatType, form: MediaUploadForm): AsyncCommandResult<MediaPost>;
+  uploadMedia(
+    type: ChatType,
+    form: MediaUploadForm,
+  ): AsyncCommandResult<MediaPost>;
 
   /**
    * Upload multi media.
@@ -128,15 +147,16 @@ export interface ChannelSession {
    * @param type Media type. Currently works only with MULTIPHOTO.
    * @param forms
    */
-  uploadMultiMedia(type: ChatType, forms: MediaUploadForm[]): AsyncCommandResult<MediaMultiPost>;
-
+  uploadMultiMedia(
+    type: ChatType,
+    forms: MediaUploadForm[],
+  ): AsyncCommandResult<MediaMultiPost>;
 }
 
 /**
  * Classes which provides normal channel session operations should implement this.
  */
 export interface NormalChannelSession {
-
   /**
    * Send CHATONROOM and get room infos.
    * Official client sends this and update some infos before opening chatroom window.
@@ -153,7 +173,9 @@ export interface NormalChannelSession {
    *
    * @param channelUsers
    */
-  getLatestUserInfo(...channelUsers: ChannelUser[]): AsyncCommandResult<NormalChannelUserInfo[]>;
+  getLatestUserInfo(
+    ...channelUsers: ChannelUser[]
+  ): AsyncCommandResult<NormalChannelUserInfo[]>;
 
   /**
    * Updates every user info to latest.
@@ -168,11 +190,9 @@ export interface NormalChannelSession {
    * @param userList
    */
   inviteUsers(userList: ChannelUser[]): AsyncCommandResult;
-
 }
 
 export interface ChannelManageSession {
-
   /**
    * Leave channel.
    * Perform LEAVE command.
@@ -183,14 +203,12 @@ export interface ChannelManageSession {
    * @returns last channel token on success.
    */
   leaveChannel(channel: Channel, block?: boolean): AsyncCommandResult<Long>;
-
 }
 
 /**
  * Classes which can manage normal channels should implement this.
  */
 export interface NormalChannelManageSession extends ChannelManageSession {
-
   /**
    * Create channel.
    * Perform CREATE command.
@@ -204,5 +222,4 @@ export interface NormalChannelManageSession extends ChannelManageSession {
    * Perform CREATE command.
    */
   createMemoChannel(): AsyncCommandResult<Channel>;
-
 }

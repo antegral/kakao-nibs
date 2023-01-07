@@ -5,7 +5,6 @@
  */
 
 export interface MShipRes {
-
   /**
    * Media key list
    */
@@ -35,5 +34,4 @@ export interface MShipRes {
    * Mime type(?) list
    */
   mtl: string[];
-
 }

@@ -8,7 +8,6 @@ import { Long } from 'bson';
 import { ChatlogStruct } from '../struct';
 
 export interface WriteRes {
-
   msgId: number;
 
   chatId: Long;
@@ -19,5 +18,4 @@ export interface WriteRes {
   sendAt: number;
 
   chatLog?: ChatlogStruct;
-
 }

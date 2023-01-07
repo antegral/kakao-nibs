@@ -8,23 +8,22 @@ import { Long } from 'bson';
 import { ChatlogStruct } from '../struct';
 
 export interface SyncMsgRes {
-
   /**
    * false if there are more chats.
    */
   isOK: boolean;
 
-  chatLogs?: ChatlogStruct[],
+  chatLogs?: ChatlogStruct[];
 
   /**
    * Minimum logId can request
    */
-  minLogId?: Long,
+  minLogId?: Long;
 
   /**
    * Unknown same as minLogId
    */
-  jsi?: Long,
+  jsi?: Long;
 
   /**
    * link id
@@ -32,5 +31,4 @@ export interface SyncMsgRes {
   li?: Long;
 
   lastTokenId: Long;
-
 }

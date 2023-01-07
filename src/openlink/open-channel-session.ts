@@ -13,18 +13,19 @@ import { OpenChannelUserInfo } from '../user/channel-user-info';
 import { OpenChannelInfo } from './open-channel-info';
 import { OpenLink, OpenLinkProfiles } from '.';
 import { OpenChannelUserPerm } from './open-link-type';
-import { OpenLinkChannelUserInfo, OpenLinkKickedUserInfo } from './open-link-user-info';
+import {
+  OpenLinkChannelUserInfo,
+  OpenLinkKickedUserInfo,
+} from './open-link-user-info';
 import { Channel } from '../channel';
 import { OpenLinkComponent } from '..';
 import { OpenChannel } from './open-channel';
 import { ChatOnRoomRes } from '../packet/chat';
 
-
 /**
  * Classes which provides openchannel session operations should implement this.
  */
 export interface OpenChannelSession {
-
   /**
    * Send CHATONROOM and get room infos.
    * Official client sends this and update some infos before opening chatroom window.
@@ -48,7 +49,9 @@ export interface OpenChannelSession {
    *
    * @param channelUser
    */
-  getLatestUserInfo(...channelUsers: ChannelUser[]): AsyncCommandResult<OpenChannelUserInfo[]>;
+  getLatestUserInfo(
+    ...channelUsers: ChannelUser[]
+  ): AsyncCommandResult<OpenChannelUserInfo[]>;
 
   /**
    * Get every latest user info.
@@ -110,7 +113,11 @@ export interface OpenChannelSession {
    * Create chat event (ex: shout heart reaction)
    * @param chat
    */
-  createEvent(chat: ChatLoggedType, type: RelayEventType, count: number): AsyncCommandResult;
+  createEvent(
+    chat: ChatLoggedType,
+    type: RelayEventType,
+    count: number,
+  ): AsyncCommandResult;
 
   /**
    * Set user permission.
@@ -135,7 +142,9 @@ export interface OpenChannelSession {
    *
    * @returns If changed to link profile, it returns OpenLinkChannelUserInfo as result.
    */
-  changeProfile(profile: OpenLinkProfiles): AsyncCommandResult<Readonly<OpenLinkChannelUserInfo> | null>;
+  changeProfile(
+    profile: OpenLinkProfiles,
+  ): AsyncCommandResult<Readonly<OpenLinkChannelUserInfo> | null>;
 
   /**
    * Hide chat
@@ -143,14 +152,12 @@ export interface OpenChannelSession {
    * @param chat
    */
   hideChat(chat: ChatLoggedType): AsyncCommandResult;
-
 }
 
 /**
  * Classes which can manage open channels should implement this.
  */
 export interface OpenChannelManageSession extends ChannelManageSession {
-
   /**
    * Leave kicked open channel
    *
@@ -165,6 +172,9 @@ export interface OpenChannelManageSession extends ChannelManageSession {
    * @param profile
    * @param passcode
    */
-  joinChannel(link: OpenLinkComponent, profile: OpenLinkProfiles, passcode?: string): AsyncCommandResult<OpenChannel>;
-
+  joinChannel(
+    link: OpenLinkComponent,
+    profile: OpenLinkProfiles,
+    passcode?: string,
+  ): AsyncCommandResult<OpenChannel>;
 }

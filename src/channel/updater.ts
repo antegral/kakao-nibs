@@ -10,8 +10,7 @@ import { ChannelUser } from '../user';
 /**
  * Update channel data
  */
- export interface ChannelDataUpdater<T, U> {
-
+export interface ChannelDataUpdater<T, U> {
   /**
    * Update channel info
    *
@@ -36,7 +35,7 @@ import { ChannelUser } from '../user';
    * @param user
    */
   removeUser(user: ChannelUser): boolean;
-  
+
   /**
    * Clear all user info
    */
@@ -50,8 +49,7 @@ import { ChannelUser } from '../user';
   updateWatermark(readerId: Long, watermark?: Long): void;
 
   /**
-   * Clear all watermark 
+   * Clear all watermark
    */
   clearWatermark(): void;
-
 }

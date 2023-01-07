@@ -8,7 +8,6 @@ import { Long } from 'bson';
 import { ChatlogStruct } from '../struct';
 
 export interface LinkKickedRes {
-
   /**
    * Kicked channel id
    */
@@ -18,5 +17,4 @@ export interface LinkKickedRes {
    * Kick feed
    */
   chatLog: ChatlogStruct;
-
 }

@@ -10,7 +10,4 @@ import { OpenLinkComponent } from '.';
 /**
  * Open chat channel
  */
-export interface OpenChannel extends Channel, OpenLinkComponent {
-
-
-}
+export interface OpenChannel extends Channel, OpenLinkComponent {}

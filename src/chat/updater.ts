@@ -11,7 +11,6 @@ import { Chatlog } from './chat';
  * Update or add chat to store
  */
 export interface ChatListUpdater {
-
   /**
    * Push chat
    * @param chat
@@ -30,5 +29,4 @@ export interface ChatListUpdater {
    * @param logId
    */
   removeChat(logId: Long): Promise<boolean>;
-
 }

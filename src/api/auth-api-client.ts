@@ -5,10 +5,20 @@
  */
 
 import { Long } from 'bson';
-import { WebClient, createWebClient, RequestForm, RequestHeader, DataWebRequest } from './web-client';
+import {
+  WebClient,
+  createWebClient,
+  RequestForm,
+  RequestHeader,
+  DataWebRequest,
+} from './web-client';
 import { DefaultConfiguration, OAuthLoginConfig } from '../config';
 import { OAuthCredential } from '../oauth';
-import { AsyncCommandResult, DefaultRes, KnownDataStatusCode } from '../request';
+import {
+  AsyncCommandResult,
+  DefaultRes,
+  KnownDataStatusCode,
+} from '../request';
 import { fillAHeader, fillBaseHeader, getUserAgent } from './header-util';
 import { AccessDataStruct, structToLoginData } from './struct';
 import { Win32XVCProvider, XVCProvider } from './xvc';
@@ -17,7 +27,6 @@ import { Win32XVCProvider, XVCProvider } from './xvc';
  * Login data
  */
 export interface LoginData extends OAuthCredential {
-
   /**
    * User id
    */
@@ -80,16 +89,12 @@ export interface LoginData extends OAuthCredential {
 }
 
 export interface LoginForm {
-
   email: string;
   password: string;
-
 }
 
 export interface TokenLoginForm extends LoginForm {
-
   autowithlock: boolean;
-
 }
 
 /**
@@ -137,7 +142,7 @@ export enum KnownAuthStatusCode {
   ACCESSIBILITY_ARS_ONLY = -10003,
   MIGRATION_FAILURE = -100001,
   INVAILD_TOKEN = -100002,
-  UNDEFINED = -999999
+  UNDEFINED = -999999,
 }
 
 /**
@@ -151,7 +156,7 @@ export class AuthApiClient {
     private _name: string,
     private _deviceUUID: string,
     public config: OAuthLoginConfig,
-    public xvcProvider: XVCProvider
+    public xvcProvider: XVCProvider,
   ) {
     this._client = new DataWebRequest(client);
   }
@@ -171,7 +176,11 @@ export class AuthApiClient {
     fillAHeader(header, this.config);
     const userAgent = getUserAgent(this.config);
     header['User-Agent'] = userAgent;
-    header['X-VC'] = await this.calculateXVCKey(this.deviceUUID, userAgent, form.email);
+    header['X-VC'] = await this.calculateXVCKey(
+      this.deviceUUID,
+      userAgent,
+      form.email,
+    );
 
     return header;
   }
@@ -193,19 +202,26 @@ export class AuthApiClient {
    * @param {LoginForm} form
    * @param {boolean} [forced=false] If true, force login even other devices are login
    */
-  async login(form: LoginForm, forced: boolean = false): AsyncCommandResult<LoginData> {
+  async login(
+    form: LoginForm,
+    forced: boolean = false,
+  ): AsyncCommandResult<LoginData> {
     const res = await this._client.requestData(
       'POST',
       this.getApiPath('login.json'),
       this.fillAuthForm({ ...form, forced }),
       await this.createAuthHeader(form),
     );
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { status: res.status, success: false };
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { status: res.status, success: false };
 
     return {
       status: res.status,
       success: true,
-      result: structToLoginData(res as DefaultRes & AccessDataStruct, this._deviceUUID),
+      result: structToLoginData(
+        res as DefaultRes & AccessDataStruct,
+        this._deviceUUID,
+      ),
     };
   }
 
@@ -215,19 +231,26 @@ export class AuthApiClient {
    * @param {TokenLoginForm} form
    * @param {boolean} [forced=false] If true, force login even other devices are login
    */
-  async loginToken(form: TokenLoginForm, forced: boolean = false): AsyncCommandResult<LoginData> {
+  async loginToken(
+    form: TokenLoginForm,
+    forced: boolean = false,
+  ): AsyncCommandResult<LoginData> {
     const res = await this._client.requestData(
       'POST',
       this.getApiPath('login.json'),
       this.fillAuthForm({ ...form, auto_login: true, forced }),
       await this.createAuthHeader(form),
     );
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { status: res.status, success: false };
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { status: res.status, success: false };
 
     return {
       status: res.status,
       success: true,
-      result: structToLoginData(res as DefaultRes & AccessDataStruct, this._deviceUUID),
+      result: structToLoginData(
+        res as DefaultRes & AccessDataStruct,
+        this._deviceUUID,
+      ),
     };
   }
 
@@ -244,7 +267,10 @@ export class AuthApiClient {
       await this.createAuthHeader(form),
     );
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+    };
   }
 
   /**
@@ -254,7 +280,11 @@ export class AuthApiClient {
    * @param {string} passcode
    * @param {boolean} [permanent=true] If true the device will be registered as permanent
    */
-  async registerDevice(form: LoginForm, passcode: string, permanent = true): AsyncCommandResult {
+  async registerDevice(
+    form: LoginForm,
+    passcode: string,
+    permanent = true,
+  ): AsyncCommandResult {
     const res = await this._client.requestData(
       'POST',
       this.getApiPath('register_device.json'),
@@ -262,11 +292,20 @@ export class AuthApiClient {
       await this.createAuthHeader(form),
     );
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+    };
   }
 
-  private async calculateXVCKey(deviceUUID: string, userAgent: string, email: string): Promise<string> {
-    return (await this.xvcProvider.toFullXVCKey(deviceUUID, userAgent, email)).substring(0, 16);
+  private async calculateXVCKey(
+    deviceUUID: string,
+    userAgent: string,
+    email: string,
+  ): Promise<string> {
+    return (
+      await this.xvcProvider.toFullXVCKey(deviceUUID, userAgent, email)
+    ).substring(0, 16);
   }
 
   private getApiPath(api: string) {
@@ -285,14 +324,14 @@ export class AuthApiClient {
     name: string,
     deviceUUID: string,
     config: Partial<OAuthLoginConfig> = {},
-    xvcProvider?: XVCProvider
+    xvcProvider?: XVCProvider,
   ): Promise<AuthApiClient> {
     return new AuthApiClient(
       await createWebClient('https', 'katalk.kakao.com'),
       name,
       deviceUUID,
       Object.assign({ ...DefaultConfiguration }, config),
-      xvcProvider ? xvcProvider : Win32XVCProvider
+      xvcProvider ? xvcProvider : Win32XVCProvider,
     );
   }
 }

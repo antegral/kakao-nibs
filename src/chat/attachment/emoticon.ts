@@ -7,7 +7,6 @@
 import { Attachment } from '.';
 
 export interface EmoticonAttachment extends Attachment {
-
   /**
    * Emoticon path
    */
@@ -47,5 +46,4 @@ export interface EmoticonAttachment extends Attachment {
    * Emoticon resize height
    */
   height?: number;
-
 }

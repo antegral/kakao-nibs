@@ -12,7 +12,10 @@ export type TypedListeners<L> = {
   [E in keyof L]: (...args: any[]) => unknown;
 };
 
-export type DefaultListeners = Record<string | symbol, (...args: unknown[]) => unknown>;
+export type DefaultListeners = Record<
+  string | symbol,
+  (...args: unknown[]) => unknown
+>;
 
 declare class TypedEmitterDecl<L extends TypedListeners<L> = DefaultListeners> {
   addListener<U extends keyof L>(event: U, listener: L[U]): this;
@@ -27,9 +30,9 @@ declare class TypedEmitterDecl<L extends TypedListeners<L> = DefaultListeners> {
   listeners<U extends keyof L>(type: U): L[U][];
 }
 
-
 // We can just use EventEmitter but the typings break on nested event map.
-export class TypedEmitter<L extends TypedListeners<L>>
-  extends (EventEmitter as { new <L extends TypedListeners<L>>(): TypedEmitterDecl<L> })<L> {
-
-}
+export class TypedEmitter<
+  L extends TypedListeners<L>,
+> extends (EventEmitter as {
+  new <L extends TypedListeners<L>>(): TypedEmitterDecl<L>;
+})<L> {}

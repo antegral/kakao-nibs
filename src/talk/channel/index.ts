@@ -14,7 +14,13 @@ export * from './talk-normal-channel';
 export * from './talk-normal-channel-list';
 export * from './talk-normal-channel-data-session';
 
-import { Channel, ChannelDataStore, ChannelInfo, ChannelSession, UpdatableChannelDataStore } from '../../channel';
+import {
+  Channel,
+  ChannelDataStore,
+  ChannelInfo,
+  ChannelSession,
+  UpdatableChannelDataStore,
+} from '../../channel';
 import { ChannelUser, ChannelUserInfo } from '../../user';
 import { AsyncCommandResult } from '../../request';
 import { TypedEmitter } from '../../event';
@@ -27,17 +33,24 @@ import {
   TvLiveMetaContent,
   TvMetaContent,
 } from '../../channel/meta';
-import { Chatlog, ChatLogged, ChatType, UpdatableChatListStore } from '../../chat';
+import {
+  Chatlog,
+  ChatLogged,
+  ChatType,
+  UpdatableChatListStore,
+} from '../../chat';
 import { MediaUploadTemplate } from '../media';
 
-type TalkChannelEvents = ChannelEvents<TalkChannel, ChannelUserInfo>
+type TalkChannelEvents = ChannelEvents<TalkChannel, ChannelUserInfo>;
 
 /**
  * TalkChannel interface includes managed methods and other methods that make it easier to use
  */
 export interface TalkChannel
-extends Channel, ChannelDataStore<ChannelInfo, ChannelUserInfo>, ChannelSession, TypedEmitter<TalkChannelEvents> {
-
+  extends Channel,
+    ChannelDataStore<ChannelInfo, ChannelUserInfo>,
+    ChannelSession,
+    TypedEmitter<TalkChannelEvents> {
   readonly chatListStore: UpdatableChatListStore;
 
   readonly store: UpdatableChannelDataStore<ChannelInfo, ChannelUserInfo>;
@@ -157,7 +170,10 @@ extends Channel, ChannelDataStore<ChannelInfo, ChannelUserInfo>, ChannelSession,
    * @param type
    * @param template
    */
-  sendMedia(type: ChatType, template: MediaUploadTemplate): AsyncCommandResult<Chatlog>;
+  sendMedia(
+    type: ChatType,
+    template: MediaUploadTemplate,
+  ): AsyncCommandResult<Chatlog>;
 
   /**
    * Upload multi media and send.
@@ -165,6 +181,8 @@ extends Channel, ChannelDataStore<ChannelInfo, ChannelUserInfo>, ChannelSession,
    * @param type
    * @param templates
    */
-  sendMultiMedia(type: ChatType, templates: MediaUploadTemplate[]): AsyncCommandResult<Chatlog>;
-
+  sendMultiMedia(
+    type: ChatType,
+    templates: MediaUploadTemplate[],
+  ): AsyncCommandResult<Chatlog>;
 }

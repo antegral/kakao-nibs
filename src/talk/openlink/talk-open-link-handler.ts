@@ -7,16 +7,18 @@
 import { Long } from 'bson';
 import { EventContext, TypedEmitter } from '../../event';
 import { OpenLinkService, InformedOpenLink } from '../../openlink';
-import { InformedOpenLinkStruct, structToOpenLink, structToOpenLinkInfo } from '../../packet/struct';
+import {
+  InformedOpenLinkStruct,
+  structToOpenLink,
+  structToOpenLinkInfo,
+} from '../../packet/struct';
 import { DefaultRes } from '../../request';
 import { OpenLinkEvent } from '../event';
 import { Managed } from '../managed';
 
 export interface OpenLinkUpdater {
-
   addClientLink(link: InformedOpenLink): void;
   deleteClientLink(linkId: Long): boolean;
-
 }
 
 export class TalkOpenLinkHandler implements Managed<OpenLinkEvent> {
@@ -24,9 +26,7 @@ export class TalkOpenLinkHandler implements Managed<OpenLinkEvent> {
     private _service: OpenLinkService,
     private _emitter: TypedEmitter<OpenLinkEvent>,
     private _updater: OpenLinkUpdater,
-  ) {
-
-  }
+  ) {}
 
   private _callEvent<U extends keyof OpenLinkEvent>(
     parentCtx: EventContext<OpenLinkEvent>,
@@ -37,7 +37,11 @@ export class TalkOpenLinkHandler implements Managed<OpenLinkEvent> {
     parentCtx.emit(event, ...args);
   }
 
-  async pushReceived(method: string, data: DefaultRes, parentCtx: EventContext<OpenLinkEvent>): Promise<void> {
+  async pushReceived(
+    method: string,
+    data: DefaultRes,
+    parentCtx: EventContext<OpenLinkEvent>,
+  ): Promise<void> {
     switch (method) {
       case 'SYNCLINKCR': {
         const linkStruct = data['ol'] as InformedOpenLinkStruct;
@@ -65,7 +69,8 @@ export class TalkOpenLinkHandler implements Managed<OpenLinkEvent> {
         break;
       }
 
-      default: break;
+      default:
+        break;
     }
   }
 }

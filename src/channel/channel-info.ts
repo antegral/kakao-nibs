@@ -12,28 +12,23 @@ import { ChannelType } from './channel-type';
 import { ChannelMetaType } from './meta';
 
 export interface ChannelMeta {
-
   content: string;
-
 }
 
 export interface SetChannelMeta extends ChannelMeta {
-
   revision: number;
 
   authorId: Long;
 
   updatedAt: number;
-
 }
 
-export type ChannelMetaMap = Record<ChannelMetaType, SetChannelMeta>
+export type ChannelMetaMap = Record<ChannelMetaType, SetChannelMeta>;
 
 /**
  * Common channel info
  */
 export interface ChannelInfo extends Channel {
-
   /**
    * Channel type
    */
@@ -79,86 +74,83 @@ export interface ChannelInfo extends Channel {
    * Push alert settings
    */
   pushAlert: boolean;
-
 }
 
 // eslint-disable-next-line no-redeclare
 export namespace ChannelInfo {
-
   export function createPartial(info: Partial<ChannelInfo>): ChannelInfo {
-    return Object.assign({
-      channelId: Long.ZERO,
+    return Object.assign(
+      {
+        channelId: Long.ZERO,
 
-      type: '',
+        type: '',
 
-      activeUserCount: 0,
+        activeUserCount: 0,
 
-      newChatCount: 0,
-      newChatCountInvalid: true,
+        newChatCount: 0,
+        newChatCountInvalid: true,
 
-      lastChatLogId: Long.ZERO,
-      lastSeenLogId: Long.ZERO,
+        lastChatLogId: Long.ZERO,
+        lastSeenLogId: Long.ZERO,
 
-      displayUserList: [],
+        displayUserList: [],
 
-      metaMap: {},
+        metaMap: {},
 
-      pushAlert: false,
-    }, info);
+        pushAlert: false,
+      },
+      info,
+    );
   }
-
 }
 
 /**
  * Normal channel info
  */
 export interface NormalChannelInfo extends ChannelInfo {
-
   /**
    * Channel join time (js Date timestamp)
    */
   joinTime: number;
-
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace,no-redeclare
 export namespace NormalChannelInfo {
-
-  export function createPartial(info: Partial<NormalChannelInfo>): NormalChannelInfo {
-    return Object.assign({
-      ...ChannelInfo.createPartial(info),
-      joinTime: 0,
-    }, info);
+  export function createPartial(
+    info: Partial<NormalChannelInfo>,
+  ): NormalChannelInfo {
+    return Object.assign(
+      {
+        ...ChannelInfo.createPartial(info),
+        joinTime: 0,
+      },
+      info,
+    );
   }
-
 }
 
 /**
  * Channel with info data
  */
 export interface ChannelData<T> {
-
   /**
    * Channel info snapshot.
    */
   readonly info: Readonly<T>;
-
 }
 
 /**
  * Channel data on login
  */
 export interface LoginData<T> {
-
   /**
    * Info update time
    */
   lastUpdate: number;
 
   channel: T;
-
 }
 
-export interface NormalChannelData extends Channel, ChannelData<NormalChannelInfo> {
-
-}
+export interface NormalChannelData
+  extends Channel,
+    ChannelData<NormalChannelInfo> {}

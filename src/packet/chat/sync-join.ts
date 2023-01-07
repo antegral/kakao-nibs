@@ -8,7 +8,6 @@ import { Long } from 'bson';
 import { ChatlogStruct } from '../struct';
 
 export interface SyncJoinRes {
-
   /**
    * Channel id
    */
@@ -18,5 +17,4 @@ export interface SyncJoinRes {
    * Join chat (feed)
    */
   chatLog: ChatlogStruct;
-
 }

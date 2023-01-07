@@ -9,7 +9,6 @@ import { Attachment } from '.';
 import { EmoticonAttachment } from './emoticon';
 
 export enum KnownPostItemType {
-
   TEXT = 1,
   FOOTER = 2,
   HEADER = 3,
@@ -20,14 +19,11 @@ export enum KnownPostItemType {
   SCHEDULE = 8,
   VOTE = 9,
   SCRAP = 10,
-
 }
 
 export type PostItemType = KnownPostItemType | number;
 
-export enum KnownPostSubItemType {
-
-}
+export enum KnownPostSubItemType {}
 
 export type PostSubItemType = KnownPostSubItemType | number;
 
@@ -42,7 +38,6 @@ export enum KnownPostFooterStyle {
 export type PostFooterStyle = KnownPostFooterStyle | number;
 
 export namespace PostItem {
-
   export interface Unknown extends Record<string, unknown> {
     /**
      * Item type
@@ -52,7 +47,7 @@ export namespace PostItem {
 
   export interface Text extends Unknown {
     t: KnownPostItemType.TEXT;
-    
+
     /**
      * Content text
      */
@@ -79,7 +74,7 @@ export namespace PostItem {
       /**
        * User id
        */
-      id: number | Long
+      id: number | Long;
     };
   }
 
@@ -133,7 +128,6 @@ export namespace PostItem {
      * Sub item list
      */
     its: Record<string, unknown>[];
-
   }
 
   export interface Video extends Unknown {
@@ -172,11 +166,9 @@ export namespace PostItem {
      */
     url: string;
   }
-
 }
 
 export interface PostAttachment extends Attachment {
-  
   /**
    * Sub PostItem type(?)
    */
@@ -189,7 +181,6 @@ export interface PostAttachment extends Attachment {
 }
 
 export interface VoteAttachment extends PostAttachment {
-
   /**
    * Vote id
    */

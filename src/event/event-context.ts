@@ -13,7 +13,9 @@ export interface ContextEmitter<T extends TypedListeners<T>> {
 /**
  * Create event reverse traversal tree structure
  */
-export class EventContext<T extends TypedListeners<T>> implements ContextEmitter<T> {
+export class EventContext<T extends TypedListeners<T>>
+  implements ContextEmitter<T>
+{
   private _emitterList: ContextEmitter<T>[];
 
   constructor(...emitters: ContextEmitter<T>[]) {

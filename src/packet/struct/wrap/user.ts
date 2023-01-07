@@ -4,12 +4,22 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-import { OpenLinkChannelUserInfo, OpenLinkKickedUserInfo } from '../../../openlink';
+import {
+  OpenLinkChannelUserInfo,
+  OpenLinkKickedUserInfo,
+} from '../../../openlink';
 import { NormalChannelUserInfo, OpenChannelUserInfo } from '../../../user';
 import { UserType } from '../../../user';
-import { NormalMemberStruct, OpenLinkChannelUserStruct, OpenLinkKickedMemberStruct, OpenMemberStruct } from '../user';
+import {
+  NormalMemberStruct,
+  OpenLinkChannelUserStruct,
+  OpenLinkKickedMemberStruct,
+  OpenMemberStruct,
+} from '../user';
 
-export function structToChannelUserInfo(struct: NormalMemberStruct): NormalChannelUserInfo {
+export function structToChannelUserInfo(
+  struct: NormalMemberStruct,
+): NormalChannelUserInfo {
   return {
     userId: struct.userId,
     userType: struct.type,
@@ -26,7 +36,9 @@ export function structToChannelUserInfo(struct: NormalMemberStruct): NormalChann
   };
 }
 
-export function structToOpenChannelUserInfo(struct: OpenMemberStruct): OpenChannelUserInfo {
+export function structToOpenChannelUserInfo(
+  struct: OpenMemberStruct,
+): OpenChannelUserInfo {
   return {
     userId: struct.userId,
     linkId: struct.pli,
@@ -40,7 +52,9 @@ export function structToOpenChannelUserInfo(struct: OpenMemberStruct): OpenChann
   };
 }
 
-export function structToOpenLinkChannelUserInfo(struct: OpenLinkChannelUserStruct): OpenLinkChannelUserInfo {
+export function structToOpenLinkChannelUserInfo(
+  struct: OpenLinkChannelUserStruct,
+): OpenLinkChannelUserInfo {
   return {
     userId: struct.userId,
     linkId: struct.pli,
@@ -56,7 +70,9 @@ export function structToOpenLinkChannelUserInfo(struct: OpenLinkChannelUserStruc
   };
 }
 
-export function structToOpenLinkKickedUserInfo(struct: OpenLinkKickedMemberStruct): OpenLinkKickedUserInfo {
+export function structToOpenLinkKickedUserInfo(
+  struct: OpenLinkKickedMemberStruct,
+): OpenLinkKickedUserInfo {
   return {
     nickname: struct.nickName,
     userId: struct.userId,

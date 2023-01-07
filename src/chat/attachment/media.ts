@@ -25,11 +25,9 @@ export interface MediaKeyAttachment extends Attachment {
    * Size
    */
   s: number;
-
 }
 
 export interface PhotoAttachment extends Attachment {
-
   /**
    * Width
    */
@@ -54,7 +52,6 @@ export interface PhotoAttachment extends Attachment {
    * Media type
    */
   mt: string;
-
 }
 
 export interface MultiPhotoAttachment extends Attachment {
@@ -119,11 +116,9 @@ export interface VideoAttachment extends Attachment {
    * Video duration
    */
   d: number;
-
 }
 
 export interface FileAttachment extends Attachment {
-
   /**
    * File name
    */
@@ -143,7 +138,6 @@ export interface FileAttachment extends Attachment {
    * File checksum (sha1)
    */
   cs: string;
-
 }
 
 export interface AudioAttachment extends Attachment {

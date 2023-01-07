@@ -5,10 +5,18 @@
  */
 
 import { Long } from 'bson';
-import { createSessionWebClient, DataWebRequest, SessionWebClient } from './web-client';
+import {
+  createSessionWebClient,
+  DataWebRequest,
+  SessionWebClient,
+} from './web-client';
 import { DefaultConfiguration, WebApiConfig } from '../config';
 import { OAuthCredential } from '../oauth';
-import { AsyncCommandResult, DefaultRes, KnownDataStatusCode } from '../request';
+import {
+  AsyncCommandResult,
+  DefaultRes,
+  KnownDataStatusCode,
+} from '../request';
 import { JsonUtil } from '../util';
 import {
   FriendFindIdStruct,
@@ -49,7 +57,11 @@ export class ServiceApiClient {
     const res = await this._client.requestData(
       'GET',
       // eslint-disable-next-line max-len
-      `${this.getAccountApiPath('more_settings.json')}?since=${encodeURIComponent(since)}&lang=${encodeURIComponent(this.config.language)}`,
+      `${this.getAccountApiPath(
+        'more_settings.json',
+      )}?since=${encodeURIComponent(since)}&lang=${encodeURIComponent(
+        this.config.language,
+      )}`,
     );
 
     return {
@@ -68,7 +80,11 @@ export class ServiceApiClient {
     const res = await this._client.requestData(
       'GET',
       // eslint-disable-next-line max-len
-      `${this.getAccountApiPath('less_settings.json')}?since=${encodeURIComponent(since)}&lang=${encodeURIComponent(this.config.language)}`,
+      `${this.getAccountApiPath(
+        'less_settings.json',
+      )}?since=${encodeURIComponent(since)}&lang=${encodeURIComponent(
+        this.config.language,
+      )}`,
     );
 
     return {
@@ -79,9 +95,16 @@ export class ServiceApiClient {
   }
 
   async updateSettings(settings: Partial<unknown>): AsyncCommandResult {
-    const res = await this._client.requestData('POST', this.getAccountApiPath('update_settings.json'), settings);
+    const res = await this._client.requestData(
+      'POST',
+      this.getAccountApiPath('update_settings.json'),
+      settings,
+    );
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+    };
   }
 
   /**
@@ -90,7 +113,10 @@ export class ServiceApiClient {
    * Use @method requestSessionURL to get complete url.
    */
   async requestWebLoginToken(): AsyncCommandResult<LoginTokenStruct> {
-    const res = await this._client.requestData('GET', this.getAccountApiPath('login_token.json'));
+    const res = await this._client.requestData(
+      'GET',
+      this.getAccountApiPath('login_token.json'),
+    );
 
     return {
       status: res.status,
@@ -117,15 +143,31 @@ export class ServiceApiClient {
   }
 
   async canChangeUUID(uuid: string): AsyncCommandResult<DefaultRes> {
-    const res = await this._client.requestData('POST', this.getAccountApiPath('can_change_uuid.json'), { uuid: uuid });
+    const res = await this._client.requestData(
+      'POST',
+      this.getAccountApiPath('can_change_uuid.json'),
+      { uuid: uuid },
+    );
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS, result: res };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+      result: res,
+    };
   }
 
   async changeUUID(uuid: string): AsyncCommandResult<DefaultRes> {
-    const res = await this._client.requestData('POST', this.getAccountApiPath('change_uuid.json'), { uuid: uuid });
+    const res = await this._client.requestData(
+      'POST',
+      this.getAccountApiPath('change_uuid.json'),
+      { uuid: uuid },
+    );
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS, result: res };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+      result: res,
+    };
   }
 
   // friends
@@ -133,7 +175,9 @@ export class ServiceApiClient {
   async addFriend(id: Long, pa = ''): AsyncCommandResult<FriendReqStruct> {
     const res = await this._client.requestData(
       'GET',
-      `${this.getFriendsApiPath('add')}/${encodeURIComponent(id.toString())}.json?pa=${encodeURIComponent(pa)}`,
+      `${this.getFriendsApiPath('add')}/${encodeURIComponent(
+        id.toString(),
+      )}.json?pa=${encodeURIComponent(pa)}`,
     );
 
     return {
@@ -168,7 +212,11 @@ export class ServiceApiClient {
   }
 
   async removeFriend(id: Long): AsyncCommandResult<FriendReqStruct> {
-    const res = await this._client.requestData('POST', this.getFriendsApiPath('purge.json'), { id: id.toString() });
+    const res = await this._client.requestData(
+      'POST',
+      this.getFriendsApiPath('purge.json'),
+      { id: id.toString() },
+    );
 
     return {
       status: res.status,
@@ -184,26 +232,43 @@ export class ServiceApiClient {
       { ids: JsonUtil.stringifyLoseless(idList) },
     );
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+    };
   }
 
   async hideFriend(id: Long, pa = ''): AsyncCommandResult {
     const res = await this._client.requestData(
       'POST',
       this.getFriendsApiPath('hide.json'),
-      { id: id.toString(), pa: pa }
+      { id: id.toString(), pa: pa },
     );
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+    };
   }
 
   async unhideFriend(id: Long): AsyncCommandResult {
-    const res = await this._client.requestData('POST', this.getFriendsApiPath('unhide.json'), { id: id.toString() });
+    const res = await this._client.requestData(
+      'POST',
+      this.getFriendsApiPath('unhide.json'),
+      { id: id.toString() },
+    );
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+    };
   }
 
-  async searchFriends(query: string, pageNum?: number, pageSize?: number): AsyncCommandResult<FriendSearchStruct> {
+  async searchFriends(
+    query: string,
+    pageNum?: number,
+    pageSize?: number,
+  ): AsyncCommandResult<FriendSearchStruct> {
     let res;
     if (pageNum && pageSize) {
       res = await this._client.requestData(
@@ -212,7 +277,11 @@ export class ServiceApiClient {
         { query: query, page_num: pageNum, page_size: pageSize },
       );
     } else {
-      res = await this._client.requestData('GET', this.getFriendsApiPath('search.json'), { query });
+      res = await this._client.requestData(
+        'GET',
+        this.getFriendsApiPath('search.json'),
+        { query },
+      );
     }
 
     return {
@@ -223,7 +292,10 @@ export class ServiceApiClient {
   }
 
   async findFriendById(id: Long): AsyncCommandResult<FriendFindIdStruct> {
-    const res = await this._client.requestData('GET', this.getFriendsApiPath(`${id.toString()}.json`));
+    const res = await this._client.requestData(
+      'GET',
+      this.getFriendsApiPath(`${id.toString()}.json`),
+    );
 
     return {
       status: res.status,
@@ -232,11 +304,13 @@ export class ServiceApiClient {
     };
   }
 
-  async findFriendByUUID(uuid: string): AsyncCommandResult<FriendFindUUIDStruct> {
+  async findFriendByUUID(
+    uuid: string,
+  ): AsyncCommandResult<FriendFindUUIDStruct> {
     const res = await this._client.requestData(
       'POST',
       `${this.getFriendsApiPath('find_by_uuid.json')}`,
-      { uuid: uuid }
+      { uuid: uuid },
     );
 
     return {
@@ -254,7 +328,11 @@ export class ServiceApiClient {
     const res = await this._client.requestData(
       'GET',
       `${this.getFriendsApiPath('list.json')}`,
-      { type: JSON.stringify(types), event_types: JSON.stringify(eventTypes), token },
+      {
+        type: JSON.stringify(types),
+        event_types: JSON.stringify(eventTypes),
+        token,
+      },
     );
 
     return {
@@ -271,7 +349,10 @@ export class ServiceApiClient {
       { id: id.toString(), nickname: nickname },
     );
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+    };
   }
 
   async addFavoriteFriends(idList: Long[]): AsyncCommandResult {
@@ -281,7 +362,10 @@ export class ServiceApiClient {
       { ids: JsonUtil.stringifyLoseless(idList) },
     );
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+    };
   }
 
   async removeFavoriteFriend(id: Long): AsyncCommandResult {
@@ -291,19 +375,33 @@ export class ServiceApiClient {
       { id: id.toString() },
     );
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+    };
   }
 
   // profile
 
   async requestMusicList(id: Long): AsyncCommandResult<DefaultRes> {
-    const res = await this._client.requestData('GET', this.getProfileApiPath('music/list.json'), { id: id.toString() });
+    const res = await this._client.requestData(
+      'GET',
+      this.getProfileApiPath('music/list.json'),
+      { id: id.toString() },
+    );
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS, result: res };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+      result: res,
+    };
   }
 
   async requestMyProfile(): AsyncCommandResult<ProfileReqStruct> {
-    const res = await this._client.requestData('GET', this.getProfile3ApiPath('me.json'));
+    const res = await this._client.requestData(
+      'GET',
+      this.getProfile3ApiPath('me.json'),
+    );
 
     return {
       status: res.status,
@@ -315,22 +413,32 @@ export class ServiceApiClient {
   async requestProfile(id: Long): AsyncCommandResult<ProfileReqStruct> {
     const res = await this._client.requestData(
       'GET',
-      `${this.getProfile3ApiPath('friend_info.json')}?id=${encodeURIComponent(id.toString())}`,
+      `${this.getProfile3ApiPath('friend_info.json')}?id=${encodeURIComponent(
+        id.toString(),
+      )}`,
     );
 
     return {
       status: res.status,
       success: res.status === KnownDataStatusCode.SUCCESS,
-      result: res as DefaultRes & ProfileReqStruct
+      result: res as DefaultRes & ProfileReqStruct,
     };
   }
 
   // scrap
 
   async getPreviewURL(url: string): AsyncCommandResult<DefaultRes> {
-    const res = await this._client.requestData('POST', this.getScrapApiPath('preview.json'), { url });
+    const res = await this._client.requestData(
+      'POST',
+      this.getScrapApiPath('preview.json'),
+      { url },
+    );
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS, result: res };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+      result: res,
+    };
   }
 
   private getAccountApiPath(api: string) {
@@ -359,7 +467,10 @@ export class ServiceApiClient {
    * @param {OAuthCredential} credential
    * @param {Partial<WebApiConfig>} config
    */
-  static async create(credential: OAuthCredential, config: Partial<WebApiConfig> = {}): Promise<ServiceApiClient> {
+  static async create(
+    credential: OAuthCredential,
+    config: Partial<WebApiConfig> = {},
+  ): Promise<ServiceApiClient> {
     return new ServiceApiClient(
       await createSessionWebClient(
         credential,
@@ -372,6 +483,8 @@ export class ServiceApiClient {
 
   static createSessionURL(token: string, redirectURL: string): string {
     // eslint-disable-next-line max-len
-    return `https://accounts.kakao.com/weblogin/login_redirect?continue=${encodeURIComponent(redirectURL)}&token=${token}`;
+    return `https://accounts.kakao.com/weblogin/login_redirect?continue=${encodeURIComponent(
+      redirectURL,
+    )}&token=${token}`;
   }
 }

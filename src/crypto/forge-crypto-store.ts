@@ -36,7 +36,10 @@ export async function createForgeCrypto(pubKey: string): Promise<CryptoStore> {
     },
 
     toRSAEncrypted(buffer: Uint8Array): Uint8Array {
-      const encrypted = publicKey.encrypt(new forge.util.ByteStringBuffer(buffer).data, 'RSA-OAEP');
+      const encrypted = publicKey.encrypt(
+        new forge.util.ByteStringBuffer(buffer).data,
+        'RSA-OAEP',
+      );
       return forge.util.binary.raw.decode(encrypted);
     },
 
@@ -48,7 +51,10 @@ export async function createForgeCrypto(pubKey: string): Promise<CryptoStore> {
     },
 
     getRSAEncryptedKey(): Uint8Array {
-      const encrypted = publicKey.encrypt(new forge.util.ByteStringBuffer(key).data, 'RSA-OAEP');
+      const encrypted = publicKey.encrypt(
+        new forge.util.ByteStringBuffer(key).data,
+        'RSA-OAEP',
+      );
       return forge.util.binary.raw.decode(encrypted);
     },
   };

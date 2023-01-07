@@ -8,7 +8,6 @@ import { Long } from 'bson';
 import { InformedOpenLink } from '..';
 
 export interface OpenLinkService {
-
   /**
    * Get all client link as iterator
    *
@@ -25,5 +24,4 @@ export interface OpenLinkService {
   getClientLink(linkId: Long): InformedOpenLink | undefined;
 
   readonly clientLinkCount: number;
-
 }

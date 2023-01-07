@@ -7,19 +7,30 @@
 import { Long } from 'bson';
 import { sha1 } from 'hash-wasm';
 import { TalkChannel } from '.';
-import { ChannelDataUpdater, ChannelSession, NormalChannelSession, UpdatableChannelDataStore } from '../../channel';
+import {
+  ChannelDataUpdater,
+  ChannelSession,
+  NormalChannelSession,
+  UpdatableChannelDataStore,
+} from '../../channel';
 import { Chatlog, ChatLogged, ChatType } from '../../chat';
 import { MediaUploadForm } from '../../media';
 import { OpenChannelSession } from '../../openlink';
 import { AsyncCommandResult, KnownDataStatusCode } from '../../request';
-import { ChannelUser, NormalChannelUserInfo, OpenChannelUserInfo } from '../../user';
+import {
+  ChannelUser,
+  NormalChannelUserInfo,
+  OpenChannelUserInfo,
+} from '../../user';
 import { MediaUploadTemplate } from '../media/upload';
 
 /*
  * Common complex channel methods
  */
 
-export async function mediaTemplateToForm(template: MediaUploadTemplate): Promise<MediaUploadForm> {
+export async function mediaTemplateToForm(
+  template: MediaUploadTemplate,
+): Promise<MediaUploadForm> {
   return {
     size: template.data.byteLength,
     checksum: await sha1(template.data),
@@ -27,8 +38,8 @@ export async function mediaTemplateToForm(template: MediaUploadTemplate): Promis
       name: template.name,
       width: template.width,
       height: template.height,
-      ext: template.ext
-    }
+      ext: template.ext,
+    },
   };
 }
 
@@ -39,7 +50,7 @@ export async function sendMultiMedia(
 ): AsyncCommandResult<Chatlog> {
   const res = await channelSession.uploadMultiMedia(
     type,
-    await Promise.all(templates.map(mediaTemplateToForm))
+    await Promise.all(templates.map(mediaTemplateToForm)),
   );
   if (!res.success) return res;
 
@@ -49,7 +60,9 @@ export async function sendMultiMedia(
     const entry = entryRes.result;
     const data = templates[i].data;
 
-    await entry.stream.write(data.subarray(Math.min(entry.offset, data.byteLength)));
+    await entry.stream.write(
+      data.subarray(Math.min(entry.offset, data.byteLength)),
+    );
 
     const finishRes = await entry.finish();
     if (!finishRes.success) return finishRes;
@@ -63,14 +76,19 @@ export async function sendMultiMedia(
 export async function sendMedia(
   channelSession: ChannelSession,
   type: ChatType,
-  template: MediaUploadTemplate
+  template: MediaUploadTemplate,
 ): AsyncCommandResult<Chatlog> {
-  const res = await channelSession.uploadMedia(type, await mediaTemplateToForm(template));
+  const res = await channelSession.uploadMedia(
+    type,
+    await mediaTemplateToForm(template),
+  );
   if (!res.success) return res;
 
   const data = template.data;
 
-  await res.result.stream.write(data.subarray(Math.min(res.result.offset, data.byteLength)));
+  await res.result.stream.write(
+    data.subarray(Math.min(res.result.offset, data.byteLength)),
+  );
 
   return res.result.finish();
 }
@@ -78,7 +96,7 @@ export async function sendMedia(
 export function initWatermark(
   updater: ChannelDataUpdater<unknown, unknown>,
   idList: Long[],
-  watermarkList: Long[]
+  watermarkList: Long[],
 ): void {
   updater.clearWatermark();
 
@@ -93,9 +111,9 @@ export function initWatermark(
 
 export async function initNormalUserList(
   session: NormalChannelSession,
-  userIdList: Long[]
+  userIdList: Long[],
 ): AsyncCommandResult<NormalChannelUserInfo[]> {
-  const userList = userIdList.map(userId => {
+  const userList = userIdList.map((userId) => {
     return { userId };
   });
 
@@ -103,7 +121,9 @@ export async function initNormalUserList(
 
   const len = userList.length;
   for (let i = 0; i < len; i += 300) {
-    const userRes = await session.getLatestUserInfo(...userList.slice(i, i + 300));
+    const userRes = await session.getLatestUserInfo(
+      ...userList.slice(i, i + 300),
+    );
     if (!userRes.success) return userRes;
 
     infoList.push(...userRes.result);
@@ -112,15 +132,15 @@ export async function initNormalUserList(
   return {
     success: true,
     status: KnownDataStatusCode.SUCCESS,
-    result: infoList
+    result: infoList,
   };
 }
 
 export async function initOpenUserList(
   session: OpenChannelSession,
-  userIdList: Long[]
+  userIdList: Long[],
 ): AsyncCommandResult<OpenChannelUserInfo[]> {
-  const userList = userIdList.map(userId => {
+  const userList = userIdList.map((userId) => {
     return { userId };
   });
 
@@ -128,7 +148,9 @@ export async function initOpenUserList(
 
   const len = userList.length;
   for (let i = 0; i < len; i += 300) {
-    const userRes = await session.getLatestUserInfo(...userList.slice(i, i + 300));
+    const userRes = await session.getLatestUserInfo(
+      ...userList.slice(i, i + 300),
+    );
     if (!userRes.success) return userRes;
 
     infoList.push(...userRes.result);
@@ -137,18 +159,22 @@ export async function initOpenUserList(
   return {
     success: true,
     status: KnownDataStatusCode.SUCCESS,
-    result: infoList
+    result: infoList,
   };
 }
 
-export async function updateChatList(
-  channel: TalkChannel
-): Promise<void> {
+export async function updateChatList(channel: TalkChannel): Promise<void> {
   const startChat = await channel.chatListStore.last();
   const lastChatlog = channel.info.lastChatLog;
 
-  if (lastChatlog && (!startChat || startChat.logId.lessThan(lastChatlog.logId))) {
-    const iter = channel.syncChatList(lastChatlog.logId, startChat?.logId || Long.ZERO);
+  if (
+    lastChatlog &&
+    (!startChat || startChat.logId.lessThan(lastChatlog.logId))
+  ) {
+    const iter = channel.syncChatList(
+      lastChatlog.logId,
+      startChat?.logId || Long.ZERO,
+    );
     for (let next = await iter.next(); !next.done; next = await iter.next());
   }
 }
@@ -157,15 +183,13 @@ export async function updateChatList(
  * Store channel data in memory
  */
 export class TalkMemoryChannelDataStore<T, U>
-  implements UpdatableChannelDataStore<T, U> {
-
+  implements UpdatableChannelDataStore<T, U>
+{
   constructor(
     private _info: T,
     private _userInfoMap: Map<string, U> = new Map(),
-    private _watermarkMap: Map<string, Long> = new Map()
-  ) {
-
-  }
+    private _watermarkMap: Map<string, Long> = new Map(),
+  ) {}
 
   get info(): Readonly<T> {
     return this._info;
@@ -195,7 +219,8 @@ export class TalkMemoryChannelDataStore<T, U>
     for (const [strId] of this._userInfoMap) {
       const watermark = this._watermarkMap.get(strId);
 
-      if (!watermark || watermark && watermark.greaterThanOrEqual(chat.logId)) count++;
+      if (!watermark || (watermark && watermark.greaterThanOrEqual(chat.logId)))
+        count++;
     }
 
     return count;
@@ -209,14 +234,15 @@ export class TalkMemoryChannelDataStore<T, U>
     for (const [strId, userInfo] of this._userInfoMap) {
       const watermark = this._watermarkMap.get(strId);
 
-      if (watermark && watermark.greaterThanOrEqual(chat.logId)) list.push(userInfo);
+      if (watermark && watermark.greaterThanOrEqual(chat.logId))
+        list.push(userInfo);
     }
 
     return list;
   }
 
   updateInfo(info: Partial<T>): void {
-    this._info = { ...this._info, ...info }
+    this._info = { ...this._info, ...info };
   }
 
   setInfo(info: T): void {
@@ -247,5 +273,4 @@ export class TalkMemoryChannelDataStore<T, U>
   clearWatermark(): void {
     this._watermarkMap.clear();
   }
-
 }

@@ -9,7 +9,6 @@ import { ChannelUser, OpenChannelUser } from './channel-user';
 import { UserType } from './user-type';
 
 export interface DisplayUserInfo extends ChannelUser {
-
   /**
    * User nickname
    */
@@ -19,14 +18,12 @@ export interface DisplayUserInfo extends ChannelUser {
    * User profile url
    */
   profileURL: string;
-
 }
 
 /**
  * Common channel user info
  */
 export interface ChannelUserInfo extends DisplayUserInfo {
-
   /**
    * Full user profile url
    */
@@ -41,14 +38,12 @@ export interface ChannelUserInfo extends DisplayUserInfo {
    * User type
    */
   userType: UserType;
-
 }
 
 /**
  * Normal channel user info
  */
 export interface NormalChannelUserInfo extends ChannelUserInfo {
-
   /**
    * User country name
    */
@@ -78,14 +73,14 @@ export interface NormalChannelUserInfo extends ChannelUserInfo {
    * Account status
    */
   suspended: boolean;
-
 }
 
 /**
  * Open channel user info
  */
-export interface OpenChannelUserInfo extends OpenChannelUser, ChannelUserInfo, OpenTokenComponent {
-
+export interface OpenChannelUserInfo
+  extends OpenChannelUser,
+    ChannelUserInfo,
+    OpenTokenComponent {
   perm: OpenChannelUserPerm;
-
 }

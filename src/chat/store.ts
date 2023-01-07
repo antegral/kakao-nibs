@@ -12,7 +12,6 @@ import { ChatListUpdater } from './updater';
  * Store chats
  */
 export interface ChatStore {
-
   /**
    * Get latest chatlog
    */
@@ -41,9 +40,6 @@ export interface ChatStore {
    * Iterate every chat
    */
   all(): AsyncIterableIterator<Chatlog>;
-
 }
 
-export interface UpdatableChatListStore extends ChatStore, ChatListUpdater {
-  
-}
+export interface UpdatableChatListStore extends ChatStore, ChatListUpdater {}

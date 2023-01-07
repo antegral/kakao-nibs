@@ -6,26 +6,32 @@
 
 import { Long } from 'bson';
 import { ChannelUser } from '../user/channel-user';
-import { DisplayUserInfo, OpenChannelUserInfo } from '../user/channel-user-info';
-import { OpenLinkComponent, OpenPrivilegeComponent, OpenTokenComponent } from '.';
+import {
+  DisplayUserInfo,
+  OpenChannelUserInfo,
+} from '../user/channel-user-info';
+import {
+  OpenLinkComponent,
+  OpenPrivilegeComponent,
+  OpenTokenComponent,
+} from '.';
 import { OpenChannelUserPerm, OpenProfileType } from './open-link-type';
 
 export interface OpenLinkKickedUser extends ChannelUser {
-
   /**
    * Kicked channel id
    */
   kickedChannelId: Long;
-
 }
 
-export interface OpenLinkKickedUserInfo extends OpenLinkKickedUser, DisplayUserInfo {
+export interface OpenLinkKickedUserInfo
+  extends OpenLinkKickedUser,
+    DisplayUserInfo {}
 
-
-}
-
-export interface OpenLinkUserInfo extends OpenLinkComponent, OpenTokenComponent, OpenPrivilegeComponent {
-
+export interface OpenLinkUserInfo
+  extends OpenLinkComponent,
+    OpenTokenComponent,
+    OpenPrivilegeComponent {
   /**
    * nickname
    */
@@ -55,10 +61,9 @@ export interface OpenLinkUserInfo extends OpenLinkComponent, OpenTokenComponent,
    * Link chat user perm
    */
   perm: OpenChannelUserPerm;
-
 }
 
 type OpenChannelUserInfoMix = OpenLinkComponent & OpenChannelUserInfo;
-export interface OpenLinkChannelUserInfo extends OpenLinkUserInfo, OpenChannelUserInfoMix {
-
-}
+export interface OpenLinkChannelUserInfo
+  extends OpenLinkUserInfo,
+    OpenChannelUserInfoMix {}

@@ -15,7 +15,12 @@ import {
 } from '../../channel';
 import { Chat, Chatlog, ChatLogged, ChatType, KnownChatType } from '../../chat';
 import { TalkSession } from '../client';
-import { AsyncCommandResult, CommandResult, DefaultReq, KnownDataStatusCode } from '../../request';
+import {
+  AsyncCommandResult,
+  CommandResult,
+  DefaultReq,
+  KnownDataStatusCode,
+} from '../../request';
 import {
   CreateRes,
   ForwardRes,
@@ -31,7 +36,13 @@ import { ChatlogStruct, structToChatlog } from '../../packet/struct';
 import { ChannelUser } from '../../user';
 import { JsonUtil } from '../../util';
 import { ChannelMetaType } from '../../channel/meta';
-import { MediaKeyComponent, MediaMultiPost, MediaMultiPostEntry, MediaPost, MediaUploadForm } from '../../media';
+import {
+  MediaKeyComponent,
+  MediaMultiPost,
+  MediaMultiPostEntry,
+  MediaPost,
+  MediaUploadForm,
+} from '../../media';
 import { ConnectionSession, LocoSecureLayer, LocoSession } from '../../network';
 import { FixedReadStream, FixedWriteStream } from '../../stream';
 import { newCryptoStore } from '../../crypto';
@@ -57,16 +68,19 @@ export class TalkChannelSession implements ChannelSession {
     return this._session;
   }
 
-  async sendChat(chat: Chat | string, noSeen = true): AsyncCommandResult<Chatlog> {
+  async sendChat(
+    chat: Chat | string,
+    noSeen = true,
+  ): AsyncCommandResult<Chatlog> {
     if (typeof chat === 'string') {
       chat = { type: KnownChatType.TEXT, text: chat } as Chat;
     }
 
     const data: DefaultReq = {
-      'chatId': this._channel.channelId,
-      'msgId': ++this.currentMsgId,
-      'type': chat.type,
-      'noSeen': noSeen,
+      chatId: this._channel.channelId,
+      msgId: ++this.currentMsgId,
+      type: chat.type,
+      noSeen: noSeen,
     };
 
     if (chat.text) {
@@ -101,10 +115,10 @@ export class TalkChannelSession implements ChannelSession {
 
   async forwardChat(chat: Chat, noSeen = true): AsyncCommandResult<Chatlog> {
     const data: DefaultReq = {
-      'chatId': this._channel.channelId,
-      'msgId': ++this.currentMsgId,
-      'type': chat.type,
-      'noSeen': noSeen,
+      chatId: this._channel.channelId,
+      msgId: ++this.currentMsgId,
+      type: chat.type,
+      noSeen: noSeen,
     };
 
     if (chat.text) {
@@ -118,20 +132,23 @@ export class TalkChannelSession implements ChannelSession {
     const res = await this._session.request<ForwardRes>('FORWARD', data);
 
     if (res.status === KnownDataStatusCode.SUCCESS) {
-      return { success: true, status: res.status, result: structToChatlog(res.chatLog) };
+      return {
+        success: true,
+        status: res.status,
+        result: structToChatlog(res.chatLog),
+      };
     } else {
       return { success: false, status: res.status };
     }
   }
 
-  async deleteChat(chat: ChatLogged): Promise<{ success: boolean, status: number }> {
-    const { status } = (await this._session.request(
-      'DELETEMSG',
-      {
-        'chatId': this._channel.channelId,
-        'logId': chat.logId,
-      },
-    ));
+  async deleteChat(
+    chat: ChatLogged,
+  ): Promise<{ success: boolean; status: number }> {
+    const { status } = await this._session.request('DELETEMSG', {
+      chatId: this._channel.channelId,
+      logId: chat.logId,
+    });
 
     return {
       success: status === KnownDataStatusCode.SUCCESS,
@@ -139,30 +156,30 @@ export class TalkChannelSession implements ChannelSession {
     };
   }
 
-  async markRead(chat: ChatLogged): Promise<{ success: boolean, status: number }> {
-    const { status } = (await this._session.request(
-      'NOTIREAD',
-      {
-        'chatId': this._channel.channelId,
-        'watermark': chat.logId,
-      },
-    ));
+  async markRead(
+    chat: ChatLogged,
+  ): Promise<{ success: boolean; status: number }> {
+    const { status } = await this._session.request('NOTIREAD', {
+      chatId: this._channel.channelId,
+      watermark: chat.logId,
+    });
     return {
       success: status === KnownDataStatusCode.SUCCESS,
       status,
     };
   }
 
-  async setMeta(type: ChannelMetaType, meta: ChannelMeta | string): AsyncCommandResult<SetChannelMeta> {
-    const res = await this._session.request<SetMetaRes>(
-      'SETMETA',
-      {
-        'chatId': this._channel.channelId,
-        'type': type,
-        'content': typeof meta === 'string' ? meta : meta.content,
-      },
-    );
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { success: false, status: res.status };
+  async setMeta(
+    type: ChannelMetaType,
+    meta: ChannelMeta | string,
+  ): AsyncCommandResult<SetChannelMeta> {
+    const res = await this._session.request<SetMetaRes>('SETMETA', {
+      chatId: this._channel.channelId,
+      type: type,
+      content: typeof meta === 'string' ? meta : meta.content,
+    });
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { success: false, status: res.status };
 
     return {
       success: true,
@@ -172,13 +189,10 @@ export class TalkChannelSession implements ChannelSession {
   }
 
   async setPushAlert(flag: boolean): AsyncCommandResult {
-    const { status } = await this._session.request(
-      'UPDATECHAT',
-      {
-        'chatId': this._channel.channelId,
-        'pushAlert': flag,
-      },
-    );
+    const { status } = await this._session.request('UPDATECHAT', {
+      chatId: this._channel.channelId,
+      pushAlert: flag,
+    });
 
     return {
       success: status === KnownDataStatusCode.SUCCESS,
@@ -187,13 +201,10 @@ export class TalkChannelSession implements ChannelSession {
   }
 
   async inviteUsers(users: ChannelUser[]): AsyncCommandResult {
-    const { status } = await this._session.request(
-      'ADDMEM',
-      {
-        'chatId': this._channel.channelId,
-        'memberIds': users.map((user) => user.userId),
-      },
-    );
+    const { status } = await this._session.request('ADDMEM', {
+      chatId: this._channel.channelId,
+      memberIds: users.map((user) => user.userId),
+    });
 
     return {
       success: status === KnownDataStatusCode.SUCCESS,
@@ -201,7 +212,10 @@ export class TalkChannelSession implements ChannelSession {
     };
   }
 
-  syncChatList(endLogId: Long, startLogId: Long = Long.ZERO): AsyncIterableIterator<CommandResult<Chatlog[]>> {
+  syncChatList(
+    endLogId: Long,
+    startLogId: Long = Long.ZERO,
+  ): AsyncIterableIterator<CommandResult<Chatlog[]>> {
     let curLogId = startLogId;
     let done = false;
 
@@ -213,16 +227,13 @@ export class TalkChannelSession implements ChannelSession {
       next: async () => {
         if (done) return { done: true, value: null };
 
-        const res = await this._session.request<SyncMsgRes>(
-          'SYNCMSG',
-          {
-            'chatId': this._channel.channelId,
-            'cur': curLogId,
-            // Unknown
-            'cnt': 0,
-            'max': endLogId,
-          },
-        );
+        const res = await this._session.request<SyncMsgRes>('SYNCMSG', {
+          chatId: this._channel.channelId,
+          cur: curLogId,
+          // Unknown
+          cnt: 0,
+          max: endLogId,
+        });
 
         if (res.status !== KnownDataStatusCode.SUCCESS) {
           done = true;
@@ -231,56 +242,76 @@ export class TalkChannelSession implements ChannelSession {
           done = true;
         }
 
-        if (!res.chatLogs || res.chatLogs.length < 0 || curLogId.greaterThanOrEqual(endLogId)) {
+        if (
+          !res.chatLogs ||
+          res.chatLogs.length < 0 ||
+          curLogId.greaterThanOrEqual(endLogId)
+        ) {
           return { done: true, value: null };
         }
 
         const result = res.chatLogs.map(structToChatlog);
         curLogId = result[result.length - 1].logId;
 
-        return { done: false, value: { status: res.status, success: true, result } };
+        return {
+          done: false,
+          value: { status: res.status, success: true, result },
+        };
       },
     };
   }
 
-  async getChatListFrom(startLogId: Long = Long.ZERO): AsyncCommandResult<Chatlog[]> {
-    const res = await this._session.request<MChatlogsRes>(
-      'MCHATLOGS',
-      {
-        'chatIds': [this._channel.channelId],
-        'sinces': [startLogId],
-      },
-    );
+  async getChatListFrom(
+    startLogId: Long = Long.ZERO,
+  ): AsyncCommandResult<Chatlog[]> {
+    const res = await this._session.request<MChatlogsRes>('MCHATLOGS', {
+      chatIds: [this._channel.channelId],
+      sinces: [startLogId],
+    });
 
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { success: false, status: res.status };
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { success: false, status: res.status };
 
-    return { status: res.status, success: true, result: res.chatLogs.map(structToChatlog) };
+    return {
+      status: res.status,
+      success: true,
+      result: res.chatLogs.map(structToChatlog),
+    };
   }
 
-  async createTrailerSession(media: MediaKeyComponent, type: ChatType): AsyncCommandResult<ConnectionSession> {
-    const res = await this._session.request<GetTrailerRes>(
-      'GETTRAILER',
-      {
-        'k': media.key,
-        't': type,
-      },
-    );
+  async createTrailerSession(
+    media: MediaKeyComponent,
+    type: ChatType,
+  ): AsyncCommandResult<ConnectionSession> {
+    const res = await this._session.request<GetTrailerRes>('GETTRAILER', {
+      k: media.key,
+      t: type,
+    });
 
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { success: false, status: res.status };
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { success: false, status: res.status };
 
     return {
       success: true,
       status: res.status,
       result: new LocoSession(
         new LocoSecureLayer(
-          await NetSocket.createTCPSocket({ host: res.vh, port: res.p, keepAlive: true }),
-          await newCryptoStore(this._session.configuration.locoPEMPublicKey)
-        )
-      )
+          await NetSocket.createTCPSocket({
+            host: res.vh,
+            port: res.p,
+            keepAlive: true,
+          }),
+          await newCryptoStore(this._session.configuration.locoPEMPublicKey),
+        ),
+      ),
     };
   }
 
-  async downloadMedia(media: MediaKeyComponent, type: ChatType, offset = 0): AsyncCommandResult<FixedReadStream> {
+  async downloadMedia(
+    media: MediaKeyComponent,
+    type: ChatType,
+    offset = 0,
+  ): AsyncCommandResult<FixedReadStream> {
     const res = await this.createTrailerSession(media, type);
     if (!res.success) return res;
 
@@ -288,18 +319,18 @@ export class TalkChannelSession implements ChannelSession {
     const clientConfig = this._session.configuration;
 
     const data = await session.request('DOWN', {
-      'k': media.key,
-      'c': this._channel.channelId,
-      'o': offset,
-      'rt': true,
+      k: media.key,
+      c: this._channel.channelId,
+      o: offset,
+      rt: true,
 
-      'u': this._session.clientUser.userId,
-      'os': clientConfig.agent,
-      'av': clientConfig.appVersion,
-      'nt': clientConfig.netType,
-      'mm': clientConfig.mccmnc,
+      u: this._session.clientUser.userId,
+      os: clientConfig.agent,
+      av: clientConfig.appVersion,
+      nt: clientConfig.netType,
+      mm: clientConfig.mccmnc,
     });
-    
+
     const size = data['s'] as number;
 
     return {
@@ -309,7 +340,11 @@ export class TalkChannelSession implements ChannelSession {
     };
   }
 
-  async downloadMediaThumb(media: MediaKeyComponent, type: ChatType, offset = 0): AsyncCommandResult<FixedReadStream> {
+  async downloadMediaThumb(
+    media: MediaKeyComponent,
+    type: ChatType,
+    offset = 0,
+  ): AsyncCommandResult<FixedReadStream> {
     const res = await this.createTrailerSession(media, type);
     if (!res.success) return res;
 
@@ -317,20 +352,20 @@ export class TalkChannelSession implements ChannelSession {
     const clientConfig = this._session.configuration;
 
     const data = await session.request('MINI', {
-      'k': media.key,
-      'c': this._channel.channelId,
-      'o': offset,
+      k: media.key,
+      c: this._channel.channelId,
+      o: offset,
 
       // These should be actual dimension of media.
       // Seems like server doesn't care about it.
-      'w': 0,
-      'h': 0,
+      w: 0,
+      h: 0,
 
-      'u': this._session.clientUser.userId,
-      'os': clientConfig.agent,
-      'av': clientConfig.appVersion,
-      'nt': clientConfig.netType,
-      'mm': clientConfig.mccmnc,
+      u: this._session.clientUser.userId,
+      os: clientConfig.agent,
+      av: clientConfig.appVersion,
+      nt: clientConfig.netType,
+      mm: clientConfig.mccmnc,
     });
 
     const size = data['s'] as number;
@@ -342,64 +377,79 @@ export class TalkChannelSession implements ChannelSession {
     };
   }
 
-  async shipMedia(type: ChatType, form: MediaUploadForm): AsyncCommandResult<ShipRes> {
-    const res = await this._session.request<ShipRes>(
-      'SHIP',
-      {
-        'c': this._channel.channelId,
-        't': type,
-        's': form.size,
-        'cs': form.checksum,
-        'e': form.metadata.ext || '',
-      },
-    );
+  async shipMedia(
+    type: ChatType,
+    form: MediaUploadForm,
+  ): AsyncCommandResult<ShipRes> {
+    const res = await this._session.request<ShipRes>('SHIP', {
+      c: this._channel.channelId,
+      t: type,
+      s: form.size,
+      cs: form.checksum,
+      e: form.metadata.ext || '',
+    });
 
-    return { success: res.status === KnownDataStatusCode.SUCCESS, status: res.status, result: res };
+    return {
+      success: res.status === KnownDataStatusCode.SUCCESS,
+      status: res.status,
+      result: res,
+    };
   }
 
-  async shipMultiMedia(type: ChatType, forms: MediaUploadForm[]): AsyncCommandResult<MShipRes> {
-    const res = await this._session.request<MShipRes>(
-      'MSHIP',
-      {
-        'c': this._channel.channelId,
-        't': type,
-        'sl': forms.map((form) => form.size),
-        'csl': forms.map((form) => form.checksum),
-        'el': forms.map((form) => form.metadata.ext || ''),
-      },
-    );
+  async shipMultiMedia(
+    type: ChatType,
+    forms: MediaUploadForm[],
+  ): AsyncCommandResult<MShipRes> {
+    const res = await this._session.request<MShipRes>('MSHIP', {
+      c: this._channel.channelId,
+      t: type,
+      sl: forms.map((form) => form.size),
+      csl: forms.map((form) => form.checksum),
+      el: forms.map((form) => form.metadata.ext || ''),
+    });
 
-    return { success: res.status === KnownDataStatusCode.SUCCESS, status: res.status, result: res };
+    return {
+      success: res.status === KnownDataStatusCode.SUCCESS,
+      status: res.status,
+      result: res,
+    };
   }
 
-  async uploadMedia(type: ChatType, form: MediaUploadForm): AsyncCommandResult<MediaPost> {
+  async uploadMedia(
+    type: ChatType,
+    form: MediaUploadForm,
+  ): AsyncCommandResult<MediaPost> {
     const shipRes = await this.shipMedia(type, form);
 
     if (!shipRes.success) return shipRes;
 
     const mediaStream = new LocoSecureLayer(
-      await NetSocket.createTCPSocket({ host: shipRes.result.vh, port: shipRes.result.p, keepAlive: true }),
+      await NetSocket.createTCPSocket({
+        host: shipRes.result.vh,
+        port: shipRes.result.p,
+        keepAlive: true,
+      }),
       await newCryptoStore(this._session.configuration.locoPEMPublicKey),
     );
     const session = new LocoSession(mediaStream);
-    
+
     const clientConfig = this._session.configuration;
 
     const reqData: DefaultReq = {
-      'k': shipRes.result.k,
-      's': form.size,
-      'f': form.metadata.name,
-      't': type,
+      k: shipRes.result.k,
+      s: form.size,
+      f: form.metadata.name,
+      t: type,
 
-      'c': this._channel.channelId,
-      'mid': Long.ONE,
-      'ns': true,
+      c: this._channel.channelId,
+      mid: Long.ONE,
+      ns: true,
 
-      'u': this._session.clientUser.userId,
-      'os': clientConfig.agent,
-      'av': clientConfig.appVersion,
-      'nt': clientConfig.netType,
-      'mm': clientConfig.mccmnc,
+      u: this._session.clientUser.userId,
+      os: clientConfig.agent,
+      av: clientConfig.appVersion,
+      nt: clientConfig.netType,
+      mm: clientConfig.mccmnc,
     };
 
     if (form.metadata.width) reqData['w'] = form.metadata.width;
@@ -416,12 +466,21 @@ export class TalkChannelSession implements ChannelSession {
         offset,
 
         async finish() {
-          let result: CommandResult<Chatlog> = { status: KnownDataStatusCode.OPERATION_DENIED, success: false };
+          let result: CommandResult<Chatlog> = {
+            status: KnownDataStatusCode.OPERATION_DENIED,
+            success: false,
+          };
           for await (const { method, data } of session.listen()) {
             if (method === 'COMPLETE') {
               if (data.status === KnownDataStatusCode.SUCCESS) {
-                const chatlog = structToChatlog(data['chatLog'] as ChatlogStruct);
-                result = { status: data.status, success: true, result: chatlog };
+                const chatlog = structToChatlog(
+                  data['chatLog'] as ChatlogStruct,
+                );
+                result = {
+                  status: data.status,
+                  success: true,
+                  result: chatlog,
+                };
               }
 
               break;
@@ -431,12 +490,15 @@ export class TalkChannelSession implements ChannelSession {
           if (!mediaStream.ended) mediaStream.close();
 
           return result;
-        }
-      }
+        },
+      },
     };
   }
 
-  async uploadMultiMedia(type: ChatType, forms: MediaUploadForm[]): AsyncCommandResult<MediaMultiPost> {
+  async uploadMultiMedia(
+    type: ChatType,
+    forms: MediaUploadForm[],
+  ): AsyncCommandResult<MediaMultiPost> {
     const shipRes = await this.shipMultiMedia(type, forms);
 
     if (!shipRes.success) return shipRes;
@@ -447,7 +509,7 @@ export class TalkChannelSession implements ChannelSession {
     let i = 0;
 
     const entryList: MediaMultiPostEntry[] = [];
-    
+
     const clientConfig = this._session.configuration;
 
     const entries: AsyncIterableIterator<CommandResult<MediaMultiPostEntry>> = {
@@ -455,27 +517,33 @@ export class TalkChannelSession implements ChannelSession {
         return this;
       },
 
-      next: async (): Promise<IteratorResult<CommandResult<MediaMultiPostEntry>>> => {
+      next: async (): Promise<
+        IteratorResult<CommandResult<MediaMultiPostEntry>>
+      > => {
         const nextForm = formIter.next();
         if (nextForm.done) return { done: true, value: null };
         const form = nextForm.value;
 
         const mediaStream = new LocoSecureLayer(
-          await NetSocket.createTCPSocket({ host: res.vhl[i], port: res.pl[i], keepAlive: true }),
+          await NetSocket.createTCPSocket({
+            host: res.vhl[i],
+            port: res.pl[i],
+            keepAlive: true,
+          }),
           await newCryptoStore(this._session.configuration.locoPEMPublicKey),
         );
         const session = new LocoSession(mediaStream);
 
         const postRes = await session.request('MPOST', {
-          'k': res.kl[i],
-          's': form.size,
-          't': type,
-  
-          'u': this._session.clientUser.userId,
-          'os': clientConfig.agent,
-          'av': clientConfig.appVersion,
-          'nt': clientConfig.netType,
-          'mm': clientConfig.mccmnc,
+          k: res.kl[i],
+          s: form.size,
+          t: type,
+
+          u: this._session.clientUser.userId,
+          os: clientConfig.agent,
+          av: clientConfig.appVersion,
+          nt: clientConfig.netType,
+          mm: clientConfig.mccmnc,
         });
 
         const result = {
@@ -486,14 +554,20 @@ export class TalkChannelSession implements ChannelSession {
             for await (const { method, data } of session.listen()) {
               if (method === 'COMPLETE') {
                 mediaStream.close();
-                return { status: data.status, success: data.status === KnownDataStatusCode.SUCCESS };
+                return {
+                  status: data.status,
+                  success: data.status === KnownDataStatusCode.SUCCESS,
+                };
               }
             }
-  
+
             if (!mediaStream.ended) mediaStream.close();
 
-            return { status: KnownDataStatusCode.OPERATION_DENIED, success: false };
-          }
+            return {
+              status: KnownDataStatusCode.OPERATION_DENIED,
+              success: false,
+            };
+          },
         };
 
         i++;
@@ -502,12 +576,12 @@ export class TalkChannelSession implements ChannelSession {
           value: {
             status: postRes.status,
             success: true,
-            result
-          }
-        }
-      }
+            result,
+          },
+        };
+      },
     };
-    
+
     return {
       status: shipRes.status,
       success: true,
@@ -528,13 +602,15 @@ export class TalkChannelSession implements ChannelSession {
               hl: forms.map((form) => form.metadata.height || 0),
               mtl: forms.map((form) => form.metadata.ext || ''),
               sl: forms.map((form) => form.size),
-              imageUrls: [], thumbnailUrls: [],
-              thumbnailWidths: [], thumbnailHeights: [],
+              imageUrls: [],
+              thumbnailUrls: [],
+              thumbnailWidths: [],
+              thumbnailHeights: [],
             },
           });
-        }
-      }
-    }
+        },
+      },
+    };
   }
 }
 
@@ -550,33 +626,46 @@ export class TalkChannelManageSession implements NormalChannelManageSession {
 
   async createChannel(template: ChannelTemplate): AsyncCommandResult<Channel> {
     const data: DefaultReq = {
-      'memberIds': template.userList.map((user) => user.userId),
+      memberIds: template.userList.map((user) => user.userId),
     };
 
     if (template.name) data['nickName'] = template.name;
     if (template.profileURL) data['profileImageUrl'] = template.profileURL;
 
     const res = await this._session.request<CreateRes>('CREATE', data);
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { status: res.status, success: false };
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { status: res.status, success: false };
 
-    return { status: res.status, success: true, result: { channelId: res.chatId } };
+    return {
+      status: res.status,
+      success: true,
+      result: { channelId: res.chatId },
+    };
   }
 
   async createMemoChannel(): AsyncCommandResult<Channel> {
-    const res = await this._session.request<CreateRes>('CREATE', { 'memberIds': [], 'memoChat': true });
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { status: res.status, success: false };
+    const res = await this._session.request<CreateRes>('CREATE', {
+      memberIds: [],
+      memoChat: true,
+    });
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { status: res.status, success: false };
 
-    return { status: res.status, success: true, result: { channelId: res.chatId } };
+    return {
+      status: res.status,
+      success: true,
+      result: { channelId: res.chatId },
+    };
   }
 
-  async leaveChannel(channel: Channel, block = false): AsyncCommandResult<Long> {
-    const res = await this._session.request(
-      'LEAVE',
-      {
-        'chatId': channel.channelId,
-        'block': block,
-      },
-    );
+  async leaveChannel(
+    channel: Channel,
+    block = false,
+  ): AsyncCommandResult<Long> {
+    const res = await this._session.request('LEAVE', {
+      chatId: channel.channelId,
+      block: block,
+    });
 
     return {
       status: res.status,

@@ -12,7 +12,10 @@ export function fillAHeader(header: RequestHeader, config: WebApiConfig): void {
   header['A'] = `${config.agent}/${config.version}/${config.language}`;
 }
 
-export function fillBaseHeader(header: RequestHeader, config: WebApiConfig): void {
+export function fillBaseHeader(
+  header: RequestHeader,
+  config: WebApiConfig,
+): void {
   header['Accept'] = '*/*';
   header['Accept-Language'] = config.language;
 }
@@ -30,6 +33,11 @@ export function getUserAgent(config: WebApiConfig): string {
   return `KT/${config.version} ${os} ${config.language}`;
 }
 
-export function fillCredential(header: RequestHeader, credential: OAuthCredential): void {
-  header['Authorization'] = `${credential.accessToken}-${credential.deviceUUID}`;
+export function fillCredential(
+  header: RequestHeader,
+  credential: OAuthCredential,
+): void {
+  header[
+    'Authorization'
+  ] = `${credential.accessToken}-${credential.deviceUUID}`;
 }

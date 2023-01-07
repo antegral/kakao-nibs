@@ -32,10 +32,14 @@ export class DenoSocket implements BiStream {
   }
 
   static async connect(option: NetSocketOptions): Promise<BiStream> {
-    return new DenoSocket(await Deno.connect({ hostname: option.host, port: option.port }));
+    return new DenoSocket(
+      await Deno.connect({ hostname: option.host, port: option.port }),
+    );
   }
 
   static async connectTls(option: NetSocketOptions): Promise<BiStream> {
-    return new DenoSocket(await Deno.connectTls({ hostname: option.host, port: option.port }));
+    return new DenoSocket(
+      await Deno.connectTls({ hostname: option.host, port: option.port }),
+    );
   }
 }

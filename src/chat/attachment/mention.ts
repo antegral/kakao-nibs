@@ -10,7 +10,6 @@ import { Long } from 'bson';
  * Raw chat mention typings
  */
 export interface MentionStruct {
-
   /**
    * Index list
    */
@@ -26,5 +25,4 @@ export interface MentionStruct {
    */
   // eslint-disable-next-line camelcase
   user_id: Long | number;
-
 }

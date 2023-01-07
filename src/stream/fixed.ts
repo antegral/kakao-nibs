@@ -7,7 +7,6 @@
 import { ReadStream, WriteStream } from '.';
 
 interface FixedStream {
-
   /**
    * Returns true if operation has done and cannot be written / read more
    */
@@ -17,7 +16,6 @@ interface FixedStream {
    * Total size that can be write or read
    */
   readonly size: number;
-
 }
 
 /**

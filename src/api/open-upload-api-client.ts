@@ -15,9 +15,7 @@ import { createWebClient, TextWebRequest, WebClient } from './web-client';
 export class OpenUploadApiClient {
   private _client: TextWebRequest;
 
-  constructor(
-    client: WebClient
-  ) {
+  constructor(client: WebClient) {
     this._client = new TextWebRequest(client);
   }
 
@@ -32,18 +30,23 @@ export class OpenUploadApiClient {
   async uploadLinkImage(
     name: string,
     file: Uint8Array,
-    contentType = 'image/jpeg'
+    contentType = 'image/jpeg',
   ): AsyncCommandResult<OpenProfileUploadStruct> {
-    const res = await this._client.requestText(
-      'POST',
-      'up/open-chat-profile',
-      { 'file_1': { value: file, options: { filename: name, contentType: contentType } } }
-    );
+    const res = await this._client.requestText('POST', 'up/open-chat-profile', {
+      file_1: {
+        value: file,
+        options: { filename: name, contentType: contentType },
+      },
+    });
 
     try {
       const json = JSON.parse(res) as OpenProfileUploadStruct;
 
-      return { status: KnownDataStatusCode.SUCCESS, success: true, result: json };
+      return {
+        status: KnownDataStatusCode.SUCCESS,
+        success: true,
+        result: json,
+      };
     } catch (e) {
       return { status: KnownDataStatusCode.OPERATION_DENIED, success: false };
     }
@@ -60,18 +63,27 @@ export class OpenUploadApiClient {
   async uploadLinkPostImage(
     name: string,
     file: Uint8Array,
-    contentType = 'image/jpeg'
+    contentType = 'image/jpeg',
   ): AsyncCommandResult<OpenProfilePostUploadStruct> {
     const res = await this._client.requestText(
       'POST',
       'up/open-chat-profile-post',
-      { 'file_1': { value: file, options: { filename: name, contentType: contentType } } }
+      {
+        file_1: {
+          value: file,
+          options: { filename: name, contentType: contentType },
+        },
+      },
     );
-    
+
     try {
       const json = JSON.parse(res) as OpenProfilePostUploadStruct;
 
-      return { status: KnownDataStatusCode.SUCCESS, success: true, result: json };
+      return {
+        status: KnownDataStatusCode.SUCCESS,
+        success: true,
+        result: json,
+      };
     } catch (e) {
       return { status: KnownDataStatusCode.OPERATION_DENIED, success: false };
     }
@@ -82,17 +94,12 @@ export class OpenUploadApiClient {
    */
   static async create(): Promise<OpenUploadApiClient> {
     return new OpenUploadApiClient(
-      await createWebClient(
-        'https',
-        'up-api1-kage.kakao.com',
-      ),
+      await createWebClient('https', 'up-api1-kage.kakao.com'),
     );
   }
-
 }
 
 export namespace OpenUploadAPI {
-
   let client: OpenUploadApiClient | null = null;
 
   export function getOriginalLinkImageURL(accessKey: string): string {
@@ -114,7 +121,10 @@ export namespace OpenUploadAPI {
    * @param {Uint8Array} profile Profile image
    * @return {AsyncCommandResult<OpenLinkAnonProfile>}
    */
-  export async function buildProfile(nickname: string, profile: Uint8Array): AsyncCommandResult<OpenLinkAnonProfile> {
+  export async function buildProfile(
+    nickname: string,
+    profile: Uint8Array,
+  ): AsyncCommandResult<OpenLinkAnonProfile> {
     if (!client) client = await OpenUploadApiClient.create();
 
     const res = await client.uploadLinkImage('profile.png', profile);
@@ -123,8 +133,7 @@ export namespace OpenUploadAPI {
     return {
       status: KnownDataStatusCode.SUCCESS,
       success: true,
-      result: { nickname, profilePath: res.result.access_key }
+      result: { nickname, profilePath: res.result.access_key },
     };
   }
-
 }

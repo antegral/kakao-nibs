@@ -8,7 +8,6 @@ import { Long } from 'bson';
 import { ChatType } from '../../chat';
 
 export interface InvoiceRes {
-
   /**
    * Media key
    */
@@ -58,5 +57,4 @@ export interface InvoiceRes {
    * Extra json(?)
    */
   ex: string;
-
 }

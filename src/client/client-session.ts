@@ -12,8 +12,7 @@ import { OpenChannelData } from '../openlink';
 import { AsyncCommandResult } from '../request';
 
 export interface LoginResult {
-
-  channelList: (LoginData<NormalChannelData | OpenChannelData>)[];
+  channelList: LoginData<NormalChannelData | OpenChannelData>[];
 
   /**
    * Client user id
@@ -40,11 +39,9 @@ export interface LoginResult {
    * Minimum log id
    */
   minLogId: Long;
-
 }
 
 export interface ClientSession {
-
   /**
    * Login using credential.
    * Perform LOGINLIST
@@ -57,5 +54,4 @@ export interface ClientSession {
    * Set client status
    */
   setStatus(status: ClientStatus): AsyncCommandResult;
-
 }

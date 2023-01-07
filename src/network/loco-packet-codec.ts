@@ -53,7 +53,10 @@ export class LocoPacketCodec {
     const header: LocoPacketHeader = {
       id: headerView.getUint32(0, true),
       status: headerView.getUint16(4, true),
-      method: String.fromCharCode(...headerArray.subarray(6, 17)).replace(/\0/g, ''),
+      method: String.fromCharCode(...headerArray.subarray(6, 17)).replace(
+        /\0/g,
+        '',
+      ),
     };
 
     const dataType = headerView.getUint8(17);

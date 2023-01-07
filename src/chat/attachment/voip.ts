@@ -11,7 +11,6 @@ import { VoipType } from '../../voip';
  * Voip attachment
  */
 export interface VoipAttachment extends Attachment {
-
   /**
    * Call type
    */
