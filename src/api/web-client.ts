@@ -4,24 +4,50 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-import { Long } from 'bson';
-import { WebApiConfig } from '../config';
-import { OAuthCredential } from '../oauth';
-import { DefaultRes } from '../request';
-import { JsonUtil } from '../util';
-import { isNode, isDeno, isBrowser } from '../util/platform';
-import { fillAHeader, fillBaseHeader, fillCredential, getUserAgent } from './header-util';
+import { Long } from "bson";
+import { WebApiConfig } from "../config";
+import { OAuthCredential } from "../oauth";
+import { DefaultRes } from "../request";
+import { JsonUtil } from "../util";
+// import { isNode, isDeno, isBrowser } from "../util/platform";
+import { AxiosWebClient } from "./axios-web-client";
+import {
+  fillAHeader,
+  fillBaseHeader,
+  fillCredential,
+  getUserAgent,
+} from "./header-util";
 
 export type RequestHeader = Record<string, string>;
-export type RequestMethod = 'GET' | 'DELETE' | 'HEAD' | 'OPTIONS' | 'POST' | 'PUT' | 'PATCH' | 'LINK' | 'UNLINK';
-export type FileRequestData = { value: Uint8Array, options: { filename: string, contentType?: string } };
-export type RequestForm = { [key: string]: FileRequestData | number | string | undefined | null | boolean | Long };
+export type RequestMethod =
+  | "GET"
+  | "DELETE"
+  | "HEAD"
+  | "OPTIONS"
+  | "POST"
+  | "PUT"
+  | "PATCH"
+  | "LINK"
+  | "UNLINK";
+export type FileRequestData = {
+  value: Uint8Array;
+  options: { filename: string; contentType?: string };
+};
+export type RequestForm = {
+  [key: string]:
+    | FileRequestData
+    | number
+    | string
+    | undefined
+    | null
+    | boolean
+    | Long;
+};
 
 /**
  * Provides various web request api
  */
 export interface WebClient extends HeaderDecorator {
-
   /**
    * Returns url
    */
@@ -34,7 +60,12 @@ export interface WebClient extends HeaderDecorator {
    * @param form
    * @param headers
    */
-  request(method: RequestMethod, path: string, form?: RequestForm, headers?: RequestHeader): Promise<ArrayBuffer>;
+  request(
+    method: RequestMethod,
+    path: string,
+    form?: RequestForm,
+    headers?: RequestHeader
+  ): Promise<ArrayBuffer>;
 
   /**
    * Request multipart form
@@ -53,9 +84,7 @@ export interface WebClient extends HeaderDecorator {
 }
 
 export class TextWebRequest<T extends WebClient = WebClient> {
-  constructor(private _client: T) {
-
-  }
+  constructor(private _client: T) {}
 
   get client(): T {
     return this._client;
@@ -69,7 +98,7 @@ export class TextWebRequest<T extends WebClient = WebClient> {
   ): Promise<string> {
     const res = await this._client.request(method, path, form, headers);
 
-    return new TextDecoder('utf-8').decode(res);
+    return new TextDecoder("utf-8").decode(res);
   }
 
   async requestMultipartText(
@@ -78,11 +107,15 @@ export class TextWebRequest<T extends WebClient = WebClient> {
     form?: RequestForm,
     headers?: RequestHeader
   ): Promise<string> {
-    const res = await this._client.requestMultipart(method, path, form, headers);
+    const res = await this._client.requestMultipart(
+      method,
+      path,
+      form,
+      headers
+    );
 
-    return new TextDecoder('utf-8').decode(res);
+    return new TextDecoder("utf-8").decode(res);
   }
-
 }
 
 export class DataWebRequest<T extends WebClient = WebClient> {
@@ -113,20 +146,26 @@ export class DataWebRequest<T extends WebClient = WebClient> {
     form?: RequestForm,
     headers?: Record<string, string>
   ): Promise<DefaultRes> {
-    const res = await this._client.requestMultipartText(method, path, form, headers);
+    const res = await this._client.requestMultipartText(
+      method,
+      path,
+      form,
+      headers
+    );
 
     return JsonUtil.parseLoseless(res);
   }
-
 }
 
 /**
  * Api client with credential
  */
 export class SessionWebClient implements WebClient {
-  constructor(private _client: WebClient, private _credential: OAuthCredential, public config: WebApiConfig) {
-
-  }
+  constructor(
+    private _client: WebClient,
+    private _credential: OAuthCredential,
+    public config: WebApiConfig
+  ) {}
 
   fillHeader(header: Record<string, string>): void {
     fillCredential(header, this._credential);
@@ -144,22 +183,37 @@ export class SessionWebClient implements WebClient {
     fillAHeader(credentialHeader, this.config);
 
     const userAgent = getUserAgent(this.config);
-    credentialHeader['User-Agent'] = userAgent;
+    credentialHeader["User-Agent"] = userAgent;
 
     return credentialHeader;
   }
 
-  request(method: RequestMethod, path: string, form?: RequestForm, headers?: RequestHeader): Promise<ArrayBuffer> {
-    return this._client.request(method, path, form, this.createSessionHeader(headers));
+  request(
+    method: RequestMethod,
+    path: string,
+    form?: RequestForm,
+    headers?: RequestHeader
+  ): Promise<ArrayBuffer> {
+    return this._client.request(
+      method,
+      path,
+      form,
+      this.createSessionHeader(headers)
+    );
   }
 
   requestMultipart(
     method: RequestMethod,
     path: string,
     form?: RequestForm,
-    headers?: RequestHeader,
+    headers?: RequestHeader
   ): Promise<ArrayBuffer> {
-    return this._client.requestMultipart(method, path, form, this.createSessionHeader(headers));
+    return this._client.requestMultipart(
+      method,
+      path,
+      form,
+      this.createSessionHeader(headers)
+    );
   }
 }
 
@@ -167,9 +221,7 @@ export class SessionWebClient implements WebClient {
  * Decorate common request headers
  */
 export interface HeaderDecorator {
-
   fillHeader(header: RequestHeader): void;
-
 }
 
 /**
@@ -178,17 +230,14 @@ export interface HeaderDecorator {
  * @param {string} scheme
  * @param {string} host
  * @param {HeaderDecorator} decorator
+ * @return {WebClient}
  */
-export async function createWebClient(scheme: string, host: string, decorator?: HeaderDecorator): Promise<WebClient> {
-  if (isNode()) {
-    return new (await import('./axios-web-client')).AxiosWebClient(scheme, host, decorator);
-  } else if (isDeno()) {
-    return new (await import('./fetch-web-client')).FetchWebClient(scheme, host, decorator);
-  } else if (isBrowser()) {
-    return new (await import('./fetch-web-client')).FetchWebClient(scheme, host, decorator);
-  } else {
-    throw new Error('Unknown environment');
-  }
+export function createWebClient(
+  scheme: string,
+  host: string,
+  decorator?: HeaderDecorator
+): WebClient {
+  return new AxiosWebClient(scheme, host, decorator);
 }
 
 export async function createSessionWebClient(
@@ -196,7 +245,11 @@ export async function createSessionWebClient(
   config: WebApiConfig,
   scheme: string,
   host: string,
-  decorator?: HeaderDecorator,
+  decorator?: HeaderDecorator
 ): Promise<SessionWebClient> {
-  return new SessionWebClient(await createWebClient(scheme, host, decorator), credential, config);
+  return new SessionWebClient(
+    await createWebClient(scheme, host, decorator),
+    credential,
+    config
+  );
 }
