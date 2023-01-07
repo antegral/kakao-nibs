@@ -1,7 +1,7 @@
 {
-  "name": "node-kakao",
+  "name": "kakao-nibs",
   "version": "4.5.0",
-  "description": "Loco protocol compatible library",
+  "description": "Loco protocol compatible library (source: node-kakao)",
   "main": "./dist/index.js",
   "exports": {
     ".": "./dist/index.js",
@@ -15,27 +15,31 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "./node_modules/.bin/mocha -r ts-node/register ./tests/*.test.ts",
+    "test": "npx mocha -r ts-node/register ./tests/*.test.ts",
     "locotest": "node -r ts-node/register loco-test.ts",
     "build": "npm run build:node",
-    "build:node": "./node_modules/.bin/tsc --outDir dist --declarationDir dist --declaration true",
-    "docs": "./node_modules/.bin/typedoc src",
-    "fix": "./node_modules/.bin/eslint --fix ./src/**/*",
+    "build:node": "npx swc -s -d dist -f index.ts --config-file .swcrc --ignore node_modules/**",
+    "docs": "npx typedoc src",
+    "fix": "npx eslint --fix ./src/**/*",
+    "format": "npx prettier --write ./src/**/* --config .prettierrc",
     "prepublishOnly": "npm run fix && npm run test && npm run build"
   },
   "keywords": [
     "node-kakao",
+    "kakao-nibs",
     "chat-protocol",
     "chat-client",
     "loco-protocol"
   ],
   "author": {
-    "name": "storycraft",
-    "email": "storycraft@pancake.sh",
-    "url": "https://pancake.sh"
+    "name": "antegral",
+    "email": "antegral@antegral.net",
+    "url": "https://antegral.net"
   },
   "license": "MIT",
   "devDependencies": {
+    "@swc/cli": "^0.1.59",
+    "@swc/core": "^1.3.25",
     "@types/bson": "^4.0.4",
     "@types/chai": "^4.2.21",
     "@types/lossless-json": "^1.0.1",
@@ -55,7 +59,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/storycraft/node-kakao.git"
+    "url": "https://github.com/antegral/kakao-nibs.git"
   },
   "dependencies": {
     "axios": "^0.24.0",
