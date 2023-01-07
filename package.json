@@ -18,7 +18,7 @@
     "test": "npx mocha -r ts-node/register ./tests/*.test.ts",
     "locotest": "node -r ts-node/register loco-test.ts",
     "build": "npm run build:node",
-    "build:node": "npx swc -s -d dist -f index.ts --config-file .swcrc --ignore node_modules/**",
+    "build:node": "npx swc src -s -d dist --config-file .swcrc ",
     "docs": "npx typedoc src",
     "fix": "npx eslint --fix ./src/**/*",
     "format": "npx prettier --write ./src/**/* --config .prettierrc",

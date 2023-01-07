@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/swcrc",
-  "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/node_modules/*"],
+  "exclude": ["node_modules", "dist"],
   "jsc": {
     "target": "es2018",
     "baseUrl": ".",
