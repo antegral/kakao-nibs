@@ -11,10 +11,10 @@ export const DefaultConfiguration: OAuthLoginConfig & ClientConfig = {
   // eslint-disable-next-line max-len
   locoPEMPublicKey: `-----BEGIN PUBLIC KEY-----\nMIIBIDANBgkqhkiG9w0BAQEFAAOCAQ0AMIIBCAKCAQEApElgRBx+g7sniYFW7LE8ivrwXShKTRFV8lXNItMXbN5QSC8vJ/cTSOTS619Xv5Zx7xXJIk4EKxtWesEGbgZpEUP2xQ+IeH9oz0JxayEMvvD1nVNAWgpWE4pociEoArsK7qY3YwXb1CiDHo9hojLv7djbo3cwXvlyMh4TUrX2RjCZPlVJxk/LVjzcl9ohJLkl3eoSrf0AE4kQ9mk3+raEhq5Dv+IDxKYX+fIytUWKmrQJusjtre9oVUX5sBOYZ0dzez/XapusEhUWImmB6mciVXfRXQ8IK4IH6vfNyxMSOTfLEhRYN2SMLzplAYFiMV536tLS3VmG5GJRdkpDubqPeQIBAw==\n-----END PUBLIC KEY-----`,
 
-  agent: 'win32',
+  agent: 'android',
 
-  version: '3.4.4',
-  appVersion: '3.4.4.3285',
+  version: '9.2.1',
+  appVersion: '9.2.1',
 
   osVersion: '10.0',
 
@@ -29,7 +29,7 @@ export const DefaultConfiguration: OAuthLoginConfig & ClientConfig = {
   language: 'ko',
 
   subDevice: true,
-  deviceModel: '',
+  deviceModel: 'SM-T976N',
 
   loginTokenSeedList: ['PITT', 'INORAN'],
 };
