@@ -1,3 +1,6 @@
+import { ClientEvents } from '@src/talk/event';
+import { TalkChannel, ChannelUserInfo } from '..';
+
 export abstract class TalkComponent {
   protected parent!: TalkComponent | null;
 
@@ -16,6 +19,10 @@ export abstract class TalkComponent {
   public isComposite(): boolean {
     return false;
   }
+
+  public abstract use<
+    T extends keyof ClientEvents<TalkChannel, ChannelUserInfo>,
+  >(event: T, callback: ClientEvents<TalkChannel, ChannelUserInfo>[T]): this;
 
   public abstract init(): this;
 }

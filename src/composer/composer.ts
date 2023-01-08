@@ -1,3 +1,6 @@
+import { ClientEvents } from '@src/talk/event';
+import { TalkChannel, ChannelUserInfo } from '..';
+import { TalkCallBack } from './callback';
 import { TalkComponent } from './component';
 
 export class TalkComposer extends TalkComponent {
@@ -27,7 +30,13 @@ export class TalkComposer extends TalkComponent {
     return this;
   }
 
-  public onMessage(): this {
+  use<T extends keyof ClientEvents<TalkChannel, ChannelUserInfo>>(
+    event: T,
+    callback: ClientEvents<TalkChannel, ChannelUserInfo>[T],
+  ) {
+    for (const child of this.children) {
+      child.use(event, callback);
+    }
     return this;
   }
 }
