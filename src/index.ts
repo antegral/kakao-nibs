@@ -41,7 +41,7 @@ export * from './user';
 export * as util from './util';
 export * from './voip';
 export * from './loader';
-export { ComposedClient as VancedClient } from './vanced_client';
+export { ComposedClient as VancedClient } from './composed_client';
 
 export { Long } from 'bson';
 
