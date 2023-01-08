@@ -1,28 +1,5 @@
 import { createInterface } from 'readline';
-import { AuthApiClient, KnownAuthStatusCode } from './api';
-import { TalkChannel, TalkChatData, TalkClient } from './talk';
-
-abstract class TalkComponent {
-  protected parent!: TalkComponent | null;
-
-  public setParent(parent: TalkComponent | null) {
-    this.parent = parent;
-  }
-
-  public getParent(): TalkComponent | null {
-    return this.parent;
-  }
-
-  public add(component: TalkComponent): void {}
-
-  public remove(component: TalkComponent): void {}
-
-  public isComposite(): boolean {
-    return false;
-  }
-
-  public abstract init(): this;
-}
+import { TalkClient, AuthApiClient, KnownAuthStatusCode } from '..';
 
 export class ComposedClient extends TalkClient {
   _auth: AuthApiClient | undefined;
@@ -90,48 +67,5 @@ export class ComposedClient extends TalkClient {
         throw new Error(`check your credential!! status : ${res.status}`);
       }
     }
-  }
-}
-
-export class TalkLeaf extends TalkComponent {
-  constructor(public client: ComposedClient) {
-    super();
-  }
-
-  public init(promise?: Promise<string>): this {
-    this.client.init(promise);
-    return this;
-  }
-
-  static create(email: string, password: string, name: string, uuid: string) {
-    return new TalkLeaf(new ComposedClient(email, password, name, uuid));
-  }
-}
-
-export class TalkComposer extends TalkComponent {
-  protected children: TalkComponent[] = [];
-
-  public add(component: TalkComponent): void {
-    this.children.push(component);
-    component.setParent(this);
-  }
-
-  public remove(component: TalkComponent): void {
-    const componentIndex = this.children.indexOf(component);
-    this.children.splice(componentIndex, 1);
-
-    component.setParent(null);
-  }
-
-  public isComposite(): boolean {
-    return true;
-  }
-
-  public init(): this {
-    for (const child of this.children) {
-      child.init();
-    }
-
-    return this;
   }
 }

@@ -30,6 +30,7 @@ export * from './relay';
 export * from './request';
 export * as stream from './stream';
 export * as talk from './talk';
+export * as composer from './composer';
 export {
   TalkChannel,
   TalkOpenChannel,
@@ -41,7 +42,6 @@ export * from './user';
 export * as util from './util';
 export * from './voip';
 export * from './loader';
-export { ComposedClient as VancedClient } from './composed_client';
 
 export { Long } from 'bson';
 
