@@ -21,6 +21,11 @@ export interface ChatTypeComponent<T extends ChatType = ChatType> {
  */
 export interface Chat extends ChatTypeComponent {
   /**
+   * client Email
+   */
+  email: string;
+
+  /**
    * Chat text.
    */
   text?: string;
