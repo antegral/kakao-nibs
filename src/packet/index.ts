@@ -11,7 +11,6 @@ export * as checkin from './checkin';
 export * as struct from './struct';
 
 export interface LocoPacket {
-
   /**
    * Packet header
    */
@@ -21,19 +20,15 @@ export interface LocoPacket {
    * [dataType, data buffer]
    */
   data: [number, Uint8Array];
-
 }
 
 export interface LocoPacketHeader {
-
   id: number;
   status: number;
   method: string;
-
 }
 
 export interface LocoPacketDataCodec<T, R = T> {
-
   /**
    * @param dataType
    *
@@ -52,5 +47,4 @@ export interface LocoPacketDataCodec<T, R = T> {
    * @param data
    */
   encode(data: T): [number, Uint8Array];
-
 }

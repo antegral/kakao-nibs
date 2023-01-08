@@ -20,19 +20,26 @@ import { BiStream } from '../../stream';
  * @param {BiStream} stream
  * @param {BookingConfig} config
  */
-export async function getBookingData(stream: BiStream, config: BookingConfig): AsyncCommandResult<GetConfRes> {
+export async function getBookingData(
+  stream: BiStream,
+  config: BookingConfig,
+): AsyncCommandResult<GetConfRes> {
   const bookingSession = new LocoSession(stream);
 
   const req = {
-    'MCCMNC': config.mccmnc,
-    'model': config.deviceModel,
-    'os': config.agent,
+    MCCMNC: config.mccmnc,
+    model: config.deviceModel,
+    os: config.agent,
   };
 
   const res = await bookingSession.request<GetConfRes>('GETCONF', req);
   bookingSession.stream.close();
 
-  return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS, result: res };
+  return {
+    status: res.status,
+    success: res.status === KnownDataStatusCode.SUCCESS,
+    result: res,
+  };
 }
 
 /**
@@ -51,18 +58,22 @@ export async function getCheckinData(
   const checkinSession = new LocoSession(stream);
 
   const req: DefaultReq = {
-    'MCCMNC': config.mccmnc,
-    'appVer': config.appVersion,
-    'countryISO': config.countryIso,
-    'lang': config.language,
-    'ntype': config.netType,
-    'useSub': config.subDevice,
-    'os': config.agent,
-    userId
+    MCCMNC: config.mccmnc,
+    appVer: config.appVersion,
+    countryISO: config.countryIso,
+    lang: config.language,
+    ntype: config.netType,
+    useSub: config.subDevice,
+    os: config.agent,
+    userId,
   };
 
   const res = await checkinSession.request<CheckinRes>('CHECKIN', req);
   checkinSession.stream.close();
 
-  return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS, result: res };
+  return {
+    status: res.status,
+    success: res.status === KnownDataStatusCode.SUCCESS,
+    result: res,
+  };
 }

@@ -13,10 +13,14 @@ import {
   OpenLink,
   OpenLinkChannelUserInfo,
   OpenLinkKickedUserInfo,
-  OpenLinkProfiles
+  OpenLinkProfiles,
 } from '../../openlink';
 import { ChatOnRoomRes } from '../../packet/chat';
-import { OpenMemberStruct, structToOpenChannelUserInfo, structToOpenLinkChannelUserInfo } from '../../packet/struct';
+import {
+  OpenMemberStruct,
+  structToOpenChannelUserInfo,
+  structToOpenLinkChannelUserInfo,
+} from '../../packet/struct';
 import { RelayEventType } from '../../relay';
 import { AsyncCommandResult } from '../../request';
 import { ChannelUser, OpenChannelUserInfo } from '../../user';
@@ -26,14 +30,14 @@ import { initOpenUserList, initWatermark } from '../channel';
  * Do open channel session operations and updates store.
  */
 export class TalkOpenChannelDataSession implements OpenChannelSession {
-
   constructor(
     private _clientUser: ChannelUser,
     private _channelSession: OpenChannelSession,
-    private _store: UpdatableChannelDataStore<OpenChannelInfo, OpenChannelUserInfo>
-  ) {
-
-  }
+    private _store: UpdatableChannelDataStore<
+      OpenChannelInfo,
+      OpenChannelUserInfo
+    >,
+  ) {}
 
   get clientUser(): Readonly<ChannelUser> {
     return this._clientUser;
@@ -64,31 +68,37 @@ export class TalkOpenChannelDataSession implements OpenChannelSession {
         this.store.info.lastChatLogId !== result.l ||
         this.store.info.openToken !== result.otk
       ) {
-        const newInfo: Partial<OpenChannelInfo> = { type: result.t, lastChatLogId: result.l };
+        const newInfo: Partial<OpenChannelInfo> = {
+          type: result.t,
+          lastChatLogId: result.l,
+        };
         if (result.otk) {
           newInfo['openToken'] = result.otk;
         }
-        
+
         this._store.updateInfo(newInfo);
       }
 
       if (result.a && result.w) {
         initWatermark(this._store, result.a, result.w);
       }
-      
+
       if (result.m) {
         const structList = result.m as OpenMemberStruct[];
-        
+
         this._store.clearUserList();
         for (const struct of structList) {
           const wrapped = structToOpenChannelUserInfo(struct);
           this._store.updateUserInfo(wrapped, wrapped);
         }
       } else if (result.mi) {
-        const userInitres = await initOpenUserList(this._channelSession, result.mi);
-  
+        const userInitres = await initOpenUserList(
+          this._channelSession,
+          result.mi,
+        );
+
         if (!userInitres.success) return userInitres;
-  
+
         this._store.clearUserList();
         for (const info of userInitres.result) {
           this._store.updateUserInfo(info, info);
@@ -99,10 +109,12 @@ export class TalkOpenChannelDataSession implements OpenChannelSession {
         const wrapped = structToOpenLinkChannelUserInfo(result.olu);
         this._store.updateUserInfo(wrapped, wrapped);
       }
-      
+
       const openChannelSession = this._channelSession;
       if (!this._store.getUserInfo(this._clientUser)) {
-        const clientRes = await openChannelSession.getLatestUserInfo(this._clientUser);
+        const clientRes = await openChannelSession.getLatestUserInfo(
+          this._clientUser,
+        );
         if (!clientRes.success) return clientRes;
 
         for (const user of clientRes.result) {
@@ -124,7 +136,9 @@ export class TalkOpenChannelDataSession implements OpenChannelSession {
     return infoRes;
   }
 
-  async getLatestUserInfo(...users: ChannelUser[]): AsyncCommandResult<OpenChannelUserInfo[]> {
+  async getLatestUserInfo(
+    ...users: ChannelUser[]
+  ): AsyncCommandResult<OpenChannelUserInfo[]> {
     const infoRes = await this._channelSession.getLatestUserInfo(...users);
 
     if (infoRes.success) {
@@ -172,7 +186,10 @@ export class TalkOpenChannelDataSession implements OpenChannelSession {
     return this._channelSession.removeKicked(user);
   }
 
-  async setUserPerm(user: ChannelUser, perm: OpenChannelUserPerm): AsyncCommandResult {
+  async setUserPerm(
+    user: ChannelUser,
+    perm: OpenChannelUserPerm,
+  ): AsyncCommandResult {
     const res = await this._channelSession.setUserPerm(user, perm);
 
     if (res.success) {
@@ -222,7 +239,9 @@ export class TalkOpenChannelDataSession implements OpenChannelSession {
     return this._channelSession.getReaction();
   }
 
-  async changeProfile(profile: OpenLinkProfiles): AsyncCommandResult<Readonly<OpenLinkChannelUserInfo> | null> {
+  async changeProfile(
+    profile: OpenLinkProfiles,
+  ): AsyncCommandResult<Readonly<OpenLinkChannelUserInfo> | null> {
     const res = await this._channelSession.changeProfile(profile);
     if (res.success && res.result) {
       this._store.updateUserInfo(this._clientUser, res.result);
@@ -234,5 +253,4 @@ export class TalkOpenChannelDataSession implements OpenChannelSession {
   hideChat(chat: ChatLoggedType): AsyncCommandResult {
     return this._channelSession.hideChat(chat);
   }
-
 }

@@ -5,17 +5,16 @@
  */
 
 export const DefaultConfiguration: OAuthLoginConfig & ClientConfig = {
-
   locoBookingHost: 'booking-loco.kakao.com',
   locoBookingPort: 443,
 
   // eslint-disable-next-line max-len
   locoPEMPublicKey: `-----BEGIN PUBLIC KEY-----\nMIIBIDANBgkqhkiG9w0BAQEFAAOCAQ0AMIIBCAKCAQEApElgRBx+g7sniYFW7LE8ivrwXShKTRFV8lXNItMXbN5QSC8vJ/cTSOTS619Xv5Zx7xXJIk4EKxtWesEGbgZpEUP2xQ+IeH9oz0JxayEMvvD1nVNAWgpWE4pociEoArsK7qY3YwXb1CiDHo9hojLv7djbo3cwXvlyMh4TUrX2RjCZPlVJxk/LVjzcl9ohJLkl3eoSrf0AE4kQ9mk3+raEhq5Dv+IDxKYX+fIytUWKmrQJusjtre9oVUX5sBOYZ0dzez/XapusEhUWImmB6mciVXfRXQ8IK4IH6vfNyxMSOTfLEhRYN2SMLzplAYFiMV536tLS3VmG5GJRdkpDubqPeQIBAw==\n-----END PUBLIC KEY-----`,
 
-  agent: 'win32',
+  agent: 'android',
 
-  version: '3.2.3',
-  appVersion: '3.2.3.2698',
+  version: '9.2.1',
+  appVersion: '9.2.1',
 
   osVersion: '10.0',
 
@@ -30,14 +29,12 @@ export const DefaultConfiguration: OAuthLoginConfig & ClientConfig = {
   language: 'ko',
 
   subDevice: true,
-  deviceModel: '',
+  deviceModel: 'SM-T976N',
 
   loginTokenSeedList: ['PITT', 'INORAN'],
-
 };
 
 export interface BookingConfig {
-
   locoBookingHost: string;
   locoBookingPort: number;
 
@@ -45,11 +42,9 @@ export interface BookingConfig {
   mccmnc: string;
 
   deviceModel: string;
-
 }
 
 export interface CheckinConfig extends BookingConfig {
-
   locoCheckinFallbackHost?: string;
   locoCheckinFallbackPort?: number;
 
@@ -65,28 +60,22 @@ export interface CheckinConfig extends BookingConfig {
 }
 
 export interface WebApiConfig {
-
   agent: string;
 
   version: string;
   osVersion: string;
 
   language: string;
-  
-  deviceModel: string;
 
+  deviceModel: string;
 }
 
 export type SessionConfig = CheckinConfig;
 
 export interface ClientConfig extends SessionConfig, WebApiConfig {
-
   deviceType: number;
-
 }
 
 export interface OAuthLoginConfig extends WebApiConfig {
-
   loginTokenSeedList: [string, string];
-
 }

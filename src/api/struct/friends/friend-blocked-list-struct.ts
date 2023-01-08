@@ -4,12 +4,10 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-import { FriendStruct } from './friend-struct';
+import { FriendStruct } from '@api/struct/friends/friend-struct';
 
 export interface FriendBlockedListStruct {
-
   total: number;
 
   blockedFriends: FriendStruct[];
-
 }

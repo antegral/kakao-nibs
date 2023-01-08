@@ -11,16 +11,18 @@ import {
   RequestHeader,
   RequestMethod,
   FileRequestData,
-} from './web-client';
-import { convertToFormData } from './web-api-util';
+} from '@api/web-client';
+import { convertToFormData } from '@api/web-api-util';
 
 /**
  * WebClient implementation wrapped with fetch api
  */
 export class FetchWebClient implements WebClient, HeaderDecorator {
-  constructor(public scheme: string, public host: string, private _decorator?: HeaderDecorator) {
-
-  }
+  constructor(
+    public scheme: string,
+    public host: string,
+    private _decorator?: HeaderDecorator,
+  ) {}
 
   get url(): string {
     return `${this.scheme}://${this.host}`;
@@ -35,7 +37,10 @@ export class FetchWebClient implements WebClient, HeaderDecorator {
     this._decorator?.fillHeader(header);
   }
 
-  private buildFetchReqData(method: RequestMethod, header?: RequestHeader): RequestInit {
+  private buildFetchReqData(
+    method: RequestMethod,
+    header?: RequestHeader,
+  ): RequestInit {
     const headers: RequestHeader = {};
 
     this.fillHeader(headers);
@@ -66,7 +71,9 @@ export class FetchWebClient implements WebClient, HeaderDecorator {
     const res = await fetch(url, reqData);
 
     if (!res.ok) {
-      throw new Error(`Web request failed with status ${res.status} ${res.statusText}`);
+      throw new Error(
+        `Web request failed with status ${res.status} ${res.statusText}`,
+      );
     }
 
     return await res.arrayBuffer();
@@ -88,7 +95,9 @@ export class FetchWebClient implements WebClient, HeaderDecorator {
     const res = await fetch(url, reqData);
 
     if (!res.ok) {
-      throw new Error(`Web request failed with status ${res.status} ${res.statusText}`);
+      throw new Error(
+        `Web request failed with status ${res.status} ${res.statusText}`,
+      );
     }
 
     return await res.arrayBuffer();
@@ -98,16 +107,18 @@ export class FetchWebClient implements WebClient, HeaderDecorator {
     const formData = new FormData();
 
     for (const [key, value] of Object.entries(form)) {
-      if (value && (value as FileRequestData).value && (value as FileRequestData).options) {
+      if (
+        value &&
+        (value as FileRequestData).value &&
+        (value as FileRequestData).options
+      ) {
         const file = value as FileRequestData;
 
         formData.append(
           key,
-          new File(
-            [new Blob([file.value])],
-            file.options.filename,
-            { type: file.options.contentType }
-          )
+          new File([new Blob([file.value])], file.options.filename, {
+            type: file.options.contentType,
+          }),
         );
       } else {
         formData.append(key, value + '');

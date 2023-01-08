@@ -10,7 +10,6 @@ import { ChannelMetaType } from '../../channel/meta';
 import { ChatlogStruct } from './chat';
 
 export interface ChannelMetaStruct {
-
   type: ChannelMetaType;
 
   revision: number;
@@ -20,26 +19,22 @@ export interface ChannelMetaStruct {
   content: string;
 
   updatedAt: number;
-
 }
 
 export interface ChannelClientMetaStruct {
-
   name?: string;
   // eslint-disable-next-line camelcase
   image_path?: string;
-  favorite?: boolean,
+  favorite?: boolean;
   // eslint-disable-next-line camelcase
-  push_sound?: boolean,
+  push_sound?: boolean;
   // eslint-disable-next-line camelcase
-  chat_hide?: boolean,
+  chat_hide?: boolean;
   fullImageUrl?: string;
   imageUrl?: string;
-
 }
 
 export interface DisplayUserStruct {
-
   userId: Long;
 
   nickName: string;
@@ -47,11 +42,9 @@ export interface DisplayUserStruct {
   countryIso: string;
 
   profileImageUrl: string;
-
 }
 
 export interface ChannelDataStruct {
-
   /**
    * Channel id
    */
@@ -104,8 +97,9 @@ export interface ChannelDataStruct {
   otk?: number;
 }
 
-export interface ChannelInfoStruct extends Partial<NormalChannelInfoExtra>, Partial<OpenChannelInfoExtra> {
-
+export interface ChannelInfoStruct
+  extends Partial<NormalChannelInfoExtra>,
+    Partial<OpenChannelInfoExtra> {
   /**
    * Channel id
    */
@@ -178,7 +172,6 @@ export interface ChannelInfoStruct extends Partial<NormalChannelInfoExtra>, Part
 }
 
 export interface NormalChannelInfoExtra {
-
   /**
    * true if channel is invalid(?).
    */
@@ -188,11 +181,9 @@ export interface NormalChannelInfoExtra {
    * New mem join time(?)
    */
   joinedAtForNewMem: number;
-
 }
 
 export interface OpenChannelInfoExtra {
-
   /**
    * OpenLink id
    */
@@ -207,5 +198,4 @@ export interface OpenChannelInfoExtra {
    * true if channel is dm
    */
   directChat: boolean;
-
 }

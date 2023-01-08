@@ -21,7 +21,7 @@ export function structToOpenLink(struct: OpenLinkStruct): OpenLink {
     description: struct.desc,
     activated: struct.ac,
     privilege: struct.pv,
-    profileTagList: struct.op && struct.op.tags || [],
+    profileTagList: (struct.op && struct.op.tags) || [],
     linkOwner: structToOpenLinkChannelUserInfo(struct.olu),
   };
 }

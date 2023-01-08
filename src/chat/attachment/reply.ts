@@ -10,7 +10,6 @@ import { ChatType } from '../chat-type';
 import { MentionStruct } from './mention';
 
 export interface ReplyAttachment extends Attachment {
-
   // eslint-disable-next-line camelcase
   attach_only: boolean;
   // eslint-disable-next-line camelcase
@@ -30,5 +29,4 @@ export interface ReplyAttachment extends Attachment {
 
   // eslint-disable-next-line camelcase
   src_userId: Long;
-
 }

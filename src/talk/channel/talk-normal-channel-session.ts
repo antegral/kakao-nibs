@@ -48,27 +48,22 @@ export class TalkNormalChannelSession implements NormalChannelSession {
   }
 
   async chatON(): AsyncCommandResult<ChatOnRoomRes> {
-    const res = await this._session.request<ChatOnRoomRes>(
-      'CHATONROOM',
-      {
-        'chatId': this._channel.channelId,
-        'token': Long.ZERO,
-        'opt': Long.ZERO,
-      },
-    );
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { success: false, status: res.status };
+    const res = await this._session.request<ChatOnRoomRes>('CHATONROOM', {
+      chatId: this._channel.channelId,
+      token: Long.ZERO,
+      opt: Long.ZERO,
+    });
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { success: false, status: res.status };
 
     return { success: true, status: res.status, result: res };
   }
 
   async inviteUsers(users: ChannelUser[]): AsyncCommandResult {
-    const { status } = await this._session.request(
-      'ADDMEM',
-      {
-        'chatId': this._channel.channelId,
-        'memberIds': users.map((user) => user.userId),
-      },
-    );
+    const { status } = await this._session.request('ADDMEM', {
+      chatId: this._channel.channelId,
+      memberIds: users.map((user) => user.userId),
+    });
 
     return {
       success: status === KnownDataStatusCode.SUCCESS,
@@ -77,49 +72,51 @@ export class TalkNormalChannelSession implements NormalChannelSession {
   }
 
   async getLatestChannelInfo(): AsyncCommandResult<NormalChannelInfo> {
-    const res = await this._session.request<ChatInfoRes>(
-      'CHATINFO',
-      {
-        'chatId': this._channel.channelId,
-      },
-    );
+    const res = await this._session.request<ChatInfoRes>('CHATINFO', {
+      chatId: this._channel.channelId,
+    });
 
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { success: false, status: res.status };
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { success: false, status: res.status };
 
     return {
       success: true,
       status: res.status,
-      result: structToNormalChannelInfo(res.chatInfo as ChannelInfoStruct & NormalChannelInfoExtra),
+      result: structToNormalChannelInfo(
+        res.chatInfo as ChannelInfoStruct & NormalChannelInfoExtra,
+      ),
     };
   }
 
-  async getLatestUserInfo(...channelUsers: ChannelUser[]): AsyncCommandResult<NormalChannelUserInfo[]> {
-    const res = await this._session.request<MemberRes>(
-      'MEMBER',
-      {
-        'chatId': this._channel.channelId,
-        'memberIds': channelUsers.map((user) => user.userId),
-      },
+  async getLatestUserInfo(
+    ...channelUsers: ChannelUser[]
+  ): AsyncCommandResult<NormalChannelUserInfo[]> {
+    const res = await this._session.request<MemberRes>('MEMBER', {
+      chatId: this._channel.channelId,
+      memberIds: channelUsers.map((user) => user.userId),
+    });
+
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { success: false, status: res.status };
+
+    const result = (res.members as NormalMemberStruct[]).map((member) =>
+      structToChannelUserInfo(member),
     );
-
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { success: false, status: res.status };
-
-    const result = (res.members as NormalMemberStruct[]).map((member) => structToChannelUserInfo(member));
 
     return { success: true, status: res.status, result };
   }
 
   async getAllLatestUserInfo(): AsyncCommandResult<NormalChannelUserInfo[]> {
-    const res = await this._session.request<GetMemRes>(
-      'GETMEM',
-      {
-        'chatId': this._channel.channelId,
-      },
+    const res = await this._session.request<GetMemRes>('GETMEM', {
+      chatId: this._channel.channelId,
+    });
+
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { success: false, status: res.status };
+
+    const result = (res.members as NormalMemberStruct[]).map((member) =>
+      structToChannelUserInfo(member),
     );
-
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { success: false, status: res.status };
-
-    const result = (res.members as NormalMemberStruct[]).map((member) => structToChannelUserInfo(member));
 
     return { success: true, status: res.status, result };
   }

@@ -5,7 +5,6 @@
  */
 
 export interface CheckinRes {
-
   /**
    * Loco host
    */
@@ -55,5 +54,4 @@ export interface CheckinRes {
    * Video server host (ipv6)
    */
   vsshost6: string;
-
 }

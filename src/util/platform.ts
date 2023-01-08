@@ -4,9 +4,12 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-
-declare let process: { release?: { name?: string } } & Record<string, unknown> | undefined;
-declare let window: { Deno?: { version?: { deno?: string } } } & Record<string, unknown> | undefined;
+declare let process:
+  | ({ release?: { name?: string } } & Record<string, unknown>)
+  | undefined;
+declare let window:
+  | ({ Deno?: { version?: { deno?: string } } } & Record<string, unknown>)
+  | undefined;
 declare let navigator: Record<string, unknown>;
 
 export function isNode(): boolean {
@@ -14,7 +17,12 @@ export function isNode(): boolean {
 }
 
 export function isDeno(): boolean {
-  return !!(window && window.Deno && window.Deno.version && window.Deno.version);
+  return !!(
+    window &&
+    window.Deno &&
+    window.Deno.version &&
+    window.Deno.version
+  );
 }
 
 export function isBrowser(): boolean {

@@ -4,17 +4,13 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-import { FriendStruct } from './friend-struct';
+import { FriendStruct } from '@api/struct/friends/friend-struct';
 
 export interface FriendReqStruct {
-
   friend: FriendStruct;
-
 }
 
 export interface FriendReqPhoneNumberStruct {
-
   // eslint-disable-next-line camelcase
   pstn_number: string;
-
 }

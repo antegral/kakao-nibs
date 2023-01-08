@@ -7,7 +7,6 @@
 import { NormalMemberStruct, OpenMemberStruct } from '../struct';
 
 export interface GetMemRes {
-
   /**
    * Member list
    */
@@ -17,5 +16,4 @@ export interface GetMemRes {
    * Last update time
    */
   token: number;
-
 }

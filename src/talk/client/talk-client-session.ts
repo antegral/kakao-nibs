@@ -11,15 +11,26 @@ import { ClientSession, LoginResult } from '../../client';
 import { OAuthCredential } from '../../oauth';
 import { OpenChannelData } from '../../openlink';
 import { LChatListRes, LoginListRes } from '../../packet/chat';
-import { AsyncCommandResult, DefaultReq, DefaultRes, KnownDataStatusCode } from '../../request';
+import {
+  AsyncCommandResult,
+  DefaultReq,
+  DefaultRes,
+  KnownDataStatusCode,
+} from '../../request';
 import { ClientConfig } from '../../config';
-import { dataStructToNormalChannelInfo, dataStructToOpenChannelInfo } from '../../packet/struct'
+import {
+  dataStructToNormalChannelInfo,
+  dataStructToOpenChannelInfo,
+} from '../../packet/struct';
 import { Long } from 'bson';
 
 export class TalkClientSession implements ClientSession {
   private _lastLoginRev: number;
 
-  constructor(private _session: TalkSession, public configuration: ClientConfig) {
+  constructor(
+    private _session: TalkSession,
+    public configuration: ClientConfig,
+  ) {
     this._lastLoginRev = 0;
   }
 
@@ -27,31 +38,34 @@ export class TalkClientSession implements ClientSession {
     return this._session;
   }
 
-
   async login(credential: OAuthCredential): AsyncCommandResult<LoginResult> {
     const config = this.configuration;
 
     const req: DefaultReq = {
-      'appVer': config.appVersion,
-      'prtVer': '1',
-      'os': config.agent,
-      'lang': config.language,
-      'duuid': credential.deviceUUID,
-      'oauthToken': credential.accessToken,
-      'dtype': config.deviceType,
-      'ntype': config.netType,
-      'MCCMNC': config.mccmnc,
-      'revision': this._lastLoginRev,
-      'chatIds': [],
-      'maxIds': [],
-      'lastTokenId': Long.ZERO,
-      'lbk': 0,
-      'rp': null,
-      'bg': false,
+      appVer: config.appVersion,
+      prtVer: '1',
+      os: config.agent,
+      lang: config.language,
+      duuid: credential.deviceUUID,
+      oauthToken: credential.accessToken,
+      dtype: config.deviceType,
+      ntype: config.netType,
+      MCCMNC: config.mccmnc,
+      revision: this._lastLoginRev,
+      chatIds: [],
+      maxIds: [],
+      lastTokenId: Long.ZERO,
+      lbk: 0,
+      rp: null,
+      bg: false,
     };
 
-    const loginRes = await this._session.request<LoginListRes>('LOGINLIST', req);
-    if (loginRes.status !== KnownDataStatusCode.SUCCESS) return { status: loginRes.status, success: false };
+    const loginRes = await this._session.request<LoginListRes>(
+      'LOGINLIST',
+      req,
+    );
+    if (loginRes.status !== KnownDataStatusCode.SUCCESS)
+      return { status: loginRes.status, success: false };
 
     let status = loginRes.status;
     const chatDataList = loginRes.chatDatas;
@@ -62,8 +76,8 @@ export class TalkClientSession implements ClientSession {
     let lastRes: LChatListRes = loginRes;
     while (!lastRes.eof) {
       const res = await this._session.request<LChatListRes>('LCHATLIST', {
-        'lastTokenId': lastRes.lastTokenId,
-        'lastChatId': lastRes.lastChatId
+        lastTokenId: lastRes.lastTokenId,
+        lastChatId: lastRes.lastChatId,
       });
 
       if (loginRes.status !== KnownDataStatusCode.SUCCESS) {
@@ -79,24 +93,24 @@ export class TalkClientSession implements ClientSession {
 
     const channelList: LoginData<NormalChannelData | OpenChannelData>[] = [];
     for (const channelData of chatDataList) {
-      let channel: (NormalChannelData | OpenChannelData);
+      let channel: NormalChannelData | OpenChannelData;
 
       if (channelData.li) {
         channel = {
           channelId: channelData.c,
           linkId: channelData.li,
-          info: dataStructToOpenChannelInfo(channelData)
+          info: dataStructToOpenChannelInfo(channelData),
         };
       } else {
         channel = {
           channelId: channelData.c,
-          info: dataStructToNormalChannelInfo(channelData)
+          info: dataStructToNormalChannelInfo(channelData),
         };
       }
 
       channelList.push({
         lastUpdate: channelData.o,
-        channel
+        channel,
       });
     }
 
@@ -118,9 +132,14 @@ export class TalkClientSession implements ClientSession {
   }
 
   async setStatus(status: ClientStatus): AsyncCommandResult {
-    const res = await this._session.request<LoginListRes>('SETST', { st: status });
+    const res = await this._session.request<LoginListRes>('SETST', {
+      st: status,
+    });
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+    };
   }
 
   /**
@@ -132,6 +151,10 @@ export class TalkClientSession implements ClientSession {
   async getTokens(unknown: number[]): AsyncCommandResult<DefaultRes> {
     const res = await this._session.request('GETTOKEN', { ts: unknown });
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS, result: res };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+      result: res,
+    };
   }
 }

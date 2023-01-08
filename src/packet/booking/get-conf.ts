@@ -5,7 +5,6 @@
  */
 
 export interface NetworkConfig {
-
   /**
    * Background keep interval
    */
@@ -58,11 +57,9 @@ export interface NetworkConfig {
    * Usable port list
    */
   ports: number[];
-
 }
 
 export interface GetConfRes {
-
   /**
    * Last revision
    */
@@ -78,45 +75,47 @@ export interface GetConfRes {
    * Contains checkin server host list.
    * lsl and lsl6 only work. (Unused(?))
    */
-  ticket: { ssl: string[], v2sl: string[], lsl: string[], lsl6: string[] };
+  ticket: { ssl: string[]; v2sl: string[]; lsl: string[]; lsl6: string[] };
 
   /**
    * Contains information about video profile
    */
-  profile: { vBitrate: number, vResolution: number };
+  profile: { vBitrate: number; vResolution: number };
 
-
-  etc: { writeRetryTimeout: number, tracerouteHost: string[], tracerouteHost6: string[] };
+  etc: {
+    writeRetryTimeout: number;
+    tracerouteHost: string[];
+    tracerouteHost6: string[];
+  };
 
   /**
    * Video resolution, bitrate, audio frequency, file transfer(?) config.
    *
    */
   trailer: {
-    tokenExpireTime: number,
-    resolution: number,
-    resolutionHD: number,
-    compRatio: number,
-    compRatioHD: number,
-    downMode: number,
-    concurrentDownLimit: number,
-    concurrentUpLimit: number,
-    maxRelaySize: number,
-    downCheckSize: number,
-    upMaxSize: number,
-    videoUpMaxSize: number,
-    vCodec: number,
-    vFps: number,
-    aCodec: number,
-    contentExpireTime: number,
-    vResolution: number,
-    vBitrate: number,
-    aFrequency: number
+    tokenExpireTime: number;
+    resolution: number;
+    resolutionHD: number;
+    compRatio: number;
+    compRatioHD: number;
+    downMode: number;
+    concurrentDownLimit: number;
+    concurrentUpLimit: number;
+    maxRelaySize: number;
+    downCheckSize: number;
+    upMaxSize: number;
+    videoUpMaxSize: number;
+    vCodec: number;
+    vFps: number;
+    aCodec: number;
+    contentExpireTime: number;
+    vResolution: number;
+    vBitrate: number;
+    aFrequency: number;
   };
 
   /**
    * High quality video resolution, bitrate, audio frequency config
    */
-  'trailer.h': { vResolution: number, vBitrate: number, aFrequency: number };
-
+  'trailer.h': { vResolution: number; vBitrate: number; aFrequency: number };
 }

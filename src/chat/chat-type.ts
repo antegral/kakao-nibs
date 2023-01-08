@@ -8,7 +8,6 @@
  * Known chat type.
  */
 export enum KnownChatType {
-
   FEED = 0,
   TEXT = 1,
   PHOTO = 2,
@@ -45,7 +44,6 @@ export enum KnownChatType {
   OPEN_SCHEDULE = 96,
   OPEN_VOTE = 97,
   OPEN_POST = 98,
-
 }
 
 export type ChatType = KnownChatType | number;

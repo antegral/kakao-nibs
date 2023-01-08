@@ -5,7 +5,7 @@
  */
 
 import { Long } from 'bson';
-import { LoginData } from '..';
+import { LoginData } from '@src/api';
 
 /**
  * Raw login data
@@ -40,7 +40,10 @@ export interface AccessDataStruct {
   mainDeviceAppVersion: string;
 }
 
-export function structToLoginData(struct: AccessDataStruct, deviceUUID: string): LoginData {
+export function structToLoginData(
+  struct: AccessDataStruct,
+  deviceUUID: string,
+): LoginData {
   return {
     userId: Long.fromValue(struct.userId),
 

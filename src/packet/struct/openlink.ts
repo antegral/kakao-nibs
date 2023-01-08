@@ -9,7 +9,6 @@ import { OpenLinkType } from '../../openlink';
 import { OpenLinkChannelUserStruct } from './user';
 
 export interface OpenLinkStruct {
-
   /**
    * Link id
    */
@@ -94,20 +93,18 @@ export interface OpenLinkStruct {
   /**
    * Open channel cover
    */
-  oc?: { t: OpenLinkType; co: { desc: string }; };
+  oc?: { t: OpenLinkType; co: { desc: string } };
 
   /**
    * Open profile cover
    */
-  op?: { desc: string; tags?: string[]; };
-
+  op?: { desc: string; tags?: string[] };
 }
 
 /**
  * OpenLink extra info
  */
 export interface OpenLinkInfoStruct {
-
   /**
    * Max user limit (open channel)
    */
@@ -117,9 +114,8 @@ export interface OpenLinkInfoStruct {
    * Max direct limit (open profile)
    */
   dcl?: number;
-
 }
 
-export interface InformedOpenLinkStruct extends OpenLinkStruct, OpenLinkInfoStruct {
-
-}
+export interface InformedOpenLinkStruct
+  extends OpenLinkStruct,
+    OpenLinkInfoStruct {}

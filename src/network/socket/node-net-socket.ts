@@ -26,7 +26,7 @@ export class NodeSocket implements BiStream {
 
   async read(buffer: Uint8Array): Promise<number | null> {
     if (this._chunks.byteLength < buffer.byteLength) {
-      const chunk = await this._socket.read() as Buffer | undefined;
+      const chunk = (await this._socket.read()) as Buffer | undefined;
       if (!chunk) return null;
       this._chunks.append(chunk);
     }
@@ -39,7 +39,7 @@ export class NodeSocket implements BiStream {
       this._chunks.append(data.subarray(buffer.byteLength));
       view = data.subarray(0, buffer.byteLength);
     }
-    
+
     buffer.set(view, 0);
 
     return view.byteLength;

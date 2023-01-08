@@ -7,7 +7,6 @@
 import { Attachment } from '.';
 
 export interface MapAttachment extends Attachment {
-
   /**
    * Latitude (multiplied by 10000000000)
    */
@@ -27,5 +26,4 @@ export interface MapAttachment extends Attachment {
    * true if using kakao map
    */
   c: boolean;
-
 }

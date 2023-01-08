@@ -14,11 +14,10 @@ const EMPTY_ITERATOR: AsyncIterableIterator<unknown> = {
 
   async next() {
     return { done: true, value: null };
-  }
+  },
 };
 
 export const EmptyChatListStore: UpdatableChatListStore = {
-
   async get(): Promise<Chatlog | undefined> {
     return;
   },
@@ -49,21 +48,14 @@ export const EmptyChatListStore: UpdatableChatListStore = {
 
   async removeChat(): Promise<boolean> {
     return false;
-  }
-
-}
+  },
+};
 
 /**
  * Inmemory chat list with count limit
  */
 export class TalkMemoryChatListStore implements UpdatableChatListStore {
-
-  constructor(
-    public limit: number,
-    private _chatList: Chatlog[] = []
-  ) {
-
-  }
+  constructor(public limit: number, private _chatList: Chatlog[] = []) {}
 
   private findIndex(logId: Long): number {
     return this._chatList.findIndex((value) => logId.eq(value.logId));
@@ -79,7 +71,7 @@ export class TalkMemoryChatListStore implements UpdatableChatListStore {
 
       next: async () => {
         return iter.next();
-      }
+      },
     };
   }
 
@@ -96,9 +88,15 @@ export class TalkMemoryChatListStore implements UpdatableChatListStore {
     return this._chatList[this._chatList.length - 1];
   }
 
-  before(logId: Long, maxCount: number = this._chatList.length): AsyncIterableIterator<Chatlog> {
+  before(
+    logId: Long,
+    maxCount: number = this._chatList.length,
+  ): AsyncIterableIterator<Chatlog> {
     const start = this.findIndex(logId);
-    const slice = start < 0 ? [] : this._chatList.slice(Math.max(0, start - maxCount), start);
+    const slice =
+      start < 0
+        ? []
+        : this._chatList.slice(Math.max(0, start - maxCount), start);
 
     return this.makeIterator(slice);
   }
@@ -116,7 +114,9 @@ export class TalkMemoryChatListStore implements UpdatableChatListStore {
 
   async addChat(...chat: Chatlog[]): Promise<void> {
     if (this._chatList.length >= this.limit) {
-      this._chatList = this._chatList.slice(this.limit - this._chatList.length + 1);
+      this._chatList = this._chatList.slice(
+        this.limit - this._chatList.length + 1,
+      );
     }
 
     this._chatList.push(...chat);
@@ -140,5 +140,4 @@ export class TalkMemoryChatListStore implements UpdatableChatListStore {
     this._chatList.splice(i, 1);
     return true;
   }
-
 }

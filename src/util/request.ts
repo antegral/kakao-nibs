@@ -4,7 +4,7 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-import { CommandResult, CommandResultDone } from "../request";
+import { CommandResult, CommandResultDone } from '../request';
 
 /**
  * Unwrap CommandResult and convert failed case into error.
@@ -13,7 +13,9 @@ import { CommandResult, CommandResultDone } from "../request";
  * @param {CommandResult<T>} commandRes CommandResult to unwrap
  * @return {T} Unwrapped result
  */
-export function unwrapResult<T>(commandRes: CommandResult<T>): CommandResultDone<T> {
+export function unwrapResult<T>(
+  commandRes: CommandResult<T>,
+): CommandResultDone<T> {
   if (!commandRes.success) {
     throw new Error(`Request failed with status: ${commandRes.status}`);
   }

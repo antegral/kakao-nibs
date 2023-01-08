@@ -5,12 +5,11 @@
  */
 
 export interface ProfileFeed {
-
   id: string;
   serviceName: string;
   typeIconUrl: string;
   downloadId: string;
-  contents: Array<{ type: string, value: string }>;
+  contents: Array<{ type: string; value: string }>;
   url: string;
   serviceUrl: string;
   webUrl: string;
@@ -22,32 +21,24 @@ export interface ProfileFeed {
   type: number;
   isCurrent: boolean;
   extra: unknown;
-
 }
 
 export interface ProfileFeedList {
-
   totalCnts: number;
   feeds: ProfileFeed[];
-
 }
 
 export interface ProfileDecoration {
-
   itemKind: string;
   itemId: string;
   parameters: { resourceUrl: string };
-
 }
 
 export interface BgEffectDecoration extends ProfileDecoration {
-
   itemKind: 'BgEffect';
-
 }
 
 export interface StickerDecoration extends ProfileDecoration {
-
   itemKind: 'Sticker';
 
   // position by percent
@@ -58,11 +49,9 @@ export interface StickerDecoration extends ProfileDecoration {
   width: number;
   height: number;
   rotation: number;
-
 }
 
 export interface ProfileStruct {
-
   backgroundImageUrl: string;
   originalBackgroundImageUrl: string;
 
@@ -83,14 +72,11 @@ export interface ProfileStruct {
   allowPay: boolean;
 
   screenToken: number;
-
 }
 
 export interface ProfileReqStruct {
-
   profile: ProfileStruct;
 
   itemNewBadgeToken: number;
   lastSeenAt: number;
-
 }

@@ -5,7 +5,6 @@
  */
 
 export enum KnownDataStatusCode {
-
   SUCCESS = 0,
   INVALID_USER = -1,
   CLIENT_ERROR = -200,
@@ -46,56 +45,45 @@ export enum KnownDataStatusCode {
   BLOCKED_ACCOUNT = -997,
   AUTH_REQUIRED = -998,
   UPDATE_REQUIRED = -999,
-  SERVER_UNDER_MAINTENANCE = -9797
-
+  SERVER_UNDER_MAINTENANCE = -9797,
 }
 
 export type DataStatusCode = KnownDataStatusCode | number;
 
 export interface ResponseState {
-
   status: DataStatusCode;
-
 }
 
 export interface DefaultReq {
-
   [key: string]: unknown;
-
 }
 
-export interface DefaultRes extends DefaultReq, ResponseState {
-
-}
+export interface DefaultRes extends DefaultReq, ResponseState {}
 
 /**
  * Wrapped request response.
  */
 interface RootCommandResult extends ResponseState {
-
   readonly success: boolean;
-
 }
 
 export interface CommandResultFailed extends RootCommandResult {
-
   readonly success: false;
-
 }
 
 interface CommandResultDoneValue<T> extends RootCommandResult {
-
   readonly success: true;
   readonly result: T;
-
 }
 
 interface CommandResultDoneVoid extends RootCommandResult {
-
   readonly success: true;
-
 }
 
-export type CommandResultDone<T = void> = (T extends void ? CommandResultDoneVoid : CommandResultDoneValue<T>);
-export type CommandResult<T = void> = CommandResultFailed | CommandResultDone<T>;
+export type CommandResultDone<T = void> = T extends void
+  ? CommandResultDoneVoid
+  : CommandResultDoneValue<T>;
+export type CommandResult<T = void> =
+  | CommandResultFailed
+  | CommandResultDone<T>;
 export type AsyncCommandResult<T = void> = Promise<CommandResult<T>>;

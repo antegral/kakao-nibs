@@ -11,10 +11,8 @@ import { ChatContent } from '.';
  * Append text
  */
 export class TextContent implements ChatContent {
-  constructor(public text: string) {
+  constructor(public text: string) {}
 
-  }
-  
   append(chat: Chat): void {
     chat.text += this.text;
   }
@@ -24,9 +22,7 @@ export class TextContent implements ChatContent {
  * Append attachment
  */
 export class AttachmentContent implements ChatContent {
-  constructor(public attachment: Record<string, unknown>) {
-
-  }
+  constructor(public attachment: Record<string, unknown>) {}
 
   append(chat: Chat): void {
     if (!chat.attachment) return;

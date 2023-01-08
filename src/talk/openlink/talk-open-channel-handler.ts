@@ -13,12 +13,22 @@ import {
   KnownFeedType,
   OpenKickFeed,
   OpenRewriteFeed,
-  UpdatableChatListStore
+  UpdatableChatListStore,
 } from '../../chat';
 import { EventContext, TypedEmitter } from '../../event';
-import { OpenChannel, OpenChannelInfo, OpenChannelSession, OpenChannelUserPerm } from '../../openlink';
+import {
+  OpenChannel,
+  OpenChannelInfo,
+  OpenChannelSession,
+  OpenChannelUserPerm,
+} from '../../openlink';
 import { DefaultRes } from '../../request';
-import { LinkKickedRes, SyncEventRes, SyncLinkPfRes, SyncMemTRes } from '../../packet/chat';
+import {
+  LinkKickedRes,
+  SyncEventRes,
+  SyncLinkPfRes,
+  SyncMemTRes,
+} from '../../packet/chat';
 import {
   ChannelInfoStruct,
   ChatlogStruct,
@@ -36,16 +46,19 @@ type TalkOpenChannelEvents<T> = OpenChannelEvents<T, OpenChannelUserInfo>;
 /**
  * Capture and handle pushes coming to open channel
  */
-export class TalkOpenChannelHandler<T extends OpenChannel> implements Managed<TalkOpenChannelEvents<T>> {
+export class TalkOpenChannelHandler<T extends OpenChannel>
+  implements Managed<TalkOpenChannelEvents<T>>
+{
   constructor(
     private _channel: T,
     private _session: OpenChannelSession,
     private _emitter: TypedEmitter<TalkOpenChannelEvents<T>>,
-    private _store: UpdatableChannelDataStore<OpenChannelInfo, OpenChannelUserInfo>,
-    private _chatListStore: UpdatableChatListStore
-  ) {
-
-  }
+    private _store: UpdatableChannelDataStore<
+      OpenChannelInfo,
+      OpenChannelUserInfo
+    >,
+    private _chatListStore: UpdatableChatListStore,
+  ) {}
 
   private _callEvent<E extends keyof TalkOpenChannelEvents<T>>(
     parentCtx: EventContext<TalkOpenChannelEvents<T>>,
@@ -58,9 +71,13 @@ export class TalkOpenChannelHandler<T extends OpenChannel> implements Managed<Ta
 
   private async _hostHandoverHandler(
     memTData: DefaultRes & SyncMemTRes,
-    parentCtx: EventContext<TalkOpenChannelEvents<T>>
+    parentCtx: EventContext<TalkOpenChannelEvents<T>>,
   ) {
-    if (!this._channel.channelId.eq(memTData.c) && !this._channel.linkId.eq(memTData.li)) return;
+    if (
+      !this._channel.channelId.eq(memTData.c) &&
+      !this._channel.linkId.eq(memTData.li)
+    )
+      return;
 
     const len = memTData.mids.length;
     for (let i = 0; i < len; i++) {
@@ -80,23 +97,36 @@ export class TalkOpenChannelHandler<T extends OpenChannel> implements Managed<Ta
           if (res.success) {
             this._store.updateInfo({ openLink: res.result });
 
-            this._callEvent(parentCtx, 'host_handover', this._channel, lastLink || res.result, res.result);
+            this._callEvent(
+              parentCtx,
+              'host_handover',
+              this._channel,
+              lastLink || res.result,
+              res.result,
+            );
           }
         }
 
-        this._callEvent(parentCtx, 'perm_changed', this._channel, lastInfo, info);
+        this._callEvent(
+          parentCtx,
+          'perm_changed',
+          this._channel,
+          lastInfo,
+          info,
+        );
       }
     }
   }
 
   private _profileChangedHandler(
     pfData: DefaultRes & SyncLinkPfRes,
-    parentCtx: EventContext<TalkOpenChannelEvents<T>>
+    parentCtx: EventContext<TalkOpenChannelEvents<T>>,
   ) {
     if (
-      pfData.c && !this._channel.channelId.eq(pfData.c) ||
-      pfData.li && !this._channel.linkId.eq(pfData.li)
-    ) return;
+      (pfData.c && !this._channel.channelId.eq(pfData.c)) ||
+      (pfData.li && !this._channel.linkId.eq(pfData.li))
+    )
+      return;
 
     const last = this._store.getUserInfo(pfData.olu);
     if (!last) return;
@@ -105,16 +135,13 @@ export class TalkOpenChannelHandler<T extends OpenChannel> implements Managed<Ta
 
     this._store.updateUserInfo(last, updated);
 
-    this._callEvent(
-      parentCtx,
-      'profile_changed',
-      this._channel,
-      last,
-      updated,
-    );
+    this._callEvent(parentCtx, 'profile_changed', this._channel, last, updated);
   }
 
-  private _msgHiddenHandler(data: DefaultRes, parentCtx: EventContext<TalkOpenChannelEvents<T>>) {
+  private _msgHiddenHandler(
+    data: DefaultRes,
+    parentCtx: EventContext<TalkOpenChannelEvents<T>>,
+  ) {
     const struct = data['chatLog'] as ChatlogStruct;
     if (!this._channel.channelId.eq(struct.chatId)) return;
 
@@ -136,9 +163,13 @@ export class TalkOpenChannelHandler<T extends OpenChannel> implements Managed<Ta
 
   private _chatEventHandler(
     syncEventData: DefaultRes & SyncEventRes,
-    parentCtx: EventContext<TalkOpenChannelEvents<T>>
+    parentCtx: EventContext<TalkOpenChannelEvents<T>>,
   ) {
-    if (!this._channel.channelId.eq(syncEventData.c) && !this._channel.linkId.eq(syncEventData.li)) return;
+    if (
+      !this._channel.channelId.eq(syncEventData.c) &&
+      !this._channel.linkId.eq(syncEventData.li)
+    )
+      return;
 
     const user = this._store.getUserInfo({ userId: syncEventData.authorId });
     if (!user) return;
@@ -154,7 +185,10 @@ export class TalkOpenChannelHandler<T extends OpenChannel> implements Managed<Ta
     );
   }
 
-  private _channelLinkDeletedHandler(data: DefaultRes, parentCtx: EventContext<TalkOpenChannelEvents<T>>) {
+  private _channelLinkDeletedHandler(
+    data: DefaultRes,
+    parentCtx: EventContext<TalkOpenChannelEvents<T>>,
+  ) {
     if (!this._channel.linkId.eq(data['li'] as Long)) return;
     const struct = data['chatLog'] as ChatlogStruct;
 
@@ -174,7 +208,10 @@ export class TalkOpenChannelHandler<T extends OpenChannel> implements Managed<Ta
     this._chatListStore.addChat(chatLog).then();
   }
 
-  private async _userJoinHandler(data: DefaultRes, parentCtx: EventContext<TalkOpenChannelEvents<T>>) {
+  private async _userJoinHandler(
+    data: DefaultRes,
+    parentCtx: EventContext<TalkOpenChannelEvents<T>>,
+  ) {
     const struct = data['chatLog'] as ChatlogStruct;
     if (!this._channel.channelId.eq(struct.chatId)) return;
 
@@ -208,7 +245,7 @@ export class TalkOpenChannelHandler<T extends OpenChannel> implements Managed<Ta
             feed,
           );
         }
-      };
+      }
     }
 
     this._chatListStore.addChat(chatLog).then();
@@ -217,14 +254,20 @@ export class TalkOpenChannelHandler<T extends OpenChannel> implements Managed<Ta
   async pushReceived(
     method: string,
     data: DefaultRes,
-    parentCtx: EventContext<TalkOpenChannelEvents<T>>
+    parentCtx: EventContext<TalkOpenChannelEvents<T>>,
   ): Promise<void> {
     switch (method) {
       case 'SYNCMEMT':
-        await this._hostHandoverHandler(data as DefaultRes & SyncMemTRes, parentCtx);
+        await this._hostHandoverHandler(
+          data as DefaultRes & SyncMemTRes,
+          parentCtx,
+        );
         break;
       case 'SYNCLINKPF':
-        this._profileChangedHandler(data as DefaultRes & SyncLinkPfRes, parentCtx);
+        this._profileChangedHandler(
+          data as DefaultRes & SyncLinkPfRes,
+          parentCtx,
+        );
         break;
       case 'SYNCREWR':
         this._msgHiddenHandler(data, parentCtx);
@@ -242,14 +285,14 @@ export class TalkOpenChannelHandler<T extends OpenChannel> implements Managed<Ta
   }
 }
 
-export class TalkOpenChannelListHandler<T extends OpenChannel, U> implements Managed<OpenChannelListEvents<T, U>> {
+export class TalkOpenChannelListHandler<T extends OpenChannel, U>
+  implements Managed<OpenChannelListEvents<T, U>>
+{
   constructor(
     private _list: ChannelStore<T>,
     private _emitter: TypedEmitter<OpenChannelListEvents<T, U>>,
-    private _updater: ChannelListUpdater<T>
-  ) {
-
-  }
+    private _updater: ChannelListUpdater<T>,
+  ) {}
 
   private _callEvent<E extends keyof OpenChannelListEvents<T, U>>(
     parentCtx: EventContext<OpenChannelListEvents<T, U>>,
@@ -263,21 +306,19 @@ export class TalkOpenChannelListHandler<T extends OpenChannel, U> implements Man
   async pushReceived(
     method: string,
     data: DefaultRes,
-    parentCtx: EventContext<OpenChannelListEvents<T, U>>
+    parentCtx: EventContext<OpenChannelListEvents<T, U>>,
   ): Promise<void> {
     switch (method) {
       case 'SYNCLINKCR': {
         const chatRoom = data['chatRoom'] as ChannelInfoStruct;
         if (!chatRoom) break;
 
-        const channelRes = await this._updater.addChannel({ channelId: chatRoom.chatId });
+        const channelRes = await this._updater.addChannel({
+          channelId: chatRoom.chatId,
+        });
 
         if (channelRes.success) {
-          this._callEvent(
-            parentCtx,
-            'channel_join',
-            channelRes.result as T,
-          );
+          this._callEvent(parentCtx, 'channel_join', channelRes.result as T);
         }
 
         break;
@@ -316,11 +357,7 @@ export class TalkOpenChannelListHandler<T extends OpenChannel, U> implements Man
         if (!channel) return;
 
         this._updater.removeChannel(channel);
-        this._callEvent(
-          parentCtx,
-          'channel_left',
-          channel,
-        );
+        this._callEvent(parentCtx, 'channel_left', channel);
       }
     }
   }

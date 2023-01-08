@@ -7,7 +7,6 @@
 import { BiStream } from '../stream';
 
 export interface StreamHook {
-
   /**
    * Hook data write
    *
@@ -24,13 +23,13 @@ export interface StreamHook {
   onRead(buf: Uint8Array, read: number | null): void;
 
   onClose(): void;
-
 }
 
 export class HookedStream implements BiStream {
-  constructor(private _stream: BiStream, public hook: Partial<StreamHook> = {}) {
-
-  }
+  constructor(
+    private _stream: BiStream,
+    public hook: Partial<StreamHook> = {},
+  ) {}
 
   get ended(): boolean {
     return this._stream.ended;

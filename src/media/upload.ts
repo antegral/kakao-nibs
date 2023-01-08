@@ -9,7 +9,6 @@ import { AsyncCommandResult, CommandResult } from '../request';
 import { FixedWriteStream } from '../stream';
 
 export interface MediaMetadata {
-
   /**
    * Media name
    */
@@ -20,20 +19,18 @@ export interface MediaMetadata {
    */
   readonly width?: number;
 
-   /**
-    * Media height (only photo, video)
-    */
+  /**
+   * Media height (only photo, video)
+   */
   readonly height?: number;
- 
-   /**
-    * File extension (Optional. Required when sending file)
-    */
-  readonly ext?: string;
 
+  /**
+   * File extension (Optional. Required when sending file)
+   */
+  readonly ext?: string;
 }
 
 export interface MediaUploadForm {
-
   /**
    * Size of media data
    */
@@ -48,11 +45,9 @@ export interface MediaUploadForm {
    * Media metadata
    */
   readonly metadata: MediaMetadata;
-
 }
 
 export interface MediaPostEntry {
-
   /**
    * Start offset of media data.
    */
@@ -62,29 +57,23 @@ export interface MediaPostEntry {
    * Write stream
    */
   stream: FixedWriteStream;
-
 }
 
 export interface MediaMultiPostEntry extends MediaPostEntry {
-
   /**
    * Finish current media upload and close media stream.
    */
   finish(): AsyncCommandResult;
-
 }
 
 export interface MediaPost extends MediaPostEntry {
-
   /**
    * Finish media upload and close media stream.
    */
   finish(): AsyncCommandResult<Chatlog>;
-
 }
 
 export interface MediaMultiPost {
-
   /**
    * Media post entries. Ordered same as given UploadForm list.
    * Each loop will create connection for n-th UploadForm.
@@ -95,5 +84,4 @@ export interface MediaMultiPost {
    * Finish all media uploads and send to channel.
    */
   finish(): AsyncCommandResult<Chatlog>;
-
 }

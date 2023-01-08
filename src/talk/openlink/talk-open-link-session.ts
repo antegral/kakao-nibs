@@ -19,7 +19,7 @@ import {
   OpenLinkProfileTemplate,
   OpenLinkSession,
   OpenLinkType,
-  OpenLinkUpdateTemplate
+  OpenLinkUpdateTemplate,
 } from '../../openlink';
 import {
   CreateOpenLinkRes,
@@ -27,10 +27,14 @@ import {
   JoinInfoRes,
   KLSyncRes,
   SyncLinkRes,
-  UpdateOpenLinkRes
+  UpdateOpenLinkRes,
 } from '../../packet/chat';
 import { AsyncCommandResult, KnownDataStatusCode } from '../../request';
-import { structToOpenLink, structToOpenLinkInfo, structToOpenLinkKickedUserInfo } from '../../packet/struct';
+import {
+  structToOpenLink,
+  structToOpenLinkInfo,
+  structToOpenLinkKickedUserInfo,
+} from '../../packet/struct';
 import { Long } from 'bson';
 
 /**
@@ -44,110 +48,124 @@ export class TalkOpenLinkSession implements OpenLinkSession {
   }
 
   async getLatestLinkList(): AsyncCommandResult<Readonly<InformedOpenLink>[]> {
-    const res = await this._session.request<SyncLinkRes>(
-      'SYNCLINK',
-      {
-        'ltk': this._lastLinkToken,
-      },
-    );
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { status: res.status, success: false };
-
-    const list: InformedOpenLink[] = !res.ols ? [] : res.ols.map((struct) => {
-      return { openLink: structToOpenLink(struct), info: structToOpenLinkInfo(struct) };
+    const res = await this._session.request<SyncLinkRes>('SYNCLINK', {
+      ltk: this._lastLinkToken,
     });
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { status: res.status, success: false };
+
+    const list: InformedOpenLink[] = !res.ols
+      ? []
+      : res.ols.map((struct) => {
+          return {
+            openLink: structToOpenLink(struct),
+            info: structToOpenLinkInfo(struct),
+          };
+        });
 
     this._lastLinkToken = res.ltk;
 
     return { status: res.status, success: true, result: list };
   }
 
-  async getOpenLink(...components: OpenLinkComponent[]): AsyncCommandResult<Readonly<OpenLink>[]> {
-    const res = await this._session.request<InfoLinkRes>(
-      'INFOLINK',
-      {
-        'lis': components.map((component) => component.linkId),
-      },
-    );
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { status: res.status, success: false };
+  async getOpenLink(
+    ...components: OpenLinkComponent[]
+  ): AsyncCommandResult<Readonly<OpenLink>[]> {
+    const res = await this._session.request<InfoLinkRes>('INFOLINK', {
+      lis: components.map((component) => component.linkId),
+    });
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { status: res.status, success: false };
 
     const list: OpenLink[] = res.ols ? res.ols.map(structToOpenLink) : [];
 
     return { status: res.status, success: true, result: list };
   }
 
-  async getJoinInfo(linkURL: string, referer = 'EW'): AsyncCommandResult<Readonly<InformedOpenLink>> {
-    const res = await this._session.request<JoinInfoRes>(
-      'JOININFO',
-      {
-        'lu': linkURL,
-        'ref': referer,
-      },
-    );
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { status: res.status, success: false };
+  async getJoinInfo(
+    linkURL: string,
+    referer = 'EW',
+  ): AsyncCommandResult<Readonly<InformedOpenLink>> {
+    const res = await this._session.request<JoinInfoRes>('JOININFO', {
+      lu: linkURL,
+      ref: referer,
+    });
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { status: res.status, success: false };
 
     return {
       status: res.status,
       success: true,
-      result: { openLink: structToOpenLink(res.ol), info: structToOpenLinkInfo(res.ol) },
+      result: {
+        openLink: structToOpenLink(res.ol),
+        info: structToOpenLinkInfo(res.ol),
+      },
     };
   }
 
-  async getKickList(link: OpenLinkComponent): AsyncCommandResult<OpenLinkKickedUserInfo[]> {
-    const res = await this._session.request<KLSyncRes>(
-      'KLSYNC',
-      {
-        'li': link.linkId,
-      },
-    );
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { status: res.status, success: false };
+  async getKickList(
+    link: OpenLinkComponent,
+  ): AsyncCommandResult<OpenLinkKickedUserInfo[]> {
+    const res = await this._session.request<KLSyncRes>('KLSYNC', {
+      li: link.linkId,
+    });
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { status: res.status, success: false };
 
-    return { status: res.status, success: true, result: res.kickMembers.map(structToOpenLinkKickedUserInfo) };
+    return {
+      status: res.status,
+      success: true,
+      result: res.kickMembers.map(structToOpenLinkKickedUserInfo),
+    };
   }
 
-  async removeKicked(link: OpenLinkComponent, user: OpenLinkKickedUser): AsyncCommandResult {
-    const res = await this._session.request(
-      'KLDELITEM',
-      {
-        'li': link.linkId,
-        'c': user.kickedChannelId,
-        'kid': user.userId,
-      },
-    );
+  async removeKicked(
+    link: OpenLinkComponent,
+    user: OpenLinkKickedUser,
+  ): AsyncCommandResult {
+    const res = await this._session.request('KLDELITEM', {
+      li: link.linkId,
+      c: user.kickedChannelId,
+      kid: user.userId,
+    });
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+    };
   }
 
   async deleteLink(link: OpenLinkComponent): AsyncCommandResult {
-    const res = await this._session.request<JoinInfoRes>(
-      'DELETELINK',
-      {
-        'li': link.linkId,
-      },
-    );
+    const res = await this._session.request<JoinInfoRes>('DELETELINK', {
+      li: link.linkId,
+    });
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+    };
   }
 
   async react(link: OpenLinkComponent, flag: boolean): AsyncCommandResult {
-    const res = await this._session.request<JoinInfoRes>(
-      'REACT',
-      {
-        'li': link.linkId,
-        'rt': flag ? 1 : 0,
-      },
-    );
+    const res = await this._session.request<JoinInfoRes>('REACT', {
+      li: link.linkId,
+      rt: flag ? 1 : 0,
+    });
 
-    return { status: res.status, success: res.status === KnownDataStatusCode.SUCCESS };
+    return {
+      status: res.status,
+      success: res.status === KnownDataStatusCode.SUCCESS,
+    };
   }
 
-  async getReaction(link: OpenLinkComponent): AsyncCommandResult<[number, boolean]> {
-    const res = await this._session.request(
-      'REACTCNT',
-      {
-        'li': link.linkId,
-      },
-    );
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { status: res.status, success: false };
+  async getReaction(
+    link: OpenLinkComponent,
+  ): AsyncCommandResult<[number, boolean]> {
+    const res = await this._session.request('REACTCNT', {
+      li: link.linkId,
+    });
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { status: res.status, success: false };
 
     return {
       status: res.status,
@@ -158,108 +176,124 @@ export class TalkOpenLinkSession implements OpenLinkSession {
 
   async createOpenChannel(
     template: OpenLinkChannelTemplate & OpenLinkCreateTemplate,
-    profile: OpenLinkProfiles
+    profile: OpenLinkProfiles,
   ): AsyncCommandResult<OpenChannel> {
     const reqData: Record<string, unknown> = {
-      'lt': OpenLinkType.CHANNEL,
-      'lip': template.linkCoverURL || '',
-      'aptp': !template.mainProfileOnly,
-      'ln': template.linkName,
-      'pa': template.activated,
-      'ri': Long.fromInt(Date.now() / 1000),
-      'ml': template.userLimit,
-      'desc': template.description,
-      'sc': template.searchable,
-      ...OpenLinkProfile.serializeLinkProfile(profile)
+      lt: OpenLinkType.CHANNEL,
+      lip: template.linkCoverURL || '',
+      aptp: !template.mainProfileOnly,
+      ln: template.linkName,
+      pa: template.activated,
+      ri: Long.fromInt(Date.now() / 1000),
+      ml: template.userLimit,
+      desc: template.description,
+      sc: template.searchable,
+      ...OpenLinkProfile.serializeLinkProfile(profile),
     };
 
     const res = await this._session.request<CreateOpenLinkRes>(
       'CREATELINK',
       reqData,
     );
-    if (res.status !== KnownDataStatusCode.SUCCESS || !res.chatRoom) return { status: res.status, success: false };
+    if (res.status !== KnownDataStatusCode.SUCCESS || !res.chatRoom)
+      return { status: res.status, success: false };
 
-    return { success: true, status: res.status, result: { channelId: res.chatRoom.chatId, linkId: res.ol.li } };
+    return {
+      success: true,
+      status: res.status,
+      result: { channelId: res.chatRoom.chatId, linkId: res.ol.li },
+    };
   }
 
   async createOpenDirectProfile(
     template: OpenLinkChannelTemplate & OpenLinkCreateTemplate,
-    profile: OpenLinkProfiles
+    profile: OpenLinkProfiles,
   ): AsyncCommandResult<InformedOpenLink> {
     const reqData: Record<string, unknown> = {
-      'lt': OpenLinkType.PROFILE,
-      'lip': template.linkCoverURL || '',
-      'aptp': !template.mainProfileOnly,
-      'ln': template.linkName,
-      'pa': template.activated,
-      'ri': Long.fromInt(Date.now() / 1000),
-      'dcl': template.userLimit,
-      'desc': template.description,
-      'sc': template.searchable,
-      ...OpenLinkProfile.serializeLinkProfile(profile)
+      lt: OpenLinkType.PROFILE,
+      lip: template.linkCoverURL || '',
+      aptp: !template.mainProfileOnly,
+      ln: template.linkName,
+      pa: template.activated,
+      ri: Long.fromInt(Date.now() / 1000),
+      dcl: template.userLimit,
+      desc: template.description,
+      sc: template.searchable,
+      ...OpenLinkProfile.serializeLinkProfile(profile),
     };
 
     const res = await this._session.request<CreateOpenLinkRes>(
       'CREATELINK',
       reqData,
     );
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { status: res.status, success: false };
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { status: res.status, success: false };
 
     return {
-      success: true, status: res.status,
-      result: { openLink: structToOpenLink(res.ol), info: structToOpenLinkInfo(res.ol) }
+      success: true,
+      status: res.status,
+      result: {
+        openLink: structToOpenLink(res.ol),
+        info: structToOpenLinkInfo(res.ol),
+      },
     };
   }
 
   // TODO::
   async createOpenProfile(
-    template: OpenLinkProfileTemplate & OpenLinkCreateTemplate
+    template: OpenLinkProfileTemplate & OpenLinkCreateTemplate,
   ): AsyncCommandResult<InformedOpenLink> {
     const reqData: Record<string, unknown> = {
-      'lt': OpenLinkType.PROFILE,
-      'lip': '',
-      'aptp': !template.mainProfileOnly,
-      'ln': template.linkName,
-      'pa': template.activated,
-      'ri': Long.fromInt(Date.now() / 1000),
-      'did': Long.fromNumber(40),
+      lt: OpenLinkType.PROFILE,
+      lip: '',
+      aptp: !template.mainProfileOnly,
+      ln: template.linkName,
+      pa: template.activated,
+      ri: Long.fromInt(Date.now() / 1000),
+      did: Long.fromNumber(40),
       ...OpenLinkProfile.serializeLinkProfile({
         nickname: template.linkName,
-        profilePath: template.linkCoverURL
+        profilePath: template.linkCoverURL,
       }),
-      'dcl': template.directLimit,
-      'desc': null,
-      'sc': template.searchable,
-      'pfc': JSON.stringify({
+      dcl: template.directLimit,
+      desc: null,
+      sc: template.searchable,
+      pfc: JSON.stringify({
         description: template.description,
-        tags: template.tags
-      })
+        tags: template.tags,
+      }),
     };
 
     const res = await this._session.request<CreateOpenLinkRes>(
       'CREATELINK',
       reqData,
     );
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { status: res.status, success: false };
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { status: res.status, success: false };
 
     return {
-      success: true, status: res.status,
-      result: { openLink: structToOpenLink(res.ol), info: structToOpenLinkInfo(res.ol) }
+      success: true,
+      status: res.status,
+      result: {
+        openLink: structToOpenLink(res.ol),
+        info: structToOpenLinkInfo(res.ol),
+      },
     };
   }
 
   async updateOpenLink(
     link: OpenLinkComponent,
-    settings: (OpenLinkChannelTemplate | OpenLinkProfileTemplate) & OpenLinkUpdateTemplate
+    settings: (OpenLinkChannelTemplate | OpenLinkProfileTemplate) &
+      OpenLinkUpdateTemplate,
   ): AsyncCommandResult<InformedOpenLink> {
     const reqData: Record<string, unknown> = {
-      'li': link.linkId,
-      'ln': settings.linkName,
-      'ac': settings.activated,
-      'pa': true,
-      'pc': settings.passcode || '',
-      'desc': settings.description,
-      'sc': settings.searchable
+      li: link.linkId,
+      ln: settings.linkName,
+      ac: settings.activated,
+      pa: true,
+      pc: settings.passcode || '',
+      desc: settings.description,
+      sc: settings.searchable,
     };
 
     if ('directLimit' in settings) {
@@ -278,16 +312,16 @@ export class TalkOpenLinkSession implements OpenLinkSession {
       'UPDATELINK',
       reqData,
     );
-    if (res.status !== KnownDataStatusCode.SUCCESS) return { status: res.status, success: false };
+    if (res.status !== KnownDataStatusCode.SUCCESS)
+      return { status: res.status, success: false };
 
     return {
       success: true,
       status: res.status,
       result: {
         openLink: structToOpenLink(res.ol),
-        info: structToOpenLinkInfo(res.ol)
-      }
+        info: structToOpenLinkInfo(res.ol),
+      },
     };
   }
-
 }

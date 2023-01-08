@@ -24,7 +24,6 @@ export interface Attachment extends Record<string, unknown> {
   mentions?: MentionStruct[];
 
   urls?: string[];
-
 }
 
 /**
@@ -41,5 +40,4 @@ export interface PathAttachment extends Attachment {
    * Attachment size
    */
   s: number;
-
 }

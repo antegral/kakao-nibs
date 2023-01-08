@@ -19,7 +19,7 @@ import {
   OpenLinkProfileTemplate,
   OpenLinkService,
   OpenLinkSession,
-  OpenLinkUpdateTemplate
+  OpenLinkUpdateTemplate,
 } from '../../openlink';
 import { AsyncCommandResult, DefaultRes } from '../../request';
 import { TalkSession } from '../client';
@@ -28,19 +28,20 @@ import { Managed } from '../managed';
 import { OpenLinkUpdater, TalkOpenLinkHandler } from './talk-open-link-handler';
 import { TalkOpenLinkSession } from './talk-open-link-session';
 
-export class TalkClientLinkStore extends TypedEmitter<OpenLinkListEvents> implements
-  OpenLinkSession, OpenLinkService, OpenLinkUpdater,
-  Managed<OpenLinkListEvents> {
-
+export class TalkClientLinkStore
+  extends TypedEmitter<OpenLinkListEvents>
+  implements
+    OpenLinkSession,
+    OpenLinkService,
+    OpenLinkUpdater,
+    Managed<OpenLinkListEvents>
+{
   private _map: Map<string, InformedOpenLink>;
 
   private _linkHandler: TalkOpenLinkHandler;
   private _linkSession: TalkOpenLinkSession;
 
-  constructor(
-    session: TalkSession,
-    clientLinkList: InformedOpenLink[]
-  ) {
+  constructor(session: TalkSession, clientLinkList: InformedOpenLink[]) {
     super();
 
     this._linkSession = new TalkOpenLinkSession(session);
@@ -48,17 +49,21 @@ export class TalkClientLinkStore extends TypedEmitter<OpenLinkListEvents> implem
 
     this._map = new Map();
     if (clientLinkList.length > 0) {
-      clientLinkList.forEach((link) => this._map.set(link.openLink.linkId.toString(), link));
+      clientLinkList.forEach((link) =>
+        this._map.set(link.openLink.linkId.toString(), link),
+      );
     }
   }
-  
+
   async getLatestLinkList(): AsyncCommandResult<Readonly<InformedOpenLink>[]> {
     const res = await this._linkSession.getLatestLinkList();
 
     if (res.success) {
       const clientMap = new Map();
 
-      res.result.forEach((link) => clientMap.set(link.openLink.linkId.toString(), link));
+      res.result.forEach((link) =>
+        clientMap.set(link.openLink.linkId.toString(), link),
+      );
 
       this._map = clientMap;
     }
@@ -66,19 +71,29 @@ export class TalkClientLinkStore extends TypedEmitter<OpenLinkListEvents> implem
     return res;
   }
 
-  getOpenLink(...components: OpenLinkComponent[]): AsyncCommandResult<Readonly<OpenLink>[]> {
+  getOpenLink(
+    ...components: OpenLinkComponent[]
+  ): AsyncCommandResult<Readonly<OpenLink>[]> {
     return this._linkSession.getOpenLink(...components);
   }
 
-  getJoinInfo(linkURL: string, referer?: string): AsyncCommandResult<Readonly<InformedOpenLink>> {
+  getJoinInfo(
+    linkURL: string,
+    referer?: string,
+  ): AsyncCommandResult<Readonly<InformedOpenLink>> {
     return this._linkSession.getJoinInfo(linkURL, referer);
   }
 
-  getKickList(link: OpenLinkComponent): AsyncCommandResult<OpenLinkKickedUserInfo[]> {
+  getKickList(
+    link: OpenLinkComponent,
+  ): AsyncCommandResult<OpenLinkKickedUserInfo[]> {
     return this._linkSession.getKickList(link);
   }
 
-  removeKicked(link: OpenLinkComponent, kickedUser: OpenLinkKickedUser): AsyncCommandResult {
+  removeKicked(
+    link: OpenLinkComponent,
+    kickedUser: OpenLinkKickedUser,
+  ): AsyncCommandResult {
     return this._linkSession.removeKicked(link, kickedUser);
   }
 
@@ -102,16 +117,19 @@ export class TalkClientLinkStore extends TypedEmitter<OpenLinkListEvents> implem
 
   async createOpenChannel(
     template: OpenLinkChannelTemplate & OpenLinkCreateTemplate,
-    profile: OpenLinkProfiles
+    profile: OpenLinkProfiles,
   ): AsyncCommandResult<OpenChannel> {
     return this._linkSession.createOpenChannel(template, profile);
   }
 
   async createOpenDirectProfile(
     template: OpenLinkChannelTemplate & OpenLinkCreateTemplate,
-    profile: OpenLinkProfiles
+    profile: OpenLinkProfiles,
   ): AsyncCommandResult<InformedOpenLink> {
-    const res = await this._linkSession.createOpenDirectProfile(template, profile);
+    const res = await this._linkSession.createOpenDirectProfile(
+      template,
+      profile,
+    );
 
     if (res.success) {
       const link = res.result;
@@ -122,10 +140,10 @@ export class TalkClientLinkStore extends TypedEmitter<OpenLinkListEvents> implem
   }
 
   async createOpenProfile(
-    template: OpenLinkProfileTemplate & OpenLinkCreateTemplate
+    template: OpenLinkProfileTemplate & OpenLinkCreateTemplate,
   ): AsyncCommandResult<InformedOpenLink> {
     const res = await this._linkSession.createOpenProfile(template);
-    
+
     if (res.success) {
       const link = res.result;
       this._map.set(link.openLink.linkId.toString(), link);
@@ -136,15 +154,16 @@ export class TalkClientLinkStore extends TypedEmitter<OpenLinkListEvents> implem
 
   async updateOpenLink(
     link: OpenLinkComponent,
-    settings: (OpenLinkChannelTemplate | OpenLinkProfileTemplate) & OpenLinkUpdateTemplate
+    settings: (OpenLinkChannelTemplate | OpenLinkProfileTemplate) &
+      OpenLinkUpdateTemplate,
   ): AsyncCommandResult<InformedOpenLink> {
     const res = await this._linkSession.updateOpenLink(link, settings);
-    
+
     if (res.success) {
       const link = res.result;
       const clientProfile = this.getClientLink(link.openLink.linkId);
       if (clientProfile) {
-        this._map.set(link.openLink.linkId.toString(), link)
+        this._map.set(link.openLink.linkId.toString(), link);
       }
     }
 
@@ -171,8 +190,11 @@ export class TalkClientLinkStore extends TypedEmitter<OpenLinkListEvents> implem
     return this._map.size;
   }
 
-  pushReceived(method: string, data: DefaultRes, parentCtx: EventContext<OpenLinkEvent>): Promise<void> {
+  pushReceived(
+    method: string,
+    data: DefaultRes,
+    parentCtx: EventContext<OpenLinkEvent>,
+  ): Promise<void> {
     return this._linkHandler.pushReceived(method, data, parentCtx);
   }
-  
 }

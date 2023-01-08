@@ -8,7 +8,6 @@ import { Long } from 'bson';
 import { OpenChannelUserPerm } from '../../openlink';
 
 export interface SyncMemTRes {
-
   /**
    * Channel id
    */
@@ -28,5 +27,4 @@ export interface SyncMemTRes {
    * Perm list
    */
   mts: OpenChannelUserPerm[];
-
 }

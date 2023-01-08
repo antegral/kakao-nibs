@@ -4,7 +4,7 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-import { RequestForm } from './web-client';
+import { RequestForm } from '@api/web-client';
 
 export function convertToFormData(form: RequestForm): URLSearchParams {
   const formData = new URLSearchParams();

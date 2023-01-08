@@ -18,34 +18,27 @@ import { OpenLinkType } from './open-link-type';
 import { OpenLinkUserInfo } from './open-link-user-info';
 
 export interface OpenLinkComponent {
-
   /**
    * OpenLink id
    */
   linkId: Long;
-
 }
 
 export interface OpenTokenComponent {
-
   /**
    * Info last update time
    */
   openToken: number;
-
 }
 
 export interface OpenPrivilegeComponent {
-
   /**
    * Special privilege masks
    */
   privilege: LinkPrivilegeMask;
-
 }
 
 export interface OpenLinkSettings {
-
   /**
    * Link name
    */
@@ -64,14 +57,16 @@ export interface OpenLinkSettings {
   searchable: boolean;
 
   activated: boolean;
-
 }
 
 /**
  * Contains openlink information
  */
 export interface OpenLink
-  extends OpenLinkSettings, OpenLinkComponent, OpenTokenComponent, OpenPrivilegeComponent {
+  extends OpenLinkSettings,
+    OpenLinkComponent,
+    OpenTokenComponent,
+    OpenPrivilegeComponent {
   /**
    * Link type
    */
@@ -98,46 +93,38 @@ export interface OpenLink
   profileTagList: string[];
 
   createdAt: number;
-
 }
 
 export interface OpenLinkChannelInfo {
-
   /**
    * Open channel user limit
    */
   userLimit: number;
-
 }
 
 export interface OpenLinkProfileInfo {
-
   /**
    * Open profile dm limit
    */
   directLimit: number;
-
 }
 
 /**
  * Extra openlink info
  */
-export interface OpenLinkInfo extends OpenLinkChannelInfo, OpenLinkProfileInfo {
-
-}
+export interface OpenLinkInfo
+  extends OpenLinkChannelInfo,
+    OpenLinkProfileInfo {}
 
 /**
  * OpenLink with more information
  */
 export interface InformedOpenLink {
-
   openLink: OpenLink;
   info: OpenLinkInfo;
-
 }
 
 export enum KnownLinkPrivilegeMask {
-
   URL_SHARABLE = 2,
   REPORTABLE = 4,
   PROFILE_EDITABLE = 8,
@@ -146,7 +133,6 @@ export enum KnownLinkPrivilegeMask {
   BLINDABLE = 128,
   NON_SPECIAL_LINK = 512,
   USE_BOT = 1024,
-
 }
 
 export type LinkPrivilegeMask = KnownLinkPrivilegeMask | number | Long;
@@ -169,18 +155,18 @@ export interface OpenLinkCreateTemplate {
 /**
  * Openlink profile template
  */
-export interface OpenLinkProfileTemplate extends OpenLinkSettings, OpenLinkProfileInfo {
-
+export interface OpenLinkProfileTemplate
+  extends OpenLinkSettings,
+    OpenLinkProfileInfo {
   /**
    * # tag list
    */
   tags: string;
-
 }
 
 /**
  * Openlink channel template
  */
-export interface OpenLinkChannelTemplate extends OpenLinkSettings, OpenLinkChannelInfo {
-
-}
+export interface OpenLinkChannelTemplate
+  extends OpenLinkSettings,
+    OpenLinkChannelInfo {}

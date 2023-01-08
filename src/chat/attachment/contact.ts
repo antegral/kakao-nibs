@@ -11,7 +11,6 @@ import { Attachment } from '.';
  * KakaoTalk profile attachment
  */
 export interface ProfileAttachment extends Attachment {
-
   /**
    * Profile user id
    */
@@ -36,14 +35,12 @@ export interface ProfileAttachment extends Attachment {
    * Profile status message
    */
   statusMessage: string;
-
 }
 
 /**
  * Call Contact attachment
  */
 export interface ContactAttachment extends Attachment {
-
   /**
    * Contact name
    */
@@ -53,5 +50,4 @@ export interface ContactAttachment extends Attachment {
    * vcf contact file url
    */
   url: string;
-
 }

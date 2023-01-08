@@ -738,13 +738,14 @@ declare namespace Deno {
   /** The Deno abstraction for reading and writing files. */
   export class File
     implements
-    Reader,
-    ReaderSync,
-    Writer,
-    WriterSync,
-    Seeker,
-    SeekerSync,
-    Closer {
+      Reader,
+      ReaderSync,
+      Writer,
+      WriterSync,
+      Seeker,
+      SeekerSync,
+      Closer
+  {
     readonly rid: number;
     constructor(rid: number);
     write(p: Uint8Array): Promise<number>;
@@ -1676,13 +1677,13 @@ declare namespace Deno {
   export function truncate(name: string, len?: number): Promise<void>;
 
   export interface NetAddr {
-    transport: "tcp" | "udp";
+    transport: 'tcp' | 'udp';
     hostname: string;
     port: number;
   }
 
   export interface UnixAddr {
-    transport: "unix" | "unixpacket";
+    transport: 'unix' | 'unixpacket';
     path: string;
   }
 
@@ -1735,7 +1736,7 @@ declare namespace Deno {
    *
    * Requires `allow-net` permission. */
   export function listen(
-    options: ListenOptions & { transport?: "tcp" },
+    options: ListenOptions & { transport?: 'tcp' },
   ): Listener;
 
   export interface ListenTlsOptions extends ListenOptions {
@@ -1744,7 +1745,7 @@ declare namespace Deno {
     /** Server public key file. */
     keyFile: string;
 
-    transport?: "tcp";
+    transport?: 'tcp';
   }
 
   /** Listen announces on the local transport address over TLS (transport layer
@@ -1763,7 +1764,7 @@ declare namespace Deno {
     /** A literal IP address or host name that can be resolved to an IP address.
      * If not specified, defaults to `127.0.0.1`. */
     hostname?: string;
-    transport?: "tcp";
+    transport?: 'tcp';
   }
 
   /**
@@ -1875,7 +1876,7 @@ declare namespace Deno {
   export function resources(): ResourceMap;
 
   export interface FsEvent {
-    kind: "any" | "access" | "create" | "modify" | "remove";
+    kind: 'any' | 'access' | 'create' | 'modify' | 'remove';
     paths: string[];
   }
 
@@ -1905,11 +1906,14 @@ declare namespace Deno {
   export class Process<T extends RunOptions = RunOptions> {
     readonly rid: number;
     readonly pid: number;
-    readonly stdin: T["stdin"] extends "piped" ? Writer & Closer
+    readonly stdin: T['stdin'] extends 'piped'
+      ? Writer & Closer
       : (Writer & Closer) | null;
-    readonly stdout: T["stdout"] extends "piped" ? Reader & Closer
+    readonly stdout: T['stdout'] extends 'piped'
+      ? Reader & Closer
       : (Reader & Closer) | null;
-    readonly stderr: T["stderr"] extends "piped" ? Reader & Closer
+    readonly stderr: T['stderr'] extends 'piped'
+      ? Reader & Closer
       : (Reader & Closer) | null;
     /** Resolves to the current status of the process. */
     status(): Promise<ProcessStatus>;
@@ -1938,15 +1942,15 @@ declare namespace Deno {
 
   export type ProcessStatus =
     | {
-      success: true;
-      code: 0;
-      signal?: undefined;
-    }
+        success: true;
+        code: 0;
+        signal?: undefined;
+      }
     | {
-      success: false;
-      code: number;
-      signal?: number;
-    };
+        success: false;
+        code: number;
+        signal?: number;
+      };
 
   export interface RunOptions {
     /** Arguments to pass. Note, the first element needs to be a path to the
@@ -1956,9 +1960,9 @@ declare namespace Deno {
     env?: {
       [key: string]: string;
     };
-    stdout?: "inherit" | "piped" | "null" | number;
-    stderr?: "inherit" | "piped" | "null" | number;
-    stdin?: "inherit" | "piped" | "null" | number;
+    stdout?: 'inherit' | 'piped' | 'null' | number;
+    stderr?: 'inherit' | 'piped' | 'null' | number;
+    stdin?: 'inherit' | 'piped' | 'null' | number;
   }
 
   /** Spawns new subprocess.  RunOptions must contain at a minimum the `opt.cmd`,
@@ -2054,9 +2058,9 @@ declare namespace Deno {
     /** The LLVM target triple */
     target: string;
     /** Instruction set architecture */
-    arch: "x86_64";
+    arch: 'x86_64';
     /** Operating system */
-    os: "darwin" | "linux" | "windows";
+    os: 'darwin' | 'linux' | 'windows';
     /** Computer vendor */
     vendor: string;
     /** Optional environment */
@@ -2117,54 +2121,54 @@ interface EventInit {
 declare class Event {
   constructor(type: string, eventInitDict?: EventInit);
   /** Returns true or false depending on how event was initialized. True if
-     * event goes through its target's ancestors in reverse tree order, and
-     * false otherwise. */
+   * event goes through its target's ancestors in reverse tree order, and
+   * false otherwise. */
   readonly bubbles: boolean;
   cancelBubble: boolean;
   /** Returns true or false depending on how event was initialized. Its return
-     * value does not always carry meaning, but true can indicate that part of the
-     * operation during which event was dispatched, can be canceled by invoking
-     * the preventDefault() method. */
+   * value does not always carry meaning, but true can indicate that part of the
+   * operation during which event was dispatched, can be canceled by invoking
+   * the preventDefault() method. */
   readonly cancelable: boolean;
   /** Returns true or false depending on how event was initialized. True if
-     * event invokes listeners past a ShadowRoot node that is the root of its
-     * target, and false otherwise. */
+   * event invokes listeners past a ShadowRoot node that is the root of its
+   * target, and false otherwise. */
   readonly composed: boolean;
   /** Returns the object whose event listener's callback is currently being
-     * invoked. */
+   * invoked. */
   readonly currentTarget: EventTarget | null;
   /** Returns true if preventDefault() was invoked successfully to indicate
-     * cancellation, and false otherwise. */
+   * cancellation, and false otherwise. */
   readonly defaultPrevented: boolean;
   /** Returns the event's phase, which is one of NONE, CAPTURING_PHASE,
-     * AT_TARGET, and BUBBLING_PHASE. */
+   * AT_TARGET, and BUBBLING_PHASE. */
   readonly eventPhase: number;
   /** Returns true if event was dispatched by the user agent, and false
-     * otherwise. */
+   * otherwise. */
   readonly isTrusted: boolean;
   /** Returns the object to which event is dispatched (its target). */
   readonly target: EventTarget | null;
   /** Returns the event's timestamp as the number of milliseconds measured
-     * relative to the time origin. */
+   * relative to the time origin. */
   readonly timeStamp: number;
   /** Returns the type of event, e.g. "click", "hashchange", or "submit". */
   readonly type: string;
   /** Returns the invocation target objects of event's path (objects on which
-     * listeners will be invoked), except for any nodes in shadow trees of which
-     * the shadow root's mode is "closed" that are not reachable from event's
-     * currentTarget. */
+   * listeners will be invoked), except for any nodes in shadow trees of which
+   * the shadow root's mode is "closed" that are not reachable from event's
+   * currentTarget. */
   composedPath(): EventTarget[];
   /** If invoked when the cancelable attribute value is true, and while
-     * executing a listener for the event with passive set to false, signals to
-     * the operation that caused event to be dispatched that it needs to be
-     * canceled. */
+   * executing a listener for the event with passive set to false, signals to
+   * the operation that caused event to be dispatched that it needs to be
+   * canceled. */
   preventDefault(): void;
   /** Invoking this method prevents event from reaching any registered event
-     * listeners after the current one finishes running and, when dispatched in a
-     * tree, also prevents event from reaching any other objects. */
+   * listeners after the current one finishes running and, when dispatched in a
+   * tree, also prevents event from reaching any other objects. */
   stopImmediatePropagation(): void;
   /** When dispatched in a tree, invoking this method prevents event from
-     * reaching any objects other than the current object. */
+   * reaching any objects other than the current object. */
   stopPropagation(): void;
   readonly AT_TARGET: number;
   readonly BUBBLING_PHASE: number;
@@ -2177,44 +2181,44 @@ declare class Event {
 }
 
 /**
-   * EventTarget is a DOM interface implemented by objects that can receive events
-   * and may have listeners for them.
-   */
+ * EventTarget is a DOM interface implemented by objects that can receive events
+ * and may have listeners for them.
+ */
 declare class EventTarget {
   /** Appends an event listener for events whose type attribute value is type.
-     * The callback argument sets the callback that will be invoked when the event
-     * is dispatched.
-     *
-     * The options argument sets listener-specific options. For compatibility this
-     * can be a boolean, in which case the method behaves exactly as if the value
-     * was specified as options's capture.
-     *
-     * When set to true, options's capture prevents callback from being invoked
-     * when the event's eventPhase attribute value is BUBBLING_PHASE. When false
-     * (or not present), callback will not be invoked when event's eventPhase
-     * attribute value is CAPTURING_PHASE. Either way, callback will be invoked if
-     * event's eventPhase attribute value is AT_TARGET.
-     *
-     * When set to true, options's passive indicates that the callback will not
-     * cancel the event by invoking preventDefault(). This is used to enable
-     * performance optimizations described in § 2.8 Observing event listeners.
-     *
-     * When set to true, options's once indicates that the callback will only be
-     * invoked once after which the event listener will be removed.
-     *
-     * The event listener is appended to target's event listener list and is not
-     * appended if it has the same type, callback, and capture. */
+   * The callback argument sets the callback that will be invoked when the event
+   * is dispatched.
+   *
+   * The options argument sets listener-specific options. For compatibility this
+   * can be a boolean, in which case the method behaves exactly as if the value
+   * was specified as options's capture.
+   *
+   * When set to true, options's capture prevents callback from being invoked
+   * when the event's eventPhase attribute value is BUBBLING_PHASE. When false
+   * (or not present), callback will not be invoked when event's eventPhase
+   * attribute value is CAPTURING_PHASE. Either way, callback will be invoked if
+   * event's eventPhase attribute value is AT_TARGET.
+   *
+   * When set to true, options's passive indicates that the callback will not
+   * cancel the event by invoking preventDefault(). This is used to enable
+   * performance optimizations described in § 2.8 Observing event listeners.
+   *
+   * When set to true, options's once indicates that the callback will only be
+   * invoked once after which the event listener will be removed.
+   *
+   * The event listener is appended to target's event listener list and is not
+   * appended if it has the same type, callback, and capture. */
   addEventListener(
     type: string,
     listener: EventListenerOrEventListenerObject | null,
     options?: boolean | AddEventListenerOptions,
   ): void;
   /** Dispatches a synthetic event event to target and returns true if either
-     * event's cancelable attribute value is false or its preventDefault() method
-     * was not invoked, and false otherwise. */
+   * event's cancelable attribute value is false or its preventDefault() method
+   * was not invoked, and false otherwise. */
   dispatchEvent(event: Event): boolean;
   /** Removes the event listener in target's event listener list with the same
-     * type, callback, and options. */
+   * type, callback, and options. */
   removeEventListener(
     type: string,
     callback: EventListenerOrEventListenerObject | null,
@@ -2291,7 +2295,7 @@ declare class TextDecoder {
 
 declare class TextEncoder {
   /** Returns "utf-8". */
-  readonly encoding = "utf-8";
+  readonly encoding = 'utf-8';
   /** Returns the result of running UTF-8's encoder. */
   encode(input?: string): Uint8Array;
   encodeInto(
@@ -2307,7 +2311,7 @@ declare class AbortController {
   /** Returns the AbortSignal object associated with this object. */
   readonly signal: AbortSignal;
   /** Invoking this method will set this object's AbortSignal's aborted flag and
-    * signal to any observers that the associated activity is to be aborted. */
+   * signal to any observers that the associated activity is to be aborted. */
   abort(): void;
 }
 
@@ -2316,10 +2320,10 @@ interface AbortSignalEventMap {
 }
 
 /** A signal object that allows you to communicate with a DOM request (such as a
-  * Fetch) and abort it if required via an AbortController object. */
+ * Fetch) and abort it if required via an AbortController object. */
 interface AbortSignal extends EventTarget {
   /** Returns true if this AbortSignal's AbortController has signaled to abort,
-    * and false otherwise. */
+   * and false otherwise. */
   readonly aborted: boolean;
   onabort: ((this: AbortSignal, ev: Event) => any) | null;
   addEventListener<K extends keyof AbortSignalEventMap>(
@@ -2346,16 +2350,16 @@ interface AbortSignal extends EventTarget {
 
 declare var AbortSignal: {
   prototype: AbortSignal;
-  new(): AbortSignal;
+  new (): AbortSignal;
 };
 
 interface FileReaderEventMap {
-  "abort": ProgressEvent<FileReader>;
-  "error": ProgressEvent<FileReader>;
-  "load": ProgressEvent<FileReader>;
-  "loadend": ProgressEvent<FileReader>;
-  "loadstart": ProgressEvent<FileReader>;
-  "progress": ProgressEvent<FileReader>;
+  abort: ProgressEvent<FileReader>;
+  error: ProgressEvent<FileReader>;
+  load: ProgressEvent<FileReader>;
+  loadend: ProgressEvent<FileReader>;
+  loadstart: ProgressEvent<FileReader>;
+  progress: ProgressEvent<FileReader>;
 }
 
 /** Lets web applications asynchronously read the contents of files (or raw data buffers) stored on the user's computer, using File or Blob objects to specify the file or data to read. */
@@ -2366,8 +2370,8 @@ interface FileReader extends EventTarget {
   onload: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
   onloadend: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
   onloadstart:
-  | ((this: FileReader, ev: ProgressEvent<FileReader>) => any)
-  | null;
+    | ((this: FileReader, ev: ProgressEvent<FileReader>) => any)
+    | null;
   onprogress: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
   readonly readyState: number;
   readonly result: string | ArrayBuffer | null;
@@ -2403,7 +2407,7 @@ interface FileReader extends EventTarget {
 
 declare var FileReader: {
   prototype: FileReader;
-  new(): FileReader;
+  new (): FileReader;
   readonly DONE: number;
   readonly EMPTY: number;
   readonly LOADING: number;
@@ -2461,7 +2465,7 @@ interface ReadableStreamReader<R = any> {
 
 declare var ReadableStreamReader: {
   prototype: ReadableStreamReader;
-  new(): ReadableStreamReader;
+  new (): ReadableStreamReader;
 };
 
 interface ReadableByteStreamControllerCallback {
@@ -2473,7 +2477,7 @@ interface UnderlyingByteSource {
   cancel?: ReadableStreamErrorCallback;
   pull?: ReadableByteStreamControllerCallback;
   start?: ReadableByteStreamControllerCallback;
-  type: "bytes";
+  type: 'bytes';
 }
 
 interface UnderlyingSink<W = any> {
@@ -2508,7 +2512,7 @@ interface ReadableStreamDefaultController<R = any> {
 
 declare var ReadableStreamDefaultController: {
   prototype: ReadableStreamDefaultController;
-  new(): ReadableStreamDefaultController;
+  new (): ReadableStreamDefaultController;
 };
 
 interface ReadableByteStreamController {
@@ -2521,7 +2525,7 @@ interface ReadableByteStreamController {
 
 declare var ReadableByteStreamController: {
   prototype: ReadableByteStreamController;
-  new(): ReadableByteStreamController;
+  new (): ReadableByteStreamController;
 };
 
 interface PipeOptions {
@@ -2549,7 +2553,8 @@ declare class CountQueuingStrategy implements QueuingStrategy {
 }
 
 declare class ByteLengthQueuingStrategy
-  implements QueuingStrategy<ArrayBufferView> {
+  implements QueuingStrategy<ArrayBufferView>
+{
   constructor(options: { highWaterMark: number });
   highWaterMark: number;
   size(chunk: ArrayBufferView): number;
@@ -2569,7 +2574,10 @@ interface ReadableStream<R = any> {
   getIterator(options?: { preventCancel?: boolean }): AsyncIterableIterator<R>;
   getReader(): ReadableStreamDefaultReader<R>;
   pipeThrough<T>(
-    { writable, readable }: {
+    {
+      writable,
+      readable,
+    }: {
       writable: WritableStream<R>;
       readable: ReadableStream<T>;
     },
@@ -2584,7 +2592,7 @@ interface ReadableStream<R = any> {
 
 declare var ReadableStream: {
   prototype: ReadableStream;
-  new(
+  new (
     underlyingSource: UnderlyingByteSource,
     strategy?: { highWaterMark?: number; size?: undefined },
   ): ReadableStream<Uint8Array>;
@@ -2603,11 +2611,10 @@ interface WritableStreamDefaultControllerStartCallback {
 }
 
 interface WritableStreamDefaultControllerWriteCallback<W> {
-  (chunk: W, controller: WritableStreamDefaultController):
-    | void
-    | PromiseLike<
-      void
-    >;
+  (
+    chunk: W,
+    controller: WritableStreamDefaultController,
+  ): void | PromiseLike<void>;
 }
 
 interface WritableStreamErrorCallback {
@@ -2655,7 +2662,7 @@ interface WritableStreamDefaultWriter<W = any> {
 
 declare var WritableStreamDefaultWriter: {
   prototype: WritableStreamDefaultWriter;
-  new(): WritableStreamDefaultWriter;
+  new (): WritableStreamDefaultWriter;
 };
 
 interface TransformStream<I = any, O = any> {
@@ -2702,7 +2709,7 @@ type BlobPart = BufferSource | Blob | string;
 
 interface BlobPropertyBag {
   type?: string;
-  ending?: "transparent" | "native";
+  ending?: 'transparent' | 'native';
 }
 
 /** A file-like object of immutable, raw data. Blobs represent data that isn't necessarily in a JavaScript-native format. The File interface is based on Blob, inheriting blob functionality and expanding it to support files on the user's system. */
@@ -2857,25 +2864,25 @@ declare class Headers implements DomIterable<string, string> {
 
 type RequestInfo = Request | string;
 type RequestCache =
-  | "default"
-  | "force-cache"
-  | "no-cache"
-  | "no-store"
-  | "only-if-cached"
-  | "reload";
-type RequestCredentials = "include" | "omit" | "same-origin";
-type RequestMode = "cors" | "navigate" | "no-cors" | "same-origin";
-type RequestRedirect = "error" | "follow" | "manual";
+  | 'default'
+  | 'force-cache'
+  | 'no-cache'
+  | 'no-store'
+  | 'only-if-cached'
+  | 'reload';
+type RequestCredentials = 'include' | 'omit' | 'same-origin';
+type RequestMode = 'cors' | 'navigate' | 'no-cors' | 'same-origin';
+type RequestRedirect = 'error' | 'follow' | 'manual';
 type ReferrerPolicy =
-  | ""
-  | "no-referrer"
-  | "no-referrer-when-downgrade"
-  | "origin"
-  | "origin-when-cross-origin"
-  | "same-origin"
-  | "strict-origin"
-  | "strict-origin-when-cross-origin"
-  | "unsafe-url";
+  | ''
+  | 'no-referrer'
+  | 'no-referrer-when-downgrade'
+  | 'origin'
+  | 'origin-when-cross-origin'
+  | 'same-origin'
+  | 'strict-origin'
+  | 'strict-origin-when-cross-origin'
+  | 'unsafe-url';
 type BodyInit =
   | Blob
   | BufferSource
@@ -2884,24 +2891,24 @@ type BodyInit =
   | ReadableStream<Uint8Array>
   | string;
 type RequestDestination =
-  | ""
-  | "audio"
-  | "audioworklet"
-  | "document"
-  | "embed"
-  | "font"
-  | "image"
-  | "manifest"
-  | "object"
-  | "paintworklet"
-  | "report"
-  | "script"
-  | "sharedworker"
-  | "style"
-  | "track"
-  | "video"
-  | "worker"
-  | "xslt";
+  | ''
+  | 'audio'
+  | 'audioworklet'
+  | 'document'
+  | 'embed'
+  | 'font'
+  | 'image'
+  | 'manifest'
+  | 'object'
+  | 'paintworklet'
+  | 'report'
+  | 'script'
+  | 'sharedworker'
+  | 'style'
+  | 'track'
+  | 'video'
+  | 'worker'
+  | 'xslt';
 
 interface RequestInit {
   /**
@@ -3090,12 +3097,12 @@ interface ResponseInit {
 }
 
 type ResponseType =
-  | "basic"
-  | "cors"
-  | "default"
-  | "error"
-  | "opaque"
-  | "opaqueredirect";
+  | 'basic'
+  | 'cors'
+  | 'default'
+  | 'error'
+  | 'opaque'
+  | 'opaqueredirect';
 
 /** This Fetch API interface represents the response to a request. */
 declare class Response implements Body {
@@ -3265,7 +3272,7 @@ declare class WebSocket extends EventTarget {
   ): void;
 }
 
-type BinaryType = "arraybuffer" | "blob";
+type BinaryType = 'arraybuffer' | 'blob';
 
 // Copyright 2018-2021 the Deno authors. All rights reserved. MIT license.
 
@@ -3469,9 +3476,9 @@ declare namespace WebAssembly {
     module: Module;
   }
 
-  export type ImportExportKind = "function" | "global" | "memory" | "table";
-  export type TableKind = "anyfunc";
-  export type ValueType = "f32" | "f64" | "i32" | "i64";
+  export type ImportExportKind = 'function' | 'global' | 'memory' | 'table';
+  export type TableKind = 'anyfunc';
+  export type ValueType = 'f32' | 'f64' | 'i32' | 'i64';
   export type ExportValue = Function | Global | Memory | Table;
   export type Exports = Record<string, ExportValue>;
   export type ImportValue = ExportValue | number;
@@ -3689,19 +3696,19 @@ declare interface Crypto {
   readonly subtle: null;
   getRandomValues<
     T extends
-    | Int8Array
-    | Int16Array
-    | Int32Array
-    | Uint8Array
-    | Uint16Array
-    | Uint32Array
-    | Uint8ClampedArray
-    | Float32Array
-    | Float64Array
-    | DataView
-    | null,
-    >(
-      array: T,
+      | Int8Array
+      | Int16Array
+      | Int32Array
+      | Uint8Array
+      | Uint16Array
+      | Uint32Array
+      | Uint8ClampedArray
+      | Float32Array
+      | Float64Array
+      | DataView
+      | null,
+  >(
+    array: T,
   ): T;
 }
 
@@ -3914,16 +3921,16 @@ interface PostMessageOptions {
 }
 
 interface AbstractWorkerEventMap {
-  "error": ErrorEvent;
+  error: ErrorEvent;
 }
 
 interface WorkerEventMap extends AbstractWorkerEventMap {
-  "message": MessageEvent;
-  "messageerror": MessageEvent;
+  message: MessageEvent;
+  messageerror: MessageEvent;
 }
 
 interface WorkerOptions {
-  type?: "classic" | "module";
+  type?: 'classic' | 'module';
   name?: string;
   /** UNSTABLE: New API.
    *
@@ -3982,36 +3989,38 @@ interface WorkerOptions {
   // TODO(Soremwar)
   // `deno: true` is kept for backwards compatibility with the previous worker
   // options implementation. Remove for 2.0.
-  deno?: true | {
-    namespace?: boolean;
-    /** Set to `"none"` to disable all the permissions in the worker. */
-    permissions?: "inherit" | "none" | {
-      env?: "inherit" | boolean;
-      hrtime?: "inherit" | boolean;
-      /** The format of the net access list must be `hostname[:port]`
-       * in order to be resolved.
-       *
-       * ```
-       * net: ["https://deno.land", "localhost:8080"],
-       * ```
-       * */
-      net?: "inherit" | boolean | string[];
-      plugin?: "inherit" | boolean;
-      read?: "inherit" | boolean | Array<string | URL>;
-      run?: "inherit" | boolean;
-      write?: "inherit" | boolean | Array<string | URL>;
-    };
-  };
+  deno?:
+    | true
+    | {
+        namespace?: boolean;
+        /** Set to `"none"` to disable all the permissions in the worker. */
+        permissions?:
+          | 'inherit'
+          | 'none'
+          | {
+              env?: 'inherit' | boolean;
+              hrtime?: 'inherit' | boolean;
+              /** The format of the net access list must be `hostname[:port]`
+               * in order to be resolved.
+               *
+               * ```
+               * net: ["https://deno.land", "localhost:8080"],
+               * ```
+               * */
+              net?: 'inherit' | boolean | string[];
+              plugin?: 'inherit' | boolean;
+              read?: 'inherit' | boolean | Array<string | URL>;
+              run?: 'inherit' | boolean;
+              write?: 'inherit' | boolean | Array<string | URL>;
+            };
+      };
 }
 
 declare class Worker extends EventTarget {
   onerror?: (e: ErrorEvent) => void;
   onmessage?: (e: MessageEvent) => void;
   onmessageerror?: (e: MessageEvent) => void;
-  constructor(
-    specifier: string,
-    options?: WorkerOptions,
-  );
+  constructor(specifier: string, options?: WorkerOptions);
   postMessage(message: any, transfer: ArrayBuffer[]): void;
   postMessage(message: any, options?: PostMessageOptions): void;
   addEventListener<K extends keyof WorkerEventMap>(
@@ -4124,7 +4133,7 @@ declare class PerformanceEntry {
  * performance timeline. */
 declare class PerformanceMark extends PerformanceEntry {
   readonly detail: any;
-  readonly entryType: "mark";
+  readonly entryType: 'mark';
   constructor(name: string, options?: PerformanceMarkOptions);
 }
 
@@ -4134,7 +4143,7 @@ declare class PerformanceMark extends PerformanceEntry {
  * between two marks to the performance timeline. */
 declare class PerformanceMeasure extends PerformanceEntry {
   readonly detail: any;
-  readonly entryType: "measure";
+  readonly entryType: 'measure';
 }
 
 declare interface CustomEventInit<T = any> extends EventInit {

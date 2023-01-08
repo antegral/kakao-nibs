@@ -6,10 +6,13 @@
 
 import { Long } from 'bson';
 import { ChannelType } from '../../channel';
-import { NormalMemberStruct, OpenLinkChannelUserStruct, OpenMemberStruct } from '../struct';
+import {
+  NormalMemberStruct,
+  OpenLinkChannelUserStruct,
+  OpenMemberStruct,
+} from '../struct';
 
 export interface ChatOnRoomRes {
-
   /**
    * Channel id
    */
@@ -99,5 +102,4 @@ export interface ChatOnRoomRes {
    * Unknown (open chat)
    */
   msr?: Long;
-
 }

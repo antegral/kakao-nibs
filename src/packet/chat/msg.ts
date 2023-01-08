@@ -8,7 +8,6 @@ import { Long } from 'bson';
 import { ChatlogStruct } from '../struct';
 
 export interface MsgRes {
-
   /**
    * Channel id
    */
@@ -43,5 +42,4 @@ export interface MsgRes {
    * true if notification read(?) (Only openchat)
    */
   notiRead?: boolean;
-
 }

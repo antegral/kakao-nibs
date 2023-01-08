@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json.schemastore.org/swcrc",
+  "exclude": ["node_modules", "dist"],
+  "jsc": {
+    "target": "es2018",
+    "baseUrl": ".",
+    "parser": {
+      "syntax": "typescript",
+      "tsx": false,
+      "decorators": false,
+      "dynamicImport": false
+    },
+    "paths": {
+      "@src/*": ["src/*"],
+      "@api/*": ["src/api/*"],
+      "@channel/*": ["src/channel/*"],
+      "@chat/*": ["src/chat/*"],
+      "@client/*": ["src/client/*"],
+      "@crypto/*": ["src/crypto/*"],
+      "@event/*": ["src/event/*"],
+      "@hook/*": ["src/hook/*"],
+      "@loader/*": ["src/loader/*"],
+      "@media/*": ["src/media/*"],
+      "@network/*": ["src/network/*"],
+      "@oauth/*": ["src/oauth/*"],
+      "@openlink/*": ["src/openlink/*"],
+      "@packet/*": ["src/packet/*"],
+      "@relay/*": ["src/relay/*"],
+      "@request/*": ["src/request/*"],
+      "@stream/*": ["src/stream/*"],
+      "@talk/*": ["src/talk/*"],
+      "@user/*": ["src/user/*"],
+      "@util/*": ["src/util/*"],
+      "@voip/*": ["src/voip/*"]
+    }
+  }
+}

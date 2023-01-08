@@ -8,7 +8,6 @@ import { Long } from 'bson';
 import { OpenLinkChannelUserStruct } from '../struct';
 
 export interface SyncLinkPfRes {
-
   /**
    * Channel id
    */
@@ -23,5 +22,4 @@ export interface SyncLinkPfRes {
    * Updated open link user
    */
   olu: OpenLinkChannelUserStruct;
-
 }

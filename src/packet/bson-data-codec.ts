@@ -25,5 +25,4 @@ export const BsonDataCodec: LocoPacketDataCodec<DefaultReq, DefaultRes> = {
 
     return [0, buf];
   },
-
 };

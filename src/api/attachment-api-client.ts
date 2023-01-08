@@ -4,12 +4,12 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-import { RequestHeader, WebClient } from '.';
-import { ChatType, KnownChatType, PathAttachment } from '../chat';
-import { DefaultConfiguration, WebApiConfig } from '../config';
-import { AsyncCommandResult, KnownDataStatusCode } from '../request';
-import { fillBaseHeader, getUserAgent } from './header-util';
-import { createWebClient, TextWebRequest } from './web-client';
+import { RequestHeader, WebClient } from '@src/api';
+import { ChatType, KnownChatType, PathAttachment } from '@src/chat';
+import { DefaultConfiguration, WebApiConfig } from '@src/config';
+import { AsyncCommandResult, KnownDataStatusCode } from '@src/request';
+import { fillBaseHeader, getUserAgent } from '@api/header-util';
+import { createWebClient, TextWebRequest } from '@api/web-client';
 
 /**
  * Web attachment upload api
@@ -40,7 +40,11 @@ export class AttachmentApiClient {
     return header;
   }
 
-  async upload(type: ChatType, filename: string, data: Uint8Array): AsyncCommandResult<PathAttachment> {
+  async upload(
+    type: ChatType,
+    filename: string,
+    data: Uint8Array,
+  ): AsyncCommandResult<PathAttachment> {
     const client = this.getReqClient(type);
 
     const mimeType = this.getMimeType(type);
@@ -49,16 +53,16 @@ export class AttachmentApiClient {
       'POST',
       'upload',
       {
-        'user_id': 0,
-        'attachment_type': mimeType,
-        'attachment': {
+        user_id: 0,
+        attachment_type: mimeType,
+        attachment: {
           value: data,
           options: {
-            filename
-          }
-        }
+            filename,
+          },
+        },
       },
-      this.createHeader()
+      this.createHeader(),
     );
 
     return {
@@ -66,31 +70,40 @@ export class AttachmentApiClient {
       status: KnownDataStatusCode.SUCCESS,
       result: {
         path: res,
-        s: data.byteLength
-      }
-    }
+        s: data.byteLength,
+      },
+    };
   }
 
   protected getReqClient(type: ChatType): TextWebRequest {
     switch (type) {
-      case KnownChatType.VIDEO: return this._videoClient;
-      case KnownChatType.AUDIO: return this._audioClient;
+      case KnownChatType.VIDEO:
+        return this._videoClient;
+      case KnownChatType.AUDIO:
+        return this._audioClient;
 
-      default: return this._mediaClient;
+      default:
+        return this._mediaClient;
     }
   }
 
   getMimeType(type: ChatType): string {
     switch (type) {
-      case KnownChatType.PHOTO: return 'image/jpeg';
-      case KnownChatType.MULTIPHOTO: return 'image/jpeg';
-      case KnownChatType.CONTACT: return 'text/x-vcard';
+      case KnownChatType.PHOTO:
+        return 'image/jpeg';
+      case KnownChatType.MULTIPHOTO:
+        return 'image/jpeg';
+      case KnownChatType.CONTACT:
+        return 'text/x-vcard';
 
-      case KnownChatType.VIDEO: return 'video/mp4';
-      case KnownChatType.AUDIO: return 'audio/m4a';
+      case KnownChatType.VIDEO:
+        return 'video/mp4';
+      case KnownChatType.AUDIO:
+        return 'audio/m4a';
 
       // application/octet-stream
-      default: return 'image/jpeg';
+      default:
+        return 'image/jpeg';
     }
   }
 
@@ -99,37 +112,27 @@ export class AttachmentApiClient {
    *
    * @param {Partial<WebApiConfig>} config
    */
-  static async create(config: Partial<WebApiConfig> = {}): Promise<AttachmentApiClient> {
+  static async create(
+    config: Partial<WebApiConfig> = {},
+  ): Promise<AttachmentApiClient> {
     return new AttachmentApiClient(
-      await createWebClient(
-        'https',
-        'up-m.talk.kakao.com',
-      ),
-      await createWebClient(
-        'https',
-        'up-v.talk.kakao.com',
-      ),
-      await createWebClient(
-        'https',
-        'up-a.talk.kakao.com',
-      ),
+      await createWebClient('https', 'up-m.talk.kakao.com'),
+      await createWebClient('https', 'up-v.talk.kakao.com'),
+      await createWebClient('https', 'up-a.talk.kakao.com'),
       Object.assign({ ...DefaultConfiguration }, config),
     );
   }
-
 }
 
 export namespace AttachmentApi {
-
   let client: AttachmentApiClient | null = null;
 
   export async function upload(
     type: ChatType,
     filename: string,
-    data: Uint8Array
+    data: Uint8Array,
   ): AsyncCommandResult<PathAttachment> {
     if (!client) client = await AttachmentApiClient.create();
     return client.upload(type, filename, data);
   }
-
 }

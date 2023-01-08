@@ -31,18 +31,19 @@ export class LocoSecureLayer implements BiStream {
     if (this._dataChunks.byteLength <= 0) {
       const headerBuffer = await ReadStreamUtil.exact(this._stream, 20);
       if (!headerBuffer) return null;
-      const dataSize = new DataView(headerBuffer.buffer).getUint32(0, true) - 16;
+      const dataSize =
+        new DataView(headerBuffer.buffer).getUint32(0, true) - 16;
       const iv = headerBuffer.subarray(4, 20);
-  
+
       const encryptedData = await ReadStreamUtil.exact(this._stream, dataSize);
       if (!encryptedData) return null;
-  
+
       this._dataChunks.append(this._crypto.toAESDecrypted(encryptedData, iv));
     }
 
     const data = this._dataChunks.toBuffer();
     this._dataChunks.clear();
-    
+
     const readSize = Math.min(data.byteLength, buffer.byteLength);
 
     buffer.set(data.subarray(0, readSize), 0);

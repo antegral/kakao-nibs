@@ -13,7 +13,6 @@ import { UserType } from '../../user';
  * Member struct for normal channel
  */
 export interface NormalMemberStruct {
-
   /**
    * User id
    */
@@ -62,14 +61,12 @@ export interface NormalMemberStruct {
    * User type(?) Unknown
    */
   ut: number;
-
 }
 
 /**
  * Member struct for open channel
  */
 export interface OpenMemberStruct {
-
   userId: Long;
 
   /**
@@ -111,11 +108,9 @@ export interface OpenMemberStruct {
    * Open chat user permission
    */
   mt: OpenChannelUserPerm;
-
 }
 
 export interface OpenLinkKickedMemberStruct {
-
   userId: Long;
 
   nickName: string;
@@ -134,11 +129,9 @@ export interface OpenLinkKickedMemberStruct {
    * Unknown
    */
   dc: boolean;
-
 }
 
 export interface OpenLinkUserStruct {
-
   /**
    * Openlink profile type
    */
@@ -147,7 +140,7 @@ export interface OpenLinkUserStruct {
   /**
    * Open chat user permission
    */
-  lmt: OpenChannelUserPerm
+  lmt: OpenChannelUserPerm;
 
   /**
    * Nickname
@@ -180,11 +173,8 @@ export interface OpenLinkUserStruct {
    * Special link privilege mask
    */
   pv: LinkPrivilegeMask;
-
 }
 
 export interface OpenLinkChannelUserStruct extends OpenLinkUserStruct {
-
   userId: Long;
-
 }

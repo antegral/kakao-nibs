@@ -37,5 +37,4 @@ export namespace JsonUtil {
   export function stringifyLoseless(obj: unknown): string {
     return LosslessJSON.stringify(obj, bsonLongReplacer);
   }
-
 }

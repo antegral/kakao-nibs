@@ -10,7 +10,6 @@ import { isNode } from '../util/platform';
  * Stores keys and implement cipher / decipher
  */
 export interface CryptoStore {
-
   toAESEncrypted(buffer: Uint8Array, iv: Uint8Array): Uint8Array;
   toAESDecrypted(buffer: Uint8Array, iv: Uint8Array): Uint8Array;
 
@@ -19,7 +18,6 @@ export interface CryptoStore {
   randomCipherIV(): Uint8Array;
 
   getRSAEncryptedKey(): Uint8Array;
-
 }
 
 /**

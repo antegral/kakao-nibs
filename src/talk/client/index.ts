@@ -4,7 +4,11 @@
  * Copyright (c) storycraft. Licensed under the MIT Licence.
  */
 
-import { CommandSession, ConnectionSession, SessionFactory } from '../../network';
+import {
+  CommandSession,
+  ConnectionSession,
+  SessionFactory,
+} from '../../network';
 import { ChannelUser, ChannelUserInfo } from '../../user';
 import { AsyncCommandResult, DefaultReq, DefaultRes } from '../../request';
 import { Managed } from '../managed';
@@ -30,11 +34,9 @@ export * from './talk-client-session';
  * Talk client session with client user
  */
 export interface TalkSession extends CommandSession {
-
   readonly clientUser: Readonly<ChannelUser>;
 
   readonly configuration: Readonly<ClientConfig>;
-
 }
 
 type TalkClientEvents = ClientEvents<TalkChannel, ChannelUserInfo>;
@@ -43,11 +45,13 @@ type TalkClientEvents = ClientEvents<TalkChannel, ChannelUserInfo>;
  * Simple client implementation.
  */
 export class TalkClient
-  extends TypedEmitter<TalkClientEvents> implements CommandSession, ClientSession, Managed<TalkClientEvents> {
+  extends TypedEmitter<TalkClientEvents>
+  implements CommandSession, ClientSession, Managed<TalkClientEvents>
+{
   private _session: ConnectionSession | null;
 
   /**
-   * Ping request interval. (Default = 60000 (1 min))
+   * Ping request interval. (Default = 30000 (30s))
    */
   public pingInterval: number;
   private _pingTask: number | null;
@@ -66,11 +70,14 @@ export class TalkClient
   ) {
     super();
 
-    this.pingInterval = 60000;
+    this.pingInterval = 30000;
     this._pingTask = null;
 
     this._session = null;
-    this._clientSession = new TalkClientSession(this.createSessionProxy(), { ...DefaultConfiguration, ...config });
+    this._clientSession = new TalkClientSession(this.createSessionProxy(), {
+      ...DefaultConfiguration,
+      ...config,
+    });
 
     this._channelList = new TalkChannelList(this.createSessionProxy(), loader);
     this._clientUser = { userId: Long.ZERO };
@@ -116,7 +123,10 @@ export class TalkClient
     if (this.logon) this.close();
 
     // Create session stream
-    const sessionRes = await this._sessionFactory.connect(credential.userId, this.configuration);
+    const sessionRes = await this._sessionFactory.connect(
+      credential.userId,
+      this.configuration,
+    );
     if (!sessionRes.success) return sessionRes;
     this._session = sessionRes.result;
 
@@ -125,7 +135,10 @@ export class TalkClient
 
     this._clientUser = { userId: loginRes.result.userId };
 
-    await TalkChannelList.initialize(this._channelList, loginRes.result.channelList);
+    await TalkChannelList.initialize(
+      this._channelList,
+      loginRes.result.channelList,
+    );
 
     this.addPingHandler();
     this.listen();
@@ -159,7 +172,11 @@ export class TalkClient
     }
   }
 
-  async pushReceived(method: string, data: DefaultRes, ctx: EventContext<TalkClientEvents>): Promise<void> {
+  async pushReceived(
+    method: string,
+    data: DefaultRes,
+    ctx: EventContext<TalkClientEvents>,
+  ): Promise<void> {
     await this._channelList.pushReceived(method, data, ctx);
 
     switch (method) {
@@ -200,7 +217,10 @@ export class TalkClient
     };
   }
 
-  request<T = DefaultRes>(method: string, data: DefaultReq): Promise<DefaultRes & T> {
+  request<T = DefaultRes>(
+    method: string,
+    data: DefaultReq,
+  ): Promise<DefaultRes & T> {
     return this.session.request<T>(method, data);
   }
 
@@ -226,13 +246,19 @@ export class TalkClient
       for await (const { method, data, push } of this.session.listen()) {
         if (push) {
           try {
-            await this.pushReceived(method, data, new EventContext<TalkClientEvents>(this));
+            await this.pushReceived(
+              method,
+              data,
+              new EventContext<TalkClientEvents>(this),
+            );
           } catch (err) {
             this.onError(err);
           }
         }
       }
-    })().then(() => this.listenEnd()).catch((err) => this.onError(err));
+    })()
+      .then(() => this.listenEnd())
+      .catch((err) => this.onError(err));
   }
 
   private addPingHandler() {
@@ -241,7 +267,10 @@ export class TalkClient
 
       this.session.request('PING', {}).catch((err) => this.onError(err));
       // Fix weird nodejs typing
-      this._pingTask = setTimeout(pingHandler, this.pingInterval) as unknown as number;
+      this._pingTask = setTimeout(
+        pingHandler,
+        this.pingInterval,
+      ) as unknown as number;
     };
     pingHandler();
   }

@@ -13,30 +13,30 @@ import { TalkMemoryChannelDataStore } from './channel';
 import { TalkMemoryChatListStore } from './chat';
 
 export const TalkInMemoryDataLoader: ClientDataLoader = {
-
   async loadChatListStore(): AsyncClientDataLoadResult<UpdatableChatListStore> {
     return {
       shouldUpdate: false,
-      value: new TalkMemoryChatListStore(300)
-    }
-  },
-
-  async loadNormalChannelStore(
-
-  ): AsyncClientDataLoadResult<UpdatableChannelDataStore<NormalChannelInfo, NormalChannelUserInfo>> {
-    return {
-      shouldUpdate: true,
-      value: new TalkMemoryChannelDataStore(NormalChannelInfo.createPartial({}))
+      value: new TalkMemoryChatListStore(300),
     };
   },
 
-  async loadOpenChannelStore(
-
-  ): AsyncClientDataLoadResult<UpdatableChannelDataStore<OpenChannelInfo, OpenChannelUserInfo>> {
+  async loadNormalChannelStore(): AsyncClientDataLoadResult<
+    UpdatableChannelDataStore<NormalChannelInfo, NormalChannelUserInfo>
+  > {
     return {
       shouldUpdate: true,
-      value: new TalkMemoryChannelDataStore(OpenChannelInfo.createPartial({}))
+      value: new TalkMemoryChannelDataStore(
+        NormalChannelInfo.createPartial({}),
+      ),
     };
-  }
+  },
 
-}
+  async loadOpenChannelStore(): AsyncClientDataLoadResult<
+    UpdatableChannelDataStore<OpenChannelInfo, OpenChannelUserInfo>
+  > {
+    return {
+      shouldUpdate: true,
+      value: new TalkMemoryChannelDataStore(OpenChannelInfo.createPartial({})),
+    };
+  },
+};

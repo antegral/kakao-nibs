@@ -25,8 +25,16 @@ import {
   OpenLinkSession,
   OpenLinkUpdateTemplate,
 } from '../../openlink';
-import { AsyncCommandResult, DefaultRes, KnownDataStatusCode } from '../../request';
-import { ChannelListUpdater, TalkChannelListHandler, updateChatList } from '../channel';
+import {
+  AsyncCommandResult,
+  DefaultRes,
+  KnownDataStatusCode,
+} from '../../request';
+import {
+  ChannelListUpdater,
+  TalkChannelListHandler,
+  updateChatList,
+} from '../channel';
 import { OpenChannelListEvents } from '../event';
 import { Managed } from '../managed';
 import { TalkOpenChannel } from './talk-open-channel';
@@ -37,21 +45,31 @@ import { OpenChannelUserInfo } from '../../user';
 import { ClientDataLoader } from '../../loader';
 import { TalkClientLinkStore } from './client-link-store';
 
-export type TalkOpenChannelListEvents = OpenChannelListEvents<TalkOpenChannel, OpenChannelUserInfo>;
+export type TalkOpenChannelListEvents = OpenChannelListEvents<
+  TalkOpenChannel,
+  OpenChannelUserInfo
+>;
 
 /**
  * Manage open profile, channel.
  */
 export class TalkOpenChannelList
   extends TypedEmitter<TalkOpenChannelListEvents>
-  implements Managed<TalkOpenChannelListEvents>, OpenChannelManageSession,
-  ChannelStore<TalkOpenChannel>, OpenLinkSession,
-  ChannelListUpdater<TalkOpenChannel>, OpenLinkUpdater {
-
+  implements
+    Managed<TalkOpenChannelListEvents>,
+    OpenChannelManageSession,
+    ChannelStore<TalkOpenChannel>,
+    OpenLinkSession,
+    ChannelListUpdater<TalkOpenChannel>,
+    OpenLinkUpdater
+{
   private _handler: TalkChannelListHandler<TalkOpenChannel>;
-  private _openHandler: TalkOpenChannelListHandler<TalkOpenChannel, OpenChannelUserInfo>;
+  private _openHandler: TalkOpenChannelListHandler<
+    TalkOpenChannel,
+    OpenChannelUserInfo
+  >;
   private _linkStore: TalkClientLinkStore;
-  
+
   private _manageSession: TalkOpenChannelManageSession;
 
   private _map: Map<string, TalkOpenChannel>;
@@ -72,7 +90,9 @@ export class TalkOpenChannelList
 
     this._map = new Map();
     if (list.length > 0) {
-      list.forEach((channel) => this._map.set(channel.channelId.toString(), channel));
+      list.forEach((channel) =>
+        this._map.set(channel.channelId.toString(), channel),
+      );
     }
   }
 
@@ -170,18 +190,29 @@ export class TalkOpenChannelList
     return this._linkStore.clientLinkCount;
   }
 
-  async addOpenChannel(channel: OpenChannel, lastUpdate?: number): AsyncCommandResult<TalkOpenChannel> {
+  async addOpenChannel(
+    channel: OpenChannel,
+    lastUpdate?: number,
+  ): AsyncCommandResult<TalkOpenChannel> {
     const last = this.get(channel.channelId);
-    if (last) return { success: true, status: KnownDataStatusCode.SUCCESS, result: last };
+    if (last)
+      return {
+        success: true,
+        status: KnownDataStatusCode.SUCCESS,
+        result: last,
+      };
 
-    const infoStoreRes = await this._loader.loadOpenChannelStore(channel, lastUpdate);
+    const infoStoreRes = await this._loader.loadOpenChannelStore(
+      channel,
+      lastUpdate,
+    );
     const chatStoreRes = await this._loader.loadChatListStore(channel);
 
     const talkChannel = new TalkOpenChannel(
       channel,
       this._session,
       infoStoreRes.value,
-      chatStoreRes.value
+      chatStoreRes.value,
     );
 
     this._map.set(channel.channelId.toString(), talkChannel);
@@ -195,7 +226,11 @@ export class TalkOpenChannelList
       await updateChatList(talkChannel);
     }
 
-    return { success: true, status: KnownDataStatusCode.SUCCESS, result: talkChannel };
+    return {
+      success: true,
+      status: KnownDataStatusCode.SUCCESS,
+      result: talkChannel,
+    };
   }
 
   async leaveKicked(channel: OpenChannel): AsyncCommandResult {
@@ -220,19 +255,29 @@ export class TalkOpenChannelList
     return this._linkStore.getLatestLinkList();
   }
 
-  getOpenLink(...components: OpenLinkComponent[]): AsyncCommandResult<Readonly<OpenLink>[]> {
+  getOpenLink(
+    ...components: OpenLinkComponent[]
+  ): AsyncCommandResult<Readonly<OpenLink>[]> {
     return this._linkStore.getOpenLink(...components);
   }
 
-  getJoinInfo(linkURL: string, referer?: string): AsyncCommandResult<Readonly<InformedOpenLink>> {
+  getJoinInfo(
+    linkURL: string,
+    referer?: string,
+  ): AsyncCommandResult<Readonly<InformedOpenLink>> {
     return this._linkStore.getJoinInfo(linkURL, referer);
   }
 
-  getKickList(link: OpenLinkComponent): AsyncCommandResult<OpenLinkKickedUserInfo[]> {
+  getKickList(
+    link: OpenLinkComponent,
+  ): AsyncCommandResult<OpenLinkKickedUserInfo[]> {
     return this._linkStore.getKickList(link);
   }
 
-  removeKicked(link: OpenLinkComponent, kickedUser: OpenLinkKickedUser): AsyncCommandResult {
+  removeKicked(
+    link: OpenLinkComponent,
+    kickedUser: OpenLinkKickedUser,
+  ): AsyncCommandResult {
     return this._linkStore.removeKicked(link, kickedUser);
   }
 
@@ -259,7 +304,7 @@ export class TalkOpenChannelList
 
   async createOpenChannel(
     template: OpenLinkChannelTemplate & OpenLinkCreateTemplate,
-    profile: OpenLinkProfiles
+    profile: OpenLinkProfiles,
   ): AsyncCommandResult<TalkOpenChannel> {
     const res = await this._linkStore.createOpenChannel(template, profile);
     if (!res.success) return res;
@@ -269,20 +314,21 @@ export class TalkOpenChannelList
 
   createOpenDirectProfile(
     template: OpenLinkChannelTemplate & OpenLinkCreateTemplate,
-    profile: OpenLinkProfiles
+    profile: OpenLinkProfiles,
   ): AsyncCommandResult<InformedOpenLink> {
     return this._linkStore.createOpenDirectProfile(template, profile);
   }
 
   createOpenProfile(
-    template: OpenLinkProfileTemplate & OpenLinkCreateTemplate
+    template: OpenLinkProfileTemplate & OpenLinkCreateTemplate,
   ): AsyncCommandResult<InformedOpenLink> {
     return this._linkStore.createOpenProfile(template);
   }
 
   updateOpenLink(
     link: OpenLinkComponent,
-    settings: (OpenLinkChannelTemplate | OpenLinkProfileTemplate) & OpenLinkUpdateTemplate
+    settings: (OpenLinkChannelTemplate | OpenLinkProfileTemplate) &
+      OpenLinkUpdateTemplate,
   ): AsyncCommandResult<InformedOpenLink> {
     return this._linkStore.updateOpenLink(link, settings);
   }
@@ -290,11 +336,15 @@ export class TalkOpenChannelList
   async pushReceived(
     method: string,
     data: DefaultRes,
-    parentCtx: EventContext<TalkOpenChannelListEvents>
+    parentCtx: EventContext<TalkOpenChannelListEvents>,
   ): Promise<void> {
     const ctx = new EventContext<TalkOpenChannelListEvents>(this, parentCtx);
 
-    await Promise.all(Array.from(this._map.values()).map((channel) => channel.pushReceived(method, data, ctx)));
+    await Promise.all(
+      Array.from(this._map.values()).map((channel) =>
+        channel.pushReceived(method, data, ctx),
+      ),
+    );
 
     await this._handler.pushReceived(method, data, parentCtx);
     await this._openHandler.pushReceived(method, data, parentCtx);
@@ -324,7 +374,11 @@ export class TalkOpenChannelList
   ): Promise<TalkOpenChannelList> {
     talkChannelList._map.clear();
 
-    await Promise.all(channelList.map((data) => talkChannelList.addOpenChannel(data.channel, data.lastUpdate)));
+    await Promise.all(
+      channelList.map((data) =>
+        talkChannelList.addOpenChannel(data.channel, data.lastUpdate),
+      ),
+    );
     await talkChannelList._linkStore.getLatestLinkList();
 
     return talkChannelList;
