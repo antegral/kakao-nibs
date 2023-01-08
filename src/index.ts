@@ -12,7 +12,7 @@ export {
   OAuthApiClient,
   AttachmentApiClient,
   AttachmentApi,
-  xvc
+  xvc,
 } from './api';
 export * from './channel';
 export * from './chat';
@@ -30,12 +30,18 @@ export * from './relay';
 export * from './request';
 export * as stream from './stream';
 export * as talk from './talk';
-export { TalkChannel, TalkOpenChannel, TalkNormalChannel, TalkChatData } from './talk';
+export {
+  TalkChannel,
+  TalkOpenChannel,
+  TalkNormalChannel,
+  TalkChatData,
+} from './talk';
 export { MediaUploadTemplate } from './talk/media';
 export * from './user';
 export * as util from './util';
 export * from './voip';
 export * from './loader';
+export { ComposedClient as VancedClient } from './vanced_client';
 
 export { Long } from 'bson';
 
