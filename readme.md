@@ -1,23 +1,18 @@
-[![npm version](https://badge.fury.io/js/node-kakao.svg)](https://www.npmjs.com/package/node-kakao)
-[![CodeFactor](https://www.codefactor.io/repository/github/storycraft/node-kakao/badge)](https://www.codefactor.io/repository/github/storycraft/node-kakao)
-[![Not Maintained](https://img.shields.io/badge/Maintenance%20Level-Not%20Maintained-yellow.svg)](https://gist.github.com/cheerfulstoic/d107229326a01ff0f333a1d3476e068d)
-# NodeKakao - Loco protocol compatible library
+[![npm version](https://badge.fury.io/js/kakao-nibs.svg)](https://www.npmjs.com/package/kakao-nibs)
+[![CodeFactor](https://www.codefactor.io/repository/github/antegral/kakao-nibs/badge)](https://www.codefactor.io/repository/github/antegral/kakao-nibs)
+[![Inactively Maintained](https://img.shields.io/badge/Maintenance%20Level-Inactively%20Maintained-yellowgreen.svg)](https://gist.github.com/cheerfulstoic/d107229326a01ff0f333a1d3476e068d)
+# kakao-nibs - Loco protocol compatible library
+> kakao-nibs is a fork of node-kakao, a project aimed at ongoing maintenance.
 
-~~ES Module & Deno~~  
-Supporting dropped.
-```typescript
-import * as NodeKakao from "https://cdn.skypack.dev/node-kakao?dts";
+## install package
+
+> **Warning**<br>
+> 1. Abusing this client can cause permanent service restriction.<br>
+> 2. This implemention can stop working anytime.
+
 ```
-
-Node
+npm i --save kakao-nibs
 ```
-npm i --save node-kakao
-```
-
-> This implemention can stop working anytime.
-
-## Warning
-Abusing this client can cause permanent service restriction.
 
 ## Example
 See `examples` folder. Examples are written in typescript.
@@ -25,11 +20,8 @@ See `examples` folder. Examples are written in typescript.
 ## Documentation
 [TypeDoc](https://storycraft.github.io/node-kakao/)
 
-## Migrating from v3
-See `migration-v3.md`
-
 ## License
-node-kakao is following MIT License.  
+kakao-nibs is following MIT License.  
 See `LICENSE` for full text.
 
 ## Basic Reference
