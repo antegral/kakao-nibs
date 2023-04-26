@@ -1,6 +1,11 @@
 [![npm version](https://badge.fury.io/js/kakao-nibs.svg)](https://www.npmjs.com/package/kakao-nibs)
 [![CodeFactor](https://www.codefactor.io/repository/github/antegral/kakao-nibs/badge)](https://www.codefactor.io/repository/github/antegral/kakao-nibs)
 [![Inactively Maintained](https://img.shields.io/badge/Maintenance%20Level-Inactively%20Maintained-yellowgreen.svg)](https://gist.github.com/cheerfulstoic/d107229326a01ff0f333a1d3476e068d)
+
+> **Warning**<br>
+> **Currently, this wrapper is not working**.<br>
+> I'm doing the best I can, and there will be a reimplementation in the near future regarding protocols.
+
 # kakao-nibs - Loco protocol compatible library
 > kakao-nibs is a fork of node-kakao, a project aimed at ongoing maintenance.
 
