@@ -19,3 +19,24 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+In addition to this license, the following additional licenses apply.
+The following applies to both users and developers (contributors).
+
+(ENG)
+1. The KakaoTalk application is currently registered and distributed on the Google Play Store.
+2. This project is being developed for the purpose of improving compatibility of OS (Linux, etc.) not supported by KakaoTalk.
+3. Users and developers (contributors) may not use it for any purpose other than compatibility purposes or provide it to third parties.
+4. This reverse engineering project may not be used to develop, produce, or sell a substantially similar program or otherwise infringe on the copyright of the program.
+
+This project complies with the current laws and regulations of the Republic of Korea.
+In addition, the Korean language takes precedence when interpreting this content. It should be noted that it is translated into English for convenience.
+
+(KOR)
+1. 카카오톡 애플리케이션은 현재 Google Play Store에 등록 및 배포되고 있습니다.
+2. 이 프로젝트는 카카오톡에서 지원하지 않는 OS (Linux 등)의 호환성 증진을 목적으로 개발하고 있습니다.
+3. 사용자 및 개발자(기여자)는 호환 목적 외의 다른 목적을 위하여 이용하거나 제3자에게 제공 할 수 없습니다.
+4. 본 리버스 엔지니어링 프로젝트를 사용하여 실질적으로 유사한 프로그램을 개발·제작·판매하거나 그 밖에 프로그램의 저작권을 침해하는 행위에 이용할 수 없습니다.
+
+이 프로젝트는 대한민국의 현행 법령을 준수하고 있습니다.
+또한, 본 내용 해석시 한국어를 우선으로 적용됩니다. 편의를 위해 영어로 번역되어 제공되는 것임을 유의해야 합니다.
